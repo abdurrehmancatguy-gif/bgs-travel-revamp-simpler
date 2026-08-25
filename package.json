@@ -1,0 +1,12 @@
+{
+  "name": "bgs-travel-and-tourism",
+  "private": true,
+  "type": "module",
+  "description": "Static site. The source runs in a browser as-is; this exists only so the deploy can minify what it publishes.",
+  "scripts": {
+    "build": "node build/build.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
+  }
+}

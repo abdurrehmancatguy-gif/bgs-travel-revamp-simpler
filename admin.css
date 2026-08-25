@@ -1,0 +1,866 @@
+/* =========================================================================
+   Admin console
+   -------------------------------------------------------------------------
+   Deliberately plainer than the public site: this is a working tool, so it
+   trades the cinematic treatment for density and legibility. It keeps the
+   brand tokens so it still reads as the same product.
+   ========================================================================= */
+
+body.admin {
+  padding: 0 0 80px;
+  background: var(--navy-deep);
+}
+
+/* ------------------------------------------------------------------ login */
+
+.admin-login {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.admin-login-card {
+  width: min(420px, 100%);
+  padding: 40px;
+  border: 1px solid rgba(255, 246, 232, 0.16);
+  border-radius: 26px;
+  background: rgba(255, 246, 232, 0.06);
+  backdrop-filter: blur(18px);
+  text-align: center;
+}
+
+.admin-login-card h1 {
+  margin: 0 0 10px;
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  font-weight: 500;
+}
+
+.admin-login-hint {
+  margin: 0 0 26px;
+  color: rgba(255, 246, 232, 0.66);
+  font-size: 14px;
+}
+
+.admin-login-card .pill-button { margin-top: 22px; width: 100%; }
+
+/* ----------------------------------------------------------------- shell */
+
+.admin-header,
+.admin-tabs,
+.admin-panel,
+.admin-warning {
+  width: min(1100px, 100% - 40px);
+  margin-inline: auto;
+}
+
+.admin-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 44px 0 26px;
+}
+
+.admin-heading {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 500;
+}
+
+.admin-header-actions { display: flex; gap: 10px; }
+
+.admin-warning {
+  margin-bottom: 18px;
+  padding: 14px 18px;
+  border: 1px solid rgba(232, 148, 26, 0.5);
+  border-radius: 14px;
+  background: rgba(232, 148, 26, 0.14);
+  color: var(--gold-light);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.admin-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.admin-tab {
+  padding: 10px 18px;
+  border: 1px solid rgba(255, 246, 232, 0.2);
+  border-radius: 999px;
+  color: rgba(255, 246, 232, 0.78);
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+  text-transform: capitalize;
+  cursor: pointer;
+  transition: background 180ms ease, color 180ms ease;
+}
+.admin-tab:hover { background: rgba(255, 246, 232, 0.1); }
+.admin-tab[data-active="true"] {
+  color: var(--navy);
+  background: var(--gold-light);
+  border-color: var(--gold-light);
+  font-weight: 700;
+}
+
+/* ---------------------------------------------------------------- panels */
+
+.admin-panel {
+  margin-bottom: 22px;
+  padding: 24px;
+  border: 1px solid rgba(255, 246, 232, 0.14);
+  border-radius: 22px;
+  background: rgba(255, 246, 232, 0.05);
+}
+
+.admin-panel-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.admin-subheading {
+  margin: 0 0 10px;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.admin-count { color: rgba(255, 246, 232, 0.6); font-size: 13px; }
+.admin-panel-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+
+.admin-note {
+  margin: 0 0 16px;
+  max-width: 62ch;
+  color: rgba(255, 246, 232, 0.6);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+/* ------------------------------------------------------------------ list */
+
+.admin-list { margin: 0; padding: 0; list-style: none; }
+
+.admin-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 4px;
+  border-bottom: 1px solid rgba(255, 246, 232, 0.1);
+}
+.admin-row:last-child { border-bottom: 0; }
+
+.admin-row-name { flex: 1; font-weight: 600; }
+.admin-row-meta { color: rgba(255, 246, 232, 0.5); font-size: 13px; }
+
+.admin-row-copy {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  padding: 18px 4px;
+}
+.admin-row-copy label { display: grid; gap: 6px; font-size: 13px; color: rgba(255,246,232,0.7); }
+
+.admin-empty {
+  padding: 30px 4px;
+  color: rgba(255, 246, 232, 0.55);
+  text-align: center;
+}
+
+/* --------------------------------------------------------------- controls */
+
+.admin-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1px solid rgba(255, 246, 232, 0.26);
+  border-radius: 999px;
+  color: var(--cream);
+  background: transparent;
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 180ms ease, border-color 180ms ease;
+}
+.admin-btn:hover { background: rgba(255, 246, 232, 0.14); }
+
+.admin-btn-primary {
+  color: var(--navy);
+  background: var(--gold);
+  border-color: var(--gold);
+}
+.admin-btn-primary:hover { background: var(--gold-light); }
+
+.admin-btn-danger { border-color: rgba(255, 120, 100, 0.5); color: #ffb0a4; }
+.admin-btn-danger:hover { background: rgba(255, 120, 100, 0.16); }
+
+.admin-field {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 14px;
+  color: rgba(255, 246, 232, 0.72);
+  font-size: 13px;
+  text-align: left;
+}
+
+.admin-field input,
+.admin-field textarea,
+.admin-row-copy input,
+.admin-row-copy textarea {
+  padding: 11px 14px;
+  border: 1px solid rgba(255, 246, 232, 0.22);
+  border-radius: 12px;
+  color: var(--cream);
+  background: rgba(8, 15, 24, 0.55);
+  font: inherit;
+  font-size: 14.5px;
+  resize: vertical;
+}
+
+.admin-field input:focus,
+.admin-field textarea:focus,
+.admin-row-copy input:focus,
+.admin-row-copy textarea:focus {
+  outline: none;
+  border-color: var(--gold-light);
+}
+
+.admin-error { min-height: 20px; margin: 0; color: #ffb0a4; font-size: 13px; }
+
+.admin-password {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  align-items: end;
+  gap: 14px;
+}
+.admin-password .admin-btn { margin-bottom: 14px; }
+
+/* ---------------------------------------------------------------- editor */
+
+.admin-editor {
+  width: min(700px, calc(100vw - 32px));
+  padding: 28px;
+  border: 1px solid rgba(255, 246, 232, 0.18);
+  border-radius: 22px;
+  color: var(--cream);
+  background: #101c2a;
+}
+.admin-editor::backdrop { background: rgba(4, 10, 18, 0.72); backdrop-filter: blur(4px); }
+
+.admin-editor h2 {
+  margin: 0 0 20px;
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  font-weight: 500;
+}
+
+.admin-editor-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0 16px;
+  max-height: 58vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.admin-editor-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+/* ----------------------------------------------------------------- toast */
+
+.admin-toast {
+  position: fixed;
+  bottom: 26px;
+  left: 50%;
+  z-index: 200;
+  margin: 0;
+  padding: 12px 24px;
+  border-radius: 999px;
+  color: var(--navy);
+  background: var(--gold-light);
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: 0 16px 40px rgba(4, 10, 18, 0.44);
+  transform: translate(-50%, 16px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 220ms ease, transform 220ms ease;
+}
+.admin-toast[data-shown="true"] { opacity: 1; transform: translate(-50%, 0); }
+
+@media (max-width: 640px) {
+  .admin-row { flex-wrap: wrap; }
+  .admin-row-name { flex-basis: 100%; }
+}
+
+/* =========================================================================
+   Light theme
+   -------------------------------------------------------------------------
+   Brand order is white, then gold, then royal navy, so the console follows the
+   public pages onto a white surface. Declared as an override block at the end
+   rather than edited inline above, so the structural rules and the palette
+   stay separable — a future theme is this block, not a rewrite.
+   ========================================================================= */
+
+body.admin {
+  background: var(--white);
+  color: var(--navy);
+}
+
+.admin-login-card {
+  border-color: rgba(13, 27, 42, 0.12);
+  background: var(--white);
+  box-shadow: 0 22px 60px rgba(13, 27, 42, 0.14);
+}
+.admin-login-card h1 { color: var(--navy); }
+.admin-login-hint { color: rgba(13, 27, 42, 0.62); }
+
+.admin-heading, .admin-subheading { color: var(--navy); }
+
+.admin-panel {
+  border-color: rgba(13, 27, 42, 0.12);
+  background: var(--white);
+  box-shadow: 0 12px 34px rgba(13, 27, 42, 0.07);
+}
+
+.admin-count, .admin-note, .admin-empty { color: rgba(13, 27, 42, 0.6); }
+
+.admin-tab {
+  border-color: rgba(13, 27, 42, 0.14);
+  color: rgba(13, 27, 42, 0.72);
+  background: var(--white);
+}
+.admin-tab:hover { border-color: var(--gold); color: var(--navy); background: var(--white); }
+.admin-tab[data-active="true"] {
+  color: var(--navy);
+  background: var(--gold-light);
+  border-color: var(--gold-light);
+}
+
+.admin-row { border-bottom-color: rgba(13, 27, 42, 0.1); }
+.admin-row-name { color: var(--navy); }
+.admin-row-meta { color: rgba(13, 27, 42, 0.5); }
+.admin-row-copy label { color: rgba(13, 27, 42, 0.66); }
+
+.admin-btn {
+  border-color: rgba(13, 27, 42, 0.18);
+  color: var(--navy);
+  background: var(--white);
+}
+.admin-btn:hover { background: rgba(13, 27, 42, 0.05); border-color: var(--gold); }
+.admin-btn-primary { color: var(--navy); background: var(--gold); border-color: var(--gold); }
+.admin-btn-primary:hover { background: var(--gold-light); }
+.admin-btn-danger { color: #b3261e; border-color: rgba(179, 38, 30, 0.4); }
+.admin-btn-danger:hover { background: rgba(179, 38, 30, 0.08); }
+
+.admin-field { color: rgba(13, 27, 42, 0.66); }
+
+.admin-field input,
+.admin-field textarea,
+.admin-row-copy input,
+.admin-row-copy textarea {
+  border-color: rgba(13, 27, 42, 0.16);
+  color: var(--navy);
+  background: var(--white);
+}
+.admin-field input:focus,
+.admin-field textarea:focus,
+.admin-row-copy input:focus,
+.admin-row-copy textarea:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(232, 148, 26, 0.16);
+}
+
+.admin-error { color: #b3261e; }
+
+.admin-warning {
+  border-color: rgba(232, 148, 26, 0.55);
+  background: rgba(232, 148, 26, 0.12);
+  color: #8a5a06;
+}
+
+/* The editor keeps a navy shell: it is a modal over the page, and the contrast
+   is what separates it from everything behind. */
+.admin-editor {
+  border-color: rgba(13, 27, 42, 0.14);
+  color: var(--navy);
+  background: var(--white);
+  box-shadow: 0 30px 80px rgba(13, 27, 42, 0.28);
+}
+.admin-editor h2 { color: var(--navy); }
+.admin-editor::backdrop { background: rgba(13, 27, 42, 0.42); }
+
+/* An author `display` rule beats the `hidden` attribute's UA style, so setting
+   .hidden on the login section did nothing — `display: grid` kept winning and
+   the login card stayed on top of the signed-in view. This is the fix, and the
+   reason to keep it broad: any element here hidden by script must actually go. */
+[hidden] { display: none !important; }
+
+/* Monogram beside the console eyebrow. */
+.admin-mark { vertical-align: -4px; margin-right: 6px; }
+
+/* ------------------------------------------------- spreadsheet import ---- */
+
+.sheet-drop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 132px;
+  margin: 4px 0 14px;
+  padding: 22px;
+  border: 2px dashed rgba(255, 246, 232, 0.28);
+  border-radius: 18px;
+  background: rgba(255, 246, 232, 0.04);
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 180ms ease, background 180ms ease;
+}
+.sheet-drop:hover,
+.sheet-drop[data-over="true"] {
+  border-color: var(--gold);
+  background: rgba(232, 148, 26, 0.1);
+}
+.sheet-drop-title { font-size: 1rem; font-weight: 600; }
+.sheet-drop-hint { font-size: 0.85rem; opacity: 0.62; }
+
+.sheet-dialog {
+  width: min(720px, calc(100vw - 32px));
+  max-height: min(86vh, 860px);
+  padding: 0;
+  border: 0;
+  background: none;
+}
+.sheet-dialog::backdrop { background: rgba(6, 14, 24, 0.62); }
+
+.sheet-dialog-panel {
+  display: flex;
+  flex-direction: column;
+  max-height: min(86vh, 860px);
+  border: 1px solid rgba(255, 246, 232, 0.16);
+  border-radius: 22px;
+  background: #101f34;
+  color: var(--cream);
+  overflow: hidden;
+}
+.sheet-dialog-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 14px;
+  border-bottom: 1px solid rgba(255, 246, 232, 0.14);
+}
+.sheet-dialog-head h2 { margin: 0; font-size: 1.15rem; }
+.sheet-dialog-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  color: var(--cream);
+  background: rgba(255, 246, 232, 0.1);
+  cursor: pointer;
+}
+.sheet-dialog-close svg { width: 55%; height: 55%; }
+.sheet-dialog-body {
+  flex: 1;
+  min-height: 0;
+  padding: 18px 24px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.sheet-dialog-foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 14px 24px 20px;
+  border-top: 1px solid rgba(255, 246, 232, 0.14);
+}
+
+.sheet-plan { margin-bottom: 18px; }
+.sheet-plan h3 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px;
+  margin: 0 0 6px;
+  font-size: 0.98rem;
+}
+.sheet-plan h3 span {
+  font-size: 0.8rem;
+  font-weight: 500;
+  opacity: 0.66;
+}
+.sheet-plan-list { margin: 0 0 5px; font-size: 0.86rem; line-height: 1.5; opacity: 0.86; }
+.sheet-plan-warn { color: #ffb4a2; opacity: 1; }
+
+.sheet-note {
+  margin: 12px 0 0;
+  padding: 11px 14px;
+  border-radius: 12px;
+  background: rgba(255, 246, 232, 0.06);
+  font-size: 0.84rem;
+  line-height: 1.55;
+}
+.sheet-note-good { background: rgba(37, 211, 102, 0.12); }
+
+.sheet-problems { margin: 0 0 14px; font-size: 0.85rem; }
+.sheet-problems summary { cursor: pointer; color: var(--gold-light); }
+.sheet-problems ul { margin: 8px 0 0; padding-left: 18px; line-height: 1.55; opacity: 0.84; }
+
+/* A toggle puts its label beside the box rather than above it, the way every
+   checkbox a person has ever met behaves. */
+.admin-field-toggle {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.admin-field-toggle input {
+  width: auto;
+  flex: none;
+  accent-color: var(--gold, #e8941a);
+}
+
+/* ------------------------------------------------------------ photo picker */
+
+.admin-field-photo {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.photo-search {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.photo-search input {
+  flex: 1;
+  min-width: 0;
+}
+
+.photo-search .admin-btn {
+  flex: none;
+  white-space: nowrap;
+}
+
+.photo-status {
+  margin: 0;
+  font-size: 0.8rem;
+  color: rgba(13, 27, 42, 0.62);
+  min-height: 1em;
+}
+
+/* auto-fill, not auto-fit: the thumbnails keep their size in a narrow dialog
+   and wrap onto a second row instead of stretching into letterboxes. */
+.photo-results {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+  gap: 0.5rem;
+}
+
+.photo-option {
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  overflow: hidden;
+  background: none;
+  cursor: pointer;
+  display: grid;
+  gap: 0.2rem;
+  text-align: left;
+}
+
+.photo-option img {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  display: block;
+  border-radius: 8px;
+}
+
+.photo-option span {
+  font-size: 0.65rem;
+  color: rgba(13, 27, 42, 0.5);
+  padding: 0 0.2rem 0.2rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.photo-option:hover,
+.photo-option:focus-visible {
+  border-color: rgba(232, 148, 26, 0.55);
+}
+
+.photo-option[data-chosen] {
+  border-color: #a35c00;
+}
+
+/* The chosen photograph, at the size it will actually be judged at. */
+.photo-preview {
+  width: 100%;
+  max-height: 150px;
+  object-fit: cover;
+  border-radius: 10px;
+  display: block;
+}
+
+/* --------------------------------------------------- homepage panel sections */
+
+.admin-section-head {
+  padding: 1.1rem 0 0.3rem;
+  border-bottom: 0;
+  display: block;
+}
+
+.admin-section-head:first-child { padding-top: 0.2rem; }
+
+.admin-section-head h3 {
+  margin: 0 0 0.25rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold-ink, #a35c00);
+}
+
+.admin-section-head p {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: rgba(13, 27, 42, 0.6);
+  max-width: 62ch;
+}
+
+/* Package titles are long — "Classic Serengeti Safari + Zanzibar Extension" —
+   and .admin-row is a single flex line built for short names, so the title, the
+   region and the button collided the moment the panel got narrow. Two columns:
+   the choice fills the width and the button holds its own place beside it. */
+.admin-row-pick {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  column-gap: 12px;
+  row-gap: 4px;
+}
+
+.admin-row-pick .admin-row-meta {
+  grid-column: 1;
+  font-size: 12px;
+  padding-left: calc(0.6rem + 13px);   /* line up under the title, not the box */
+}
+
+.admin-row-pick .admin-btn {
+  grid-row: 1 / span 2;
+  grid-column: 2;
+  align-self: center;
+}
+
+/* The checkbox and the name are one hit target — the row is a choice, and a
+   3mm box on a phone is not. */
+.admin-pick {
+  display: flex;
+  align-items: start;
+  gap: 0.6rem;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.admin-pick .admin-row-name {
+  /* break-word, not anywhere: "anywhere" will split Saudi into "Sa udi" the
+     moment the column is tight, which it always is once three buttons sit
+     beside it. This only breaks a word that genuinely cannot fit. */
+  overflow-wrap: break-word;
+  line-height: 1.35;
+}
+
+.admin-pick input {
+  width: auto;
+  flex: none;
+  accent-color: var(--gold, #e8941a);
+}
+
+.admin-row-pick .admin-row-name { font-weight: 600; }
+
+
+/* ------------------------------------------------ homepage card ordering */
+
+.admin-card-order {
+  flex: none;
+  width: 1.6rem;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.78rem;
+  color: rgba(13, 27, 42, 0.4);
+}
+
+/* The reference rows carry a number, a name and three buttons, so the two-column
+   grid from the pick rows gets a third track for the ordinal. */
+.admin-row-pick {
+  grid-template-columns: auto 1fr auto;
+}
+
+.admin-row-pick .admin-pick {
+  display: grid;
+  gap: 2px;
+  cursor: default;
+}
+
+.admin-row-pick .admin-row-meta {
+  grid-column: auto;
+  padding-left: 0;
+}
+
+.admin-card-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.admin-card-actions .admin-btn {
+  padding: 6px 10px;
+  line-height: 1;
+}
+
+.admin-card-actions .admin-btn[disabled] {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.admin-row-add {
+  gap: 8px;
+  padding-top: 16px;
+}
+
+.admin-row-add select {
+  flex: 1;
+  min-width: 0;
+  padding: 9px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(13, 27, 42, 0.18);
+  background: var(--white, #fff);
+  color: var(--navy, #0d1b2a);
+}
+
+/* ------------------------------------------------------ homepage sub-tabs */
+
+.admin-subtabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 0.6rem;
+}
+
+.admin-subtab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(13, 27, 42, 0.16);
+  background: transparent;
+  color: rgba(13, 27, 42, 0.7);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.admin-subtab span {
+  font-size: 0.72rem;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: rgba(13, 27, 42, 0.08);
+  font-variant-numeric: tabular-nums;
+}
+
+.admin-subtab[aria-selected="true"] {
+  background: var(--navy, #0d1b2a);
+  border-color: var(--navy, #0d1b2a);
+  color: var(--cream, #fff6e8);
+  font-weight: 600;
+}
+
+.admin-subtab[aria-selected="true"] span {
+  background: rgba(255, 246, 232, 0.18);
+}
+
+.admin-section-note { padding-top: 1.4rem; }
+
+/* The label override sits beside the record it renames. */
+.admin-row-label {
+  display: grid;
+  grid-template-columns: 1fr minmax(0, 15rem);
+  gap: 10px;
+  align-items: center;
+}
+
+.admin-row-label input { width: 100%; }
+
+
+/* The reference rows carry an ordinal, a name and three buttons. Below the
+   breakpoint that does not fit on one line, and forcing it squeezed the name
+   into a single-letter column — so the buttons drop to their own row and the
+   name gets the full width. */
+.admin-row-pick {
+  grid-template-columns: auto 1fr;
+  row-gap: 8px;
+}
+
+.admin-row-pick .admin-card-actions {
+  grid-column: 1 / -1;
+  justify-content: flex-end;
+}
+
+@media (min-width: 700px) {
+  .admin-row-pick {
+    grid-template-columns: auto 1fr auto;
+    row-gap: 4px;
+  }
+  .admin-row-pick .admin-card-actions {
+    grid-column: 3;
+    grid-row: 1;
+  }
+}
+
+@media (max-width: 560px) {
+  .admin-row-label { grid-template-columns: 1fr; }
+  .admin-subtabs { flex-wrap: wrap; }
+}
+
+/* A refused save is not a confirmation. */
+#admin-toast[data-tone="error"] {
+  background: #8c2f1d;
+  color: #fff6e8;
+}
+
+/* Lifted from pages.css, which the admin no longer loads. Two elements use it —
+   the wordmark above the login box and the one above the console — and they are
+   not worth 36KB of category-page styling. */
+.page-eyebrow {
+  margin: 0 0 10px;
+  color: var(--gold-light, #f5a832);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}

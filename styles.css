@@ -1,0 +1,2292 @@
+/* =========================================================================
+   BGS Travel & Tourism — cinematic homepage
+   -------------------------------------------------------------------------
+   Layout is driven almost entirely by CSS custom properties that js/main.js
+   rewrites each frame from the scroll position. Nothing here animates layout
+   properties directly: the scene moves through transform, opacity and filter.
+   ========================================================================= */
+
+@font-face {
+  font-family: "Ogg Medium";
+  src: url("https://dcym8fthxf5uu.cloudfront.net/fonts/247a073c-29f5-4a89-aa3a-741020f346fc/OggText-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* --- pointer parallax --- */
+  --mx: 0; --my: 0;
+
+  /* --- depth stack (sky glow + city plate) --- */
+  --depth-opacity: 1; --depth-x: 0px; --depth-y: 0px; --depth-scale: 0.76;
+  --glow-y: 10vh; --glow-scale: 0.78;
+  --city-y: 20vh;
+  --blur-px: 0px; --depth-brightness: 1;
+  --city-blur-px: 0px; --city-brightness: 1; --city-saturation: 1;
+
+  /* --- atmospheric wash --- */
+  --shade-opacity: 1; --shade-z: 2;
+  --shade-top-alpha: 0; --shade-mid-alpha: 0; --shade-bottom-alpha: 0;
+  --blur-tint: 13, 27, 42;
+
+  /* --- hero --- */
+  --title-y: 0px; --title-scale: 1; --title-opacity: 1;
+  --hero-copy-y: 0px; --hero-copy-opacity: 1;
+
+  /* --- portal (the frame the camera travels through) --- */
+  --portal-x: -50%; --portal-y: 0px; --portal-bottom: 5vh;
+  --portal-width: 67.2vw; --portal-scale: 1.02; --portal-grow: 0;
+
+  /* --- parting curtains --- */
+  --split-left-x: -50%;  --split-left-y: 0px;  --split-left-scale: 1;
+  --split-right-x: -50%; --split-right-y: 0px; --split-right-scale: 1;
+
+  /* --- revealed plate behind the portal --- */
+  --reveal-opacity: 0; --reveal-x: -50%; --reveal-y: -50%; --reveal-scale: 1.06;
+
+  /* --- scene panels --- */
+  --panel-promise-opacity: 0;   --panel-promise-y: calc(-50% + 58px);
+  --panel-discovery-opacity: 0; --panel-discovery-y: calc(-50% + 58px);
+  --panel-services-opacity: 0;  --panel-services-y: calc(-50% + 58px);
+
+  /* --- package rail --- */
+  --rail-opacity: 1; --rail-controls-opacity: 0; --rail-y: 0px;
+  --rail-enter-x: 150vw; --rail-visibility: hidden;
+  --rail-shift: 0px; --rail-drag: 0px; --rail-scale: 1;
+  --rail-top: clamp(112px, 19vh, 220px);
+  --rail-screen-top: clamp(112px, 19vh, 220px);
+
+  /* --- brand --- */
+  --navy: #0d1b2a;
+  --navy-deep: #080f18;
+  --gold: #e8941a;
+  /* Gold on a light surface. The brand gold reads at 2.42:1 on white, which is
+     invisible at heading size; this measures 5.14:1 and still reads as gold. */
+  --gold-ink: #a35c00;
+  --gold-light: #f5a832;
+  --cream: #fff6e8;
+  --white: #ffffff;
+  --wa-green: #25d366;
+  --ink: #0d1b2a;
+  --paper: #fff6e8;
+  --shadow: rgba(4, 10, 18, 0.42);
+
+  --font-display: "Ogg Medium", "Playfair Display", Georgia, "Times New Roman", serif;
+  --font-ui: Inter, Satoshi, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  font-family: var(--font-ui);
+  color: var(--paper);
+  background: var(--navy-deep);
+  letter-spacing: 0;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  min-height: 100%;
+  scroll-behavior: smooth;
+  background: var(--navy-deep);
+}
+
+body {
+  min-height: 100%;
+  margin: 0;
+  overflow-x: clip;
+  background: var(--navy-deep);
+}
+
+button { border: 0; font: inherit; }
+
+.site-shell { min-height: 100vh; }
+
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 16px;
+  z-index: 200;
+  padding: 12px 20px;
+  border-radius: 0 0 14px 14px;
+  color: var(--navy);
+  background: var(--cream);
+  font-weight: 600;
+  text-decoration: none;
+}
+.skip-link:focus { top: 0; }
+
+/* Shared focus treatment — gold ring reads on both cream and photography. */
+:where(a, button, [tabindex]):focus-visible {
+  outline: 3px solid var(--gold-light);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* =========================================================================
+   Contacts + legal: buttons and the frosted panel they open
+   -------------------------------------------------------------------------
+   Same glass language as the category-page navbar — a white pane, navy ink,
+   gold for anything interactive — so the panel belongs to the site rather than
+   arriving from a component library. It has to read over two very different
+   backdrops: the homepage's bright sky and the category pages' near-black
+   navy, which is why the fill is white rather than a navy tint.
+   ========================================================================= */
+
+.info-actions {
+  display: flex;
+  /* Contacts on its own line with the legal links under it, rather than the
+     four sharing a row — the button is the one that matters. */
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  pointer-events: auto;
+}
+
+.info-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 11px 22px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 999px;
+  color: var(--navy);
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  box-shadow:
+    0 10px 26px rgba(4, 10, 18, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: transform 200ms ease, background 200ms ease;
+}
+.info-button:hover { transform: translateY(-1px); background: rgba(255, 255, 255, 0.94); }
+
+/* The gold marker carries the accent without the button becoming a gold slab. */
+.info-button-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 0 3px rgba(232, 148, 26, 0.22);
+}
+
+.info-legal { display: inline-flex; flex-wrap: wrap; gap: 6px 16px; }
+
+.info-legal-link {
+  padding: 4px 2px;
+  border: 0;
+  background: none;
+  color: rgba(255, 246, 232, 0.72);
+  font-size: 0.84rem;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(232, 148, 26, 0.45);
+  transition: color 180ms ease, border-color 180ms ease;
+}
+.info-legal-link:hover { color: var(--gold-light); border-color: var(--gold-light); }
+
+/* The contact block in the page footers and the drawer. Cream on dark in both
+   places, so it needs no per-surface variant. */
+.contact-strip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.contact-strip-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 26px;
+}
+
+.contact-strip-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: rgba(255, 246, 232, 0.9);
+  font-size: 0.92rem;
+  text-decoration: none;
+}
+.contact-strip-item:hover { color: var(--gold-light); }
+
+.contact-strip-icon { display: inline-flex; width: 19px; height: 19px; color: var(--gold); }
+.contact-strip-icon svg { width: 100%; height: 100%; }
+.contact-strip-icon[data-channel="whatsapp"] { color: var(--wa-green); }
+
+.contact-strip-legal {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 18px;
+}
+
+/* Sits under the drawer groups, against the same dark panel. */
+.drawer-contact {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 246, 232, 0.14);
+}
+.drawer-contact .contact-strip { align-items: flex-start; gap: 12px; }
+.drawer-contact .contact-strip-links { flex-direction: column; align-items: flex-start; gap: 12px; }
+.drawer-contact .contact-strip-legal { justify-content: flex-start; }
+
+@media (max-width: 640px) {
+  .contact-strip-links { gap: 10px 18px; }
+  .contact-strip-item { font-size: 0.86rem; }
+}
+
+/* ------------------------------------------------------------- the panel */
+
+.info-dialog {
+  width: min(660px, calc(100vw - 32px));
+  max-height: min(78vh, 760px);
+  padding: 0;
+  border: 0;
+  background: none;
+  overflow: visible;
+}
+
+/* Without a blurred backdrop the panel is translucent over nothing in
+   particular; this is what makes the frost read as frost. */
+.info-dialog::backdrop {
+  background: rgba(6, 14, 24, 0.55);
+  backdrop-filter: blur(12px) saturate(120%);
+  -webkit-backdrop-filter: blur(12px) saturate(120%);
+}
+
+.info-dialog-panel {
+  display: flex;
+  flex-direction: column;
+  max-height: min(78vh, 760px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 26px;
+  color: var(--navy);
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(30px) saturate(190%);
+  -webkit-backdrop-filter: blur(30px) saturate(190%);
+  box-shadow:
+    0 30px 80px rgba(4, 10, 18, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92),
+    inset 0 -1px 0 rgba(13, 27, 42, 0.06);
+  overflow: hidden;
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .info-dialog-panel { background: rgba(255, 255, 255, 0.97); }
+}
+
+.info-dialog-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px 26px 14px;
+  border-bottom: 1px solid rgba(13, 27, 42, 0.1);
+}
+.info-dialog-head h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 3vw, 1.6rem);
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.info-dialog-close {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  color: var(--navy);
+  background: rgba(13, 27, 42, 0.07);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+.info-dialog-close:hover { background: rgba(13, 27, 42, 0.13); }
+
+.info-dialog-body {
+  padding: 18px 26px 24px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.info-dialog-updated {
+  margin: 0 0 12px;
+  color: rgba(13, 27, 42, 0.5);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.info-dialog-intro {
+  margin: 0 0 20px;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: rgba(13, 27, 42, 0.82);
+}
+
+.info-dialog-section { margin-bottom: 22px; }
+.info-dialog-section h3 {
+  margin: 0 0 8px;
+  color: var(--gold-ink);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.info-dialog-section p {
+  margin: 0 0 10px;
+  font-size: 0.94rem;
+  line-height: 1.62;
+  color: rgba(13, 27, 42, 0.86);
+}
+
+.info-dialog-empty {
+  margin: 0;
+  padding: 26px 0 30px;
+  text-align: center;
+  color: rgba(13, 27, 42, 0.5);
+  font-size: 0.94rem;
+}
+
+/* Gold markers, the same device the MICE cards use for their item lists. */
+.info-dialog-list {
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 7px;
+}
+.info-dialog-list li {
+  position: relative;
+  padding-left: 16px;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: rgba(13, 27, 42, 0.86);
+}
+.info-dialog-list li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 0.62em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--gold-ink);
+}
+
+.info-dialog-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 14px 26px 20px;
+  border-top: 1px solid rgba(13, 27, 42, 0.1);
+}
+.info-dialog-swap {
+  padding: 8px 16px;
+  border: 1px solid rgba(13, 27, 42, 0.14);
+  border-radius: 999px;
+  color: var(--navy);
+  background: rgba(255, 255, 255, 0.5);
+  font-size: 0.84rem;
+  cursor: pointer;
+}
+.info-dialog-swap:hover { border-color: var(--gold-ink); color: var(--gold-ink); }
+
+/* ----------------------------------------------------------- contact list */
+
+.info-contact-list { margin: 0; padding: 0; list-style: none; display: grid; gap: 16px; }
+.info-contact-list li {
+  /* Text left, channel mark held at the right edge of the pill. */
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 14px;
+  padding: 14px 16px;
+  border: 1px solid rgba(13, 27, 42, 0.1);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.45);
+}
+.info-contact-label {
+  color: var(--gold-ink);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.info-contact-value {
+  color: var(--navy);
+  font-size: 1.02rem;
+  font-weight: 600;
+  text-decoration: none;
+  word-break: break-word;
+}
+a.info-contact-value:hover { color: var(--gold-ink); }
+.info-contact-note { color: rgba(13, 27, 42, 0.58); font-size: 0.82rem; }
+
+.info-contact-text { display: grid; gap: 3px; min-width: 0; }
+
+.info-contact-icon {
+  display: inline-flex;
+  width: 26px;
+  height: 26px;
+  color: var(--gold-ink);
+}
+.info-contact-icon svg { width: 100%; height: 100%; }
+/* WhatsApp keeps its own green — it is the colour people scan for, and the
+   codebase already names it. */
+.info-contact-icon[data-channel="whatsapp"] { color: var(--wa-green); }
+
+@media (max-width: 640px) {
+  .info-dialog { width: calc(100vw - 20px); }
+  .info-dialog-head { padding: 18px 18px 12px; }
+  .info-dialog-body { padding: 16px 18px 20px; }
+  .info-dialog-foot { padding: 12px 18px 16px; }
+  .info-actions { gap: 10px 14px; }
+  .info-button { padding: 10px 18px; font-size: 0.88rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .info-button { transition: none; }
+  .info-button:hover { transform: none; }
+}
+
+/* =========================================================================
+   Card detail panel
+   -------------------------------------------------------------------------
+   Same frosted material as the contacts and legal panels, at the size the
+   content needs: a photograph, the facts, and however many lists the record
+   actually carries. On a phone it becomes a sheet — full width, near-full
+   height — because a centred lozenge with 16px of margin either side wastes
+   the only dimension a phone has.
+   ========================================================================= */
+
+.item-dialog {
+  width: min(880px, calc(100vw - 32px));
+  max-height: min(88vh, 900px);
+  padding: 0;
+  border: 0;
+  background: none;
+  overflow: visible;
+}
+
+.item-dialog::backdrop {
+  background: rgba(6, 14, 24, 0.6);
+  backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+}
+
+.item-dialog-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  max-height: min(88vh, 900px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 26px;
+  color: var(--navy);
+  background: rgba(255, 255, 255, 0.74);
+  backdrop-filter: blur(30px) saturate(190%);
+  -webkit-backdrop-filter: blur(30px) saturate(190%);
+  box-shadow:
+    0 30px 80px rgba(4, 10, 18, 0.44),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92);
+  overflow: hidden;
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .item-dialog-panel { background: rgba(255, 255, 255, 0.97); }
+}
+
+/* Over the photograph, so it needs its own ground rather than the ink tint the
+   other close buttons use. */
+.item-dialog-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 3;
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  color: var(--navy);
+  background: rgba(255, 255, 255, 0.86);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 14px rgba(4, 10, 18, 0.28);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+.item-dialog-close:hover { background: #fff; }
+
+.item-dialog-media {
+  flex: none;
+  height: clamp(180px, 30vh, 280px);
+  overflow: hidden;
+}
+.item-dialog-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.item-dialog-body {
+  padding: 22px 28px 26px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.item-dialog-kicker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 6px;
+  color: var(--gold-ink);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.item-dialog-icon { display: inline-flex; width: 18px; height: 18px; }
+.item-dialog-icon svg { width: 100%; height: 100%; }
+
+.item-dialog-head h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 3.4vw, 2.1rem);
+  font-weight: 500;
+  line-height: 1.14;
+}
+
+.item-dialog-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 18px 0 0;
+}
+.item-dialog-facts div {
+  padding: 9px 14px;
+  border: 1px solid rgba(13, 27, 42, 0.12);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.5);
+}
+.item-dialog-facts dt {
+  color: rgba(13, 27, 42, 0.52);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.item-dialog-facts dd {
+  margin: 3px 0 0;
+  font-size: 0.94rem;
+  font-weight: 600;
+}
+
+.item-dialog-lede {
+  margin: 18px 0 0;
+  font-size: 1rem;
+  line-height: 1.62;
+  color: rgba(13, 27, 42, 0.84);
+}
+
+.item-dialog-section { margin-top: 22px; }
+.item-dialog-section h3 {
+  margin: 0 0 10px;
+  color: var(--gold-ink);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.item-dialog-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.item-dialog-list li {
+  position: relative;
+  padding-left: 18px;
+  font-size: 0.94rem;
+  line-height: 1.5;
+  color: rgba(13, 27, 42, 0.86);
+}
+.item-dialog-list li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 0.6em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--gold-ink);
+}
+
+.item-dialog-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.item-dialog-tags li {
+  padding: 5px 12px;
+  border: 1px solid rgba(13, 27, 42, 0.14);
+  border-radius: 999px;
+  color: rgba(13, 27, 42, 0.66);
+  font-size: 0.76rem;
+  text-transform: capitalize;
+}
+
+.item-dialog-foot {
+  flex: none;
+  padding: 14px 28px 20px;
+  border-top: 1px solid rgba(13, 27, 42, 0.1);
+}
+
+.item-dialog-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 50px;
+  padding: 0 22px;
+  border-radius: 999px;
+  color: #fff;
+  background: var(--wa-green);
+  font-size: 0.98rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter 200ms ease;
+}
+.item-dialog-cta:hover { filter: brightness(1.06); }
+.item-dialog-cta-icon { display: inline-flex; width: 21px; height: 21px; }
+.item-dialog-cta-icon svg { width: 100%; height: 100%; }
+
+@media (max-width: 640px) {
+  /* A sheet rather than a lozenge: the phone has one dimension worth spending
+     and a centred card with margins on all four sides spends it on nothing. */
+  .item-dialog {
+    width: 100vw;
+    max-width: 100vw;
+    max-height: 94vh;
+    margin: auto auto 0;
+  }
+  .item-dialog-panel {
+    max-height: 94vh;
+    border-width: 1px 0 0;
+    border-radius: 24px 24px 0 0;
+  }
+  .item-dialog-media { height: clamp(150px, 24vh, 210px); }
+  .item-dialog-body { padding: 18px 18px 22px; }
+  .item-dialog-foot { padding: 12px 18px max(16px, env(safe-area-inset-bottom)); }
+  .item-dialog-facts { gap: 8px; }
+  .item-dialog-facts div { padding: 8px 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .item-dialog-cta { transition: none; }
+}
+
+/* The drawn X: sized as a share of each button so one icon serves buttons of
+   several sizes, and centred by geometry rather than by font metrics. */
+.item-dialog-close svg,
+.info-dialog-close svg,
+.nav-drawer-close svg,
+.package-dialog-close svg,
+.page-search-clear svg { width: 55%; height: 55%; display: block; }
+
+.item-dialog-close,
+.info-dialog-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+/* =========================================================================
+   Scroll rig
+   ========================================================================= */
+
+.cinema-scroll {
+  position: relative;
+  height: calc(100vh + 4900px);
+}
+
+.stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  min-height: 620px;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--navy);
+}
+
+.world,
+.depth-stack,
+.layer-sky,
+.shade,
+.scene-layer,
+.site-header,
+.package-rail,
+.rail-controls,
+.hero-title,
+.hero-copy,
+.scene-panel {
+  position: absolute;
+}
+
+.world {
+  inset: 0;
+  overflow: hidden;
+  background: var(--navy);
+}
+
+/* =========================================================================
+   Header + navigation
+   ========================================================================= */
+
+.site-header {
+  z-index: 40;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: grid;
+  /* Three tracks, so the menus sit in the true middle of the bar rather than in
+     the middle of whatever is left over: the lead group and an empty trailing
+     track are both 1fr, so they balance each other whatever the lead measures.
+     The floor is min-content — a fixed 240px stopped the row shrinking at all,
+     and 0 let the lead be handed a track narrower than itself, which the nowrap
+     wordmark answered by spilling out over the menus. min-content makes that
+     overlap impossible; the wordmark shrinking (below) is what keeps the logo
+     inside its 1fr share so the menus stay centred rather than nudged along. */
+  grid-template-columns: minmax(min-content, 1fr) auto minmax(min-content, 1fr);
+  align-items: center;
+  gap: clamp(12px, 2.2vw, 32px);
+  padding: 32px;
+  padding-top: max(32px, env(safe-area-inset-top));
+  color: rgba(255, 246, 232, 0.86);
+  pointer-events: auto;
+}
+
+/* The icon sits at the right end, in the third track. Its track and the logo's
+   are both 1fr, and neither one's content is wide enough to claim more than an
+   equal share, so the menus land dead centre. */
+.header-utility {
+  justify-self: end;
+  display: flex;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+/* The monogram sits immediately before the name, so the logo becomes a row
+   holding the mark and a stacked text block rather than two stacked lines. */
+.site-logo {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 10px;
+  color: rgba(255, 246, 232, 0.94);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.site-logo-mark {
+  flex: none;
+  width: clamp(30px, 2.6vw, 40px);
+  height: auto;
+  /* The mark is flat gold on transparent; a soft glow keeps it from
+     disappearing into a pale sky on the homepage hero. */
+  filter: drop-shadow(0 2px 8px rgba(4, 10, 18, 0.45));
+}
+
+.site-logo-text { display: grid; gap: 4px; min-width: 0; }
+
+.site-logo-name {
+  font-family: var(--font-display);
+  /* Responsive at every width, not just below 1180. A flat 24px here is what
+     let the wordmark run into "Destinations" between 1180 and ~1300: the menus
+     had already claimed the centre track and the name would not give any width
+     back. It still reaches full size on a wide screen. */
+  font-size: clamp(15px, 1.35vw, 24px);
+  font-weight: 500;
+  line-height: 1;
+}
+
+.site-logo-place {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  text-transform: uppercase;
+  color: rgba(255, 246, 232, 0.62);
+}
+
+.site-nav {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(14px, 1.6vw, 34px);
+}
+
+/* `display: contents` keeps the semantic <ul> without adding a flex level. */
+.site-nav-list {
+  display: contents;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nav-item { position: relative; }
+
+.nav-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 2px;
+  color: rgba(255, 246, 232, 0.86);
+  background: transparent;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.34);
+  cursor: pointer;
+  transition: color 180ms ease;
+}
+
+.nav-trigger:hover,
+.nav-item[data-open="true"] .nav-trigger { color: var(--gold-light); }
+
+.nav-trigger-caret {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-right: 1.6px solid currentColor;
+  border-bottom: 1.6px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform 220ms ease;
+}
+
+.nav-item[data-open="true"] .nav-trigger-caret {
+  transform: translateY(1px) rotate(-135deg);
+}
+
+/* --- dropdown panels --- */
+
+.nav-panel {
+  position: absolute;
+  top: calc(100% + 14px);
+  left: 50%;
+  z-index: 50;
+  min-width: 230px;
+  max-width: min(92vw, 640px);
+  max-height: min(66vh, 560px);
+  padding: 18px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border: 1px solid rgba(13, 27, 42, 0.1);
+  border-radius: 22px;
+  color: var(--navy);
+  background: rgba(255, 246, 232, 0.94);
+  box-shadow: 0 26px 70px rgba(4, 10, 18, 0.38);
+  backdrop-filter: blur(18px) saturate(1.2);
+  opacity: 0;
+  transform: translate3d(-50%, -10px, 0);
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 200ms ease, transform 200ms ease, visibility 0s linear 200ms;
+}
+
+.nav-item[data-open="true"] .nav-panel {
+  opacity: 1;
+  transform: translate3d(-50%, 0, 0);
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 220ms ease, transform 220ms ease, visibility 0s;
+}
+
+/* The panel sits 14px below the trigger. Without something filling that gap the
+   pointer leaves .nav-item on its way to the menu, which fires mouseleave and
+   closes the panel before anything can be clicked. This bridges the gap so the
+   trip from trigger to panel stays inside the item. */
+.nav-item[data-open="true"]::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 16px;
+}
+
+/* Keep the last menus from running off the right edge. */
+.nav-item:nth-last-child(-n + 2) .nav-panel {
+  left: auto;
+  right: 0;
+  transform: translate3d(0, -10px, 0);
+}
+.nav-item:nth-last-child(-n + 2)[data-open="true"] .nav-panel {
+  transform: translate3d(0, 0, 0);
+}
+
+/* The destinations menu needs room for its four regional columns. */
+.nav-panel-wide { min-width: min(640px, 92vw); }
+
+.nav-panel-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 6px 20px;
+  align-items: start;
+}
+
+.nav-panel-group-label {
+  margin: 6px 0 6px;
+  color: rgba(13, 27, 42, 0.5);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.nav-panel-list { margin: 0; padding: 0; list-style: none; }
+
+.nav-panel-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 10px;
+  border-radius: 11px;
+  color: var(--navy);
+  background: transparent;
+  font-size: 15px;
+  font-weight: 500;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 160ms ease, color 160ms ease;
+}
+
+.nav-panel-link:hover { background: rgba(232, 148, 26, 0.16); }
+
+.nav-panel-link .nav-panel-icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  color: var(--gold);
+}
+.nav-panel-link .nav-panel-icon svg { width: 100%; height: 100%; }
+
+/* The menu icon, right of the menus. It used to be a mobile-only burger that
+   was hidden at every width, leaving the drawer unreachable; now it is the
+   permanent way into About and Contact, which no longer have a header menu. */
+.nav-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border-radius: 999px;
+  background: rgba(255, 246, 232, 0.14);
+  cursor: pointer;
+}
+
+.nav-toggle-bar {
+  position: absolute;
+  width: 19px;
+  height: 1.8px;
+  border-radius: 2px;
+  background: var(--cream);
+  transition: transform 220ms ease;
+}
+.nav-toggle-bar:first-child { transform: translateY(-4px); }
+.nav-toggle-bar:last-child { transform: translateY(4px); }
+
+/* =========================================================================
+   Scene layers
+   ========================================================================= */
+
+/* The scene layers are wrapped in <picture> by the build so AVIF browsers get
+   the smaller encode. `display: contents` removes the wrapper's own box, which
+   matters here: .scene-layer is absolutely positioned against .world, and an
+   inline wrapper would otherwise leave a stray line box inside it. */
+picture:has(> .scene-layer) {
+  display: contents;
+}
+
+.scene-layer {
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+  will-change: transform, opacity, filter;
+  pointer-events: none;
+}
+
+.layer-sky {
+  z-index: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: none;
+  filter: blur(var(--blur-px)) brightness(var(--depth-brightness));
+}
+
+.depth-stack {
+  z-index: 1;
+  top: 0;
+  bottom: 0;
+  left: -3vw;
+  right: -3vw;
+  opacity: var(--depth-opacity);
+  transform: translate3d(var(--depth-x), var(--depth-y), 0) scale(var(--depth-scale));
+  transform-origin: 50% 100%;
+  will-change: transform, filter, opacity;
+}
+
+.layer-depth {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(var(--blur-px)) brightness(var(--depth-brightness));
+}
+
+.layer-city,
+.layer-glow {
+  top: auto;
+  bottom: 0;
+  left: 48%;
+  right: auto;
+  width: 112%;
+  height: auto;
+  object-fit: contain;
+}
+
+.layer-city {
+  z-index: 3;
+  opacity: 1;
+  filter: blur(var(--city-blur-px)) brightness(var(--city-brightness)) saturate(var(--city-saturation));
+  transform: translate3d(-50%, var(--city-y), 0) scale(0.86);
+}
+
+.layer-glow {
+  z-index: 1;
+  opacity: 0.72;
+  mix-blend-mode: screen;
+  transform: translate3d(-50%, calc(var(--glow-y) - 110px), 0) scale(var(--glow-scale));
+}
+
+/* --- the portal: the arch the camera travels through --- */
+
+.layer-portal {
+  z-index: 4;
+  left: 50%;
+  bottom: var(--portal-bottom);
+  /* Do not cap this by vh here — js/main.js grows --portal-width to 105vw to
+     fly the camera through the arch, and a cap would stop it short of the
+     screen edges. The resting width is capped at source instead. */
+  width: min(var(--portal-width), 2140px);
+  height: auto;
+  opacity: var(--portal-opacity, 1);
+  transform: translate3d(var(--portal-x), var(--portal-y), 0) scale(var(--portal-scale));
+  transform-origin: 50% 48%;
+}
+
+/* --- curtains: the transparent-edge frames that part to open the scene --- */
+
+.layer-curtain {
+  z-index: 6;
+  left: 50%;
+  bottom: -2vh;
+  width: min(118vw, 2240px);
+  height: auto;
+  pointer-events: none;
+}
+
+.curtain-left {
+  transform: translate3d(var(--split-left-x), var(--split-left-y), 0) scale(var(--split-left-scale));
+  transform-origin: 21% 52%;
+}
+
+.curtain-right {
+  transform: translate3d(var(--split-right-x), var(--split-right-y), 0) scale(var(--split-right-scale));
+  transform-origin: 79% 52%;
+}
+
+.layer-reveal {
+  z-index: 5;
+  filter: none !important;
+  backdrop-filter: none;
+  left: 50%;
+  top: 50%;
+  width: min(122vw, 2160px);
+  height: auto;
+  opacity: var(--reveal-opacity);
+  transform: translate3d(var(--reveal-x), var(--reveal-y), 0) scale(var(--reveal-scale));
+  transform-origin: 50% 48%;
+}
+
+.shade {
+  inset: 0;
+  z-index: var(--shade-z);
+  pointer-events: none;
+  opacity: var(--shade-opacity);
+  background: linear-gradient(180deg,
+    rgba(var(--blur-tint), var(--shade-top-alpha)) 0%,
+    rgba(var(--blur-tint), var(--shade-mid-alpha)) 48%,
+    rgba(var(--blur-tint), var(--shade-bottom-alpha)) 100%);
+}
+
+/* =========================================================================
+   Hero
+   ========================================================================= */
+
+.hero-title {
+  z-index: 3;
+  left: 50%;
+  /* Two lines where the reference had one, sized so the second line meets the
+     top of the arch the way "MOSTAR" did — integrated, not buried. */
+  top: clamp(92px, 14vh, 168px);
+  width: min(94vw, 1780px);
+  margin: 0;
+  display: grid;
+  gap: 0;
+  color: var(--cream);
+  font-family: var(--font-display);
+  /* The arch is 67.2vw wide and bottom-anchored, so its top edge sits at
+     roughly 0.95vh - 0.382vw. On a wide, short window it climbs while a purely
+     vw-sized title grows — at 16:10 the second line cleared it by design, but at
+     1740x1000 it was buried 99px deep. The inner terms are that headroom solved
+     for the font size, so the line keeps meeting the arch at the same depth
+     instead of sinking behind it.
+
+     Two of them because the arch stops growing once its own vh cap engages,
+     past roughly 1.9:1. Subtracting a capped value means the headroom is the
+     larger of the two — that is what keeps an ultrawide from collapsing the
+     title to the floor (47px -> 69px at 2560x1080).
+
+     The floor is what phones actually get: 8.6vw is only ~32px at 375px wide. */
+  font-size: clamp(
+    2.95rem,
+    min(8.6vw, max(49.4vh - 23.27vw + 14.6px, 5.06vh + 14.6px)),
+    10rem
+  );
+  font-weight: 500;
+  line-height: 0.82;
+  text-align: center;
+  text-transform: uppercase;
+  text-shadow: 0 18px 60px rgba(4, 10, 18, 0.34);
+  transform: translate3d(-50%, var(--title-y), 0) scale(var(--title-scale));
+  opacity: var(--title-opacity);
+  will-change: transform, opacity;
+}
+
+.hero-title-line { display: block; }
+
+.hero-copy {
+  z-index: 9;
+  left: 50%;
+  bottom: clamp(56px, 28vh, 400px);
+  width: min(560px, calc(100vw - 40px));
+  text-align: center;
+  transform: translate3d(-50%, var(--hero-copy-y), 0);
+  opacity: var(--hero-copy-opacity);
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.hero-copy .hero-pill { pointer-events: auto; }
+
+.hero-copy p {
+  margin: 0 auto;
+  max-width: 600px;
+  color: var(--cream);
+  font-size: 1.18rem;
+  font-weight: 500;
+  line-height: 1.25;
+  text-shadow: 0 2px 18px rgba(4, 10, 18, 0.55);
+}
+
+.hero-pills {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 26px;
+}
+
+.hero-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 25px;
+  color: var(--ink);
+  border-radius: 999px;
+  background: var(--cream);
+  font-size: 0.98rem;
+  font-weight: 600;
+  box-shadow: 0 12px 30px rgba(4, 10, 18, 0.26);
+  cursor: pointer;
+  transition: transform 200ms ease, background 200ms ease, color 200ms ease;
+}
+
+.hero-pill:hover {
+  background: var(--gold-light);
+  transform: translateY(-2px);
+}
+
+/* =========================================================================
+   Scene panels
+   ========================================================================= */
+
+.scene-panel {
+  z-index: 10;
+  left: 50%;
+  top: 45%;
+  width: min(820px, calc(100vw - 42px));
+  text-align: center;
+  pointer-events: none;
+  transform: translate3d(-50%, -50%, 0);
+  will-change: transform, opacity;
+}
+
+.scene-panel h2 {
+  margin: 0;
+  color: var(--cream);
+  font-family: var(--font-display);
+  /* Sized so each authored line fits the 820px panel without re-wrapping —
+     the <br> in the markup is the intended break, not the browser's. */
+  font-size: clamp(2rem, 4.6vw, 4.2rem);
+  font-weight: 500;
+  line-height: 0.98;
+  text-transform: uppercase;
+  text-shadow: 0 16px 38px var(--shadow);
+}
+
+.scene-panel p {
+  width: min(560px, 100%);
+  margin: 26px auto 0;
+  color: var(--cream);
+  font-size: 1.1rem;
+  font-weight: 500;
+  line-height: 1.25;
+  text-shadow: 0 2px 18px rgba(4, 10, 18, 0.55);
+}
+
+.panel-promise {
+  top: 58%;
+  opacity: var(--panel-promise-opacity);
+  transform: translate3d(-50%, var(--panel-promise-y), 0);
+}
+
+.panel-discovery {
+  top: 30%;
+  opacity: var(--panel-discovery-opacity);
+  transform: translate3d(-50%, var(--panel-discovery-y), 0);
+}
+
+/* Six service cards plus a CTA and contact block is the densest panel in the
+   deck, so it runs a tighter scale than the two editorial scenes. */
+.panel-services {
+  /* Centred on the space BELOW the header, not on the whole viewport: half the
+     header height (~106px) pushed down. Centred on the viewport, the headline
+     rode up under the bar every time the panel gained a row, and the fix kept
+     being a percentage re-tuned per breakpoint. */
+  top: calc(50% + 53px);
+  opacity: var(--panel-services-opacity);
+  transform: translate3d(-50%, var(--panel-services-y), 0);
+}
+
+.panel-services h2 { font-size: clamp(1.9rem, 4vw, 3.4rem); }
+.panel-services p { margin-top: 18px; }
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 34px;
+  /* 680px gave each column 204px, but "10,000+" is 219px once dt hits its
+     3.6rem cap — the figure spilled its cell. 760px leaves 230px per column,
+     which keeps the type scale instead of shrinking the headline number. */
+  width: min(760px, 100%);
+  margin: 52px auto 0;
+}
+
+.stats dt {
+  color: var(--gold-light);
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 3.6vw, 3.6rem);
+  font-weight: 500;
+  line-height: 0.9;
+  text-shadow: 0 14px 34px var(--shadow);
+}
+
+.stats dd {
+  margin: 14px 0 0;
+  color: var(--cream);
+  font-size: 0.94rem;
+  font-weight: 500;
+  line-height: 1.2;
+  text-shadow: 0 2px 18px rgba(4, 10, 18, 0.55);
+}
+
+.pill-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  margin-top: 30px;
+  gap: 12px;
+  padding: 0 30px;
+  border-radius: 999px;
+  color: var(--navy);
+  background: var(--gold);
+  font-weight: 700;
+  box-shadow: 0 16px 40px rgba(4, 10, 18, 0.34);
+  pointer-events: auto;
+  cursor: pointer;
+  transition: transform 200ms ease, background 200ms ease;
+}
+
+.pill-button:hover { background: var(--gold-light); transform: translateY(-2px); }
+.pill-button span:first-child { font-size: 1.1rem; line-height: 1; }
+
+/* --- services scene --- */
+
+.service-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  width: min(760px, 100%);
+  margin: 24px auto 0;
+  padding: 0;
+  list-style: none;
+}
+
+.service-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  height: 100%;
+  padding: 13px;
+  border: 1px solid rgba(255, 246, 232, 0.2);
+  border-radius: 18px;
+  background: rgba(13, 27, 42, 0.5);
+  backdrop-filter: blur(10px);
+  text-align: left;
+  pointer-events: auto;
+  transition: border-color 200ms ease, background 200ms ease;
+}
+
+.service-card[data-active="true"] {
+  border-color: var(--gold);
+  background: rgba(232, 148, 26, 0.18);
+}
+
+.service-card-icon {
+  display: inline-flex;
+  width: 24px;
+  height: 24px;
+  color: var(--gold-light);
+}
+.service-card-icon svg { width: 100%; height: 100%; }
+
+.service-card-name {
+  color: var(--cream);
+  font-size: 0.98rem;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+/* Scoped past `.scene-panel p`, which outranks a lone class and was adding
+   18px above every blurb — 36px of panel height across the two card rows,
+   against a panel that has to fit between the header and the fold. */
+.scene-panel .service-card-blurb {
+  margin: 0;
+  color: rgba(255, 246, 232, 0.78);
+  font-size: 0.78rem;
+  font-weight: 500;
+  line-height: 1.28;
+  text-shadow: none;
+}
+
+.services-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Sits under "Plan My Trip". Secondary by design — the gold pill stays the one
+   call to action, this is the way back to the packages for anyone not ready. */
+/* Three classes to outrank `.panel-services .pill-button`, which adds a 20px
+   top margin and pushed this 32px clear of "Plan My Trip". They should read as
+   one pair, so only the 12px flex gap separates them. */
+.services-actions .pill-button.pill-button-quiet {
+  margin-top: 0;
+}
+
+.pill-button-quiet {
+  color: var(--cream);
+  background: rgba(255, 246, 232, 0.14);
+  border: 1px solid rgba(255, 246, 232, 0.42);
+  box-shadow: 0 12px 30px rgba(4, 10, 18, 0.26);
+  backdrop-filter: blur(10px);
+}
+
+.pill-button-quiet:hover {
+  background: rgba(255, 246, 232, 0.24);
+}
+
+.panel-services .pill-button { margin-top: 20px; }
+
+/* =========================================================================
+   Scroll cue
+   -------------------------------------------------------------------------
+   Sits under the hero pills on the opening scene. The dot travelling down the
+   line is what makes it read as "scroll" at a glance; the whole thing fades out
+   over the first couple of hundred pixels, driven from js/main.js, so it never
+   competes with the scenes that follow.
+   ========================================================================= */
+
+.scroll-cue {
+  position: absolute;
+  z-index: 11;
+  left: 50%;
+  bottom: clamp(16px, 3.2vh, 38px);
+  display: grid;
+  justify-items: center;
+  gap: 9px;
+  color: rgba(255, 246, 232, 0.86);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  line-height: 1;
+  text-transform: uppercase;
+  text-shadow: 0 2px 14px rgba(4, 10, 18, 0.55);
+  transform: translate3d(-50%, 0, 0);
+  opacity: var(--scroll-cue-opacity, 1);
+  pointer-events: none;
+  will-change: opacity;
+  /* The cue lands over the village and river, which is busy and mid-toned. The
+     shadow is what keeps the hairline and dot legible there without having to
+     make either of them heavy. */
+  filter: drop-shadow(0 2px 9px rgba(4, 10, 18, 0.7));
+}
+
+.scroll-cue-track {
+  position: relative;
+  width: 2px;
+  height: 44px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 246, 232, 0.72),
+    rgba(255, 246, 232, 0.12)
+  );
+}
+
+.scroll-cue-dot {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 5px;
+  height: 11px;
+  margin-left: -2.5px;
+  border-radius: 999px;
+  background: var(--cream);
+  box-shadow: 0 0 12px rgba(255, 246, 232, 0.85);
+  animation: scroll-cue-travel 1.9s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes scroll-cue-travel {
+  0% { transform: translateY(-11px); opacity: 0; }
+  25% { opacity: 1; }
+  75% { opacity: 1; }
+  100% { transform: translateY(44px); opacity: 0; }
+}
+
+/* =========================================================================
+   Package rail
+   ========================================================================= */
+
+.package-rail {
+  z-index: 2;
+  left: 0;
+  right: 0;
+  top: var(--rail-top);
+  padding: 0;
+  opacity: var(--rail-opacity, 1);
+  visibility: var(--rail-visibility);
+  transform: translate3d(var(--rail-enter-x), var(--rail-y), 0) scale(var(--rail-scale));
+  transform-origin: 0 0;
+  pointer-events: auto;
+  will-change: transform;
+}
+
+.package-track {
+  display: flex;
+  gap: clamp(16px, 1.4vw, 24px);
+  align-items: stretch;
+  /* The depth stack's zoom already pushes the track ~269px left of the screen
+     edge. The old -18vw on top of that parked the active card at x=-529 and
+     clipped the one after it, so the row opened on the third package and the
+     first two could not be reached at rest. +21vw lands the active card at a
+     ~30px margin with three cards fully visible and the fourth peeking. */
+  transform: translate3d(calc(var(--rail-shift) + var(--rail-drag) + 21vw), 0, 0);
+  transition: transform 1100ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+  outline: none;
+  cursor: grab;
+  /* Claim horizontal gestures for the rail, leave vertical ones to the page. */
+  touch-action: pan-y;
+}
+
+/* The row is one continuous strip of three identical sets, so the set that
+   precedes the active one sits just a card or two to the left of the first
+   package. Sliding the whole strip in from the right therefore walks the tail
+   of the list across the screen before package one ever arrives. Hiding the
+   preceding set until the rail has settled means the entrance leads with the
+   first card, as intended. It comes back for looping backwards. */
+.package-rail[data-entering="true"] .package-card[data-set="0"] { visibility: hidden; }
+
+.package-track.is-jumping,
+.package-track.is-dragging { transition: none; }
+.package-track.is-dragging { cursor: grabbing; }
+
+.package-track:focus-visible { outline: none; }
+.package-track:focus-visible .package-card[data-active="true"] {
+  outline: 3px solid var(--gold-light);
+  outline-offset: 4px;
+}
+
+.package-card {
+  position: relative;
+  flex: 0 0 clamp(280px, 27vw, 520px);
+  min-height: clamp(180px, 24vh, 320px);
+  height: clamp(200px, 26vh, 300px);
+  padding: 24px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 246, 232, 0.42);
+  border-radius: 32px;
+  color: var(--navy);
+  background: var(--cream);
+  box-shadow: 0 18px 52px rgba(4, 10, 18, 0.24);
+  text-align: left;
+  cursor: pointer;
+  pointer-events: auto;
+  user-select: none;
+  transition: transform 260ms ease, box-shadow 260ms ease;
+}
+
+.package-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 26px 64px rgba(4, 10, 18, 0.34);
+}
+
+.package-kicker,
+.package-card h3,
+.package-card .package-desc,
+.package-meta {
+  position: relative;
+  z-index: 1;
+  text-shadow: none;
+}
+
+.package-kicker {
+  display: block;
+  margin: 0 76px 12px 0;
+  color: rgba(13, 27, 42, 0.62);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+.package-icon {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  width: 56px;
+  height: 56px;
+  color: var(--gold);
+  pointer-events: none;
+}
+.package-icon svg { width: 100%; height: 100%; }
+
+.package-card h3 {
+  /* The icon is 56px square, absolutely placed 22px from the top-right, so it
+     hangs over the first line or two of the title. The kicker above already
+     reserves 76px for it; the title needs the same gutter or long names run
+     straight under the artwork. */
+  margin: 0 76px 0 0;
+  color: var(--navy);
+  font-size: clamp(19px, 1.5vw, 25px);
+  font-weight: 800;
+  line-height: 1.06;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.package-card .package-desc {
+  margin: 10px 0 0;
+  color: rgba(13, 27, 42, 0.78);
+  font-size: 14.5px;
+  font-weight: 400;
+  line-height: 1.28;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.package-meta {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 14px;
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.package-meta .package-duration { color: rgba(13, 27, 42, 0.62); }
+.package-meta .package-price { color: var(--navy); font-weight: 800; }
+.package-meta .package-rating { color: var(--gold); margin-left: auto; }
+
+.rail-controls {
+  z-index: 5;
+  left: 48px;
+  right: auto;
+  top: calc(var(--rail-screen-top) + clamp(200px, 26vh, 300px) + 18px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  opacity: var(--rail-controls-opacity);
+  transform: translate3d(0, var(--rail-y), 0);
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.rail-controls.is-ready { pointer-events: auto; }
+
+.rail-buttons { display: flex; align-items: center; gap: 14px; }
+
+/* Sits beside the arrows: the row shows a curated six, this reaches the rest. */
+.rail-browse-all {
+  display: inline-flex;
+  align-items: center;
+  height: 54px;
+  padding: 0 24px;
+  border-radius: 999px;
+  color: var(--navy);
+  background: rgba(255, 246, 232, 0.94);
+  box-shadow: 0 18px 36px rgba(4, 10, 18, 0.3);
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 200ms ease, transform 200ms ease;
+}
+
+.rail-browse-all:hover {
+  background: var(--gold-light);
+  transform: translateY(-2px);
+}
+
+/* Once the whole catalogue is on the row there is nothing left to browse to. */
+.rail-browse-all[hidden] { display: none; }
+
+.rail-filter {
+  margin: 0;
+  min-height: 20px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  color: var(--cream);
+  background: rgba(13, 27, 42, 0.58);
+  backdrop-filter: blur(8px);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.rail-filter:empty { display: none; }
+
+.rail-nav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 999px;
+  color: var(--navy);
+  background: rgba(255, 246, 232, 0.94);
+  box-shadow: 0 18px 36px rgba(4, 10, 18, 0.3);
+  cursor: pointer;
+  transition: background 200ms ease, transform 200ms ease;
+}
+.rail-nav:hover { background: var(--gold-light); transform: translateY(-2px); }
+
+/* =========================================================================
+   Mobile drawer
+   ========================================================================= */
+
+.nav-drawer { position: fixed; inset: 0; z-index: 120; }
+.nav-drawer[hidden] { display: none; }
+
+.nav-drawer-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(4, 10, 18, 0.62);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  transition: opacity 260ms ease;
+}
+
+.nav-drawer-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  width: min(92vw, 420px);
+  padding: max(20px, env(safe-area-inset-top)) 20px max(20px, env(safe-area-inset-bottom));
+  color: var(--navy);
+  background: var(--cream);
+  box-shadow: -20px 0 60px rgba(4, 10, 18, 0.45);
+  transform: translate3d(100%, 0, 0);
+  transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav-drawer[data-open="true"] .nav-drawer-backdrop { opacity: 1; }
+.nav-drawer[data-open="true"] .nav-drawer-panel { transform: translate3d(0, 0, 0); }
+
+.nav-drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(13, 27, 42, 0.14);
+}
+
+.nav-drawer-title {
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 500;
+}
+
+.nav-drawer-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  color: var(--navy);
+  background: rgba(13, 27, 42, 0.08);
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.nav-drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 8px 0;
+}
+
+.drawer-group + .drawer-group { border-top: 1px solid rgba(13, 27, 42, 0.1); }
+
+.drawer-group-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 15px 4px;
+  background: transparent;
+  color: var(--navy);
+  font-size: 17px;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+
+.drawer-group-trigger .nav-trigger-caret { transform: rotate(45deg); }
+.drawer-group[data-open="true"] .drawer-group-trigger .nav-trigger-caret {
+  transform: translateY(3px) rotate(-135deg);
+}
+
+.drawer-group-panel { display: none; padding: 0 0 12px; }
+.drawer-group[data-open="true"] .drawer-group-panel { display: block; }
+
+.nav-drawer-foot {
+  display: grid;
+  gap: 6px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(13, 27, 42, 0.14);
+  font-size: 14px;
+}
+.nav-drawer-foot a { color: var(--navy); font-weight: 600; }
+
+/* =========================================================================
+   Package detail dialog
+   ========================================================================= */
+
+.package-dialog {
+  width: min(940px, calc(100vw - 32px));
+  max-width: none;
+  max-height: min(88vh, 900px);
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 28px;
+  color: var(--navy);
+  background: var(--cream);
+  box-shadow: 0 40px 120px rgba(4, 10, 18, 0.6);
+}
+
+.package-dialog::backdrop {
+  background: rgba(4, 10, 18, 0.72);
+  backdrop-filter: blur(6px);
+}
+
+.package-dialog-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+  max-height: min(88vh, 900px);
+}
+
+.package-dialog-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  color: var(--navy);
+  background: rgba(255, 246, 232, 0.92);
+  box-shadow: 0 8px 22px rgba(4, 10, 18, 0.3);
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.package-dialog-media { position: relative; min-height: 220px; background: var(--navy); }
+/* Absolute fill, so the photo covers the column whatever height the body
+   content gives the grid row. */
+.package-dialog-media img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.package-dialog-body {
+  padding: 30px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.package-dialog-kicker {
+  margin: 0 0 10px;
+  color: var(--gold);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.package-dialog-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 2.6vw, 2.5rem);
+  font-weight: 500;
+  line-height: 1.04;
+}
+
+.package-dialog-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.package-dialog-meta li {
+  padding: 6px 13px;
+  border-radius: 999px;
+  background: rgba(13, 27, 42, 0.07);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.package-dialog-desc {
+  margin: 18px 0 0;
+  color: rgba(13, 27, 42, 0.84);
+  font-size: 15.5px;
+  line-height: 1.5;
+}
+
+.package-dialog-section { margin-top: 24px; }
+
+.package-dialog-section h3 {
+  margin: 0 0 10px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: rgba(13, 27, 42, 0.56);
+}
+
+.package-dialog-section ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 7px 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.package-dialog-section li {
+  position: relative;
+  padding-left: 20px;
+  font-size: 14.5px;
+  line-height: 1.35;
+}
+
+.package-dialog-section li::before {
+  content: "";
+  position: absolute;
+  top: 7px;
+  left: 4px;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--gold);
+}
+
+.package-dialog-buy {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(13, 27, 42, 0.14);
+}
+
+.package-dialog-price {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 800;
+}
+
+.package-dialog-disclaimer {
+  margin: 8px 0 0;
+  color: rgba(13, 27, 42, 0.6);
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+
+.buy-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 56px;
+  margin-top: 16px;
+  padding: 0 26px;
+  border-radius: 999px;
+  color: var(--white);
+  background: var(--wa-green);
+  font-size: 1.02rem;
+  font-weight: 800;
+  text-decoration: none;
+  box-shadow: 0 16px 34px rgba(37, 211, 102, 0.34);
+  transition: filter 200ms ease, transform 200ms ease;
+}
+.buy-button:hover { filter: brightness(1.06); transform: translateY(-2px); }
+
+.package-dialog-note {
+  margin: 10px 0 0;
+  color: rgba(13, 27, 42, 0.56);
+  font-size: 12.5px;
+  text-align: center;
+}
+
+/* =========================================================================
+   Responsive
+   ========================================================================= */
+
+@media (max-width: 1180px) {
+  /* The menus stay on screen at every width — collapsing them behind a burger
+     buries the six things the site is actually for. Down to ~760px the header
+     stays a single row and the *logo* gives up space instead of the menus: the
+     wordmark scales down, the mark with it, and the place line goes. Below that
+     there is genuinely not enough width, so it becomes two rows with the menu
+     row scrolling sideways. The drawer markup stays in the DOM as a fallback,
+     just not reached here. */
+  .site-logo-mark { width: clamp(24px, 2.2vw, 30px); }
+  .site-logo-place { font-size: 9px; letter-spacing: 0.1em; }
+
+  .site-nav { gap: clamp(6px, 1vw, 16px); }
+  .nav-trigger {
+    padding: 8px 2px;
+    font-size: clamp(13px, 1.35vw, 16px);
+    white-space: nowrap;
+  }
+  .nav-trigger-caret { width: 6px; height: 6px; }
+
+@media (max-width: 900px) {
+  /* The place line is the first thing that can go without losing meaning. */
+  .site-logo-place { display: none; }
+}
+
+@media (max-width: 760px) {
+  /* The menus leave the bar here and live behind the icon instead. Six of them
+     cannot be both legible and complete in a 375px rail — fitting them meant
+     10px labels, and not fitting them meant three sat off the right edge. The
+     drawer carries every category, so the bar is one row: wordmark, icon. */
+  .site-nav { display: none; }
+
+  .site-header {
+    grid-template-columns: 1fr auto;
+    grid-template-areas: "logo utility";
+    row-gap: 0;
+  }
+  .site-logo { grid-area: logo; }
+  .header-utility { grid-area: utility; }
+  .site-logo-name { font-size: 17px; }
+  .site-logo-mark { width: 28px; }
+  .site-logo-place { display: block; }
+  }
+  /* Small enough that each authored line still fits on one row — a re-wrapped
+     headline doubles the panel height and pushes it up behind the header. */
+  .scene-panel h2 { font-size: clamp(1.7rem, 4vw, 3rem); }
+  .panel-discovery { top: 38%; }
+  .layer-portal { width: min(calc(var(--portal-width) * 2.0536), 2140px); }
+  /* That doubled arch runs off the top of the screen, and its opening is
+     narrowest up there — at 1024x768 a 14vh title was sliced clean through by
+     the stonework. Dropping it into the wide part of the opening and easing the
+     size back keeps the whole line readable. */
+  .hero-title {
+    top: 27vh;
+    font-size: clamp(2.95rem, 7.2vw, 5.4rem);
+  }
+  .layer-reveal { width: 132vw; }
+  .stats { gap: 22px; margin-top: 40px; }
+  .service-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .package-dialog-inner { grid-template-columns: minmax(0, 1fr); }
+  .package-dialog-media { max-height: 240px; }
+}
+
+@media (max-width: 640px) {
+  /* svh keeps the stage inside the small viewport when the URL bar is out. */
+  .cinema-scroll { height: calc(100svh + 4900px); }
+  .stage { height: 100svh; min-height: 0; }
+
+  /* Full-screen blur across stacked plates is the main frame-rate cost on a
+     phone; cap it lower, where the difference is barely visible. */
+  .layer-sky, .layer-depth {
+    filter: blur(calc(var(--blur-px) * 0.62)) brightness(var(--depth-brightness));
+  }
+  .layer-city {
+    filter: blur(calc(var(--city-blur-px) * 0.62)) brightness(var(--city-brightness)) saturate(var(--city-saturation));
+  }
+
+  /* These plates are 16:9 sized by width. On a tall, narrow phone that leaves
+     them ~250px tall against an 812px screen, so the city collapses to a strip
+     off the bottom edge. Size by height instead and let the sides crop. */
+  .layer-city, .layer-glow { width: auto; height: 116%; }
+
+  .site-header {
+    padding: 12px 14px;
+    padding-top: max(12px, env(safe-area-inset-top));
+    row-gap: 6px;
+  }
+  .site-logo-name { font-size: 16px; }
+  .site-logo-place { font-size: 9px; letter-spacing: 0.1em; }
+  .site-logo-mark { width: 24px; }
+  .nav-toggle { width: 36px; height: 36px; }
+
+  /* On desktop the second line meets the top of the arch. On a phone the arch
+     sits far lower, so 14vh left the title pinned under the header with ~300px
+     of empty sky beneath it. This drops it into that gap. */
+  .hero-title { top: 31vh; }
+
+  /* The pills stack to three rows here and finish ~38px from the bottom, so the
+     cue had nowhere to sit without landing on them. Touch makes the scroll
+     affordance obvious anyway. */
+  .scroll-cue { display: none; }
+  .hero-copy { bottom: max(38px, env(safe-area-inset-bottom)); }
+  .hero-copy p, .scene-panel p {
+    font-size: 1rem;
+    text-shadow: 0 1px 3px rgba(4, 10, 18, 0.6), 0 2px 16px rgba(4, 10, 18, 0.5);
+  }
+  .hero-pills { gap: 8px; }
+  .hero-pill { min-height: 40px; padding: 0 16px; font-size: 0.88rem; }
+
+  .scene-panel { top: 42%; }
+  .panel-promise { top: 60%; }
+  .panel-discovery { top: 36%; }
+  .panel-discovery h2 { font-size: clamp(1.3rem, 6.2vw, 1.75rem); }
+  /* Six cards plus a CTA is tall on a phone — shrink the headline and drop the
+     panel clear of the header rather than letting them collide. */
+  .panel-services { top: 54%; }
+  .panel-services h2 { font-size: clamp(1.35rem, 5.4vw, 1.9rem); }
+  .panel-services p { margin-top: 14px; font-size: 0.92rem; }
+  .panel-services .service-list { margin-top: 18px; }
+  .panel-services .pill-button { margin-top: 16px; min-height: 46px; }
+  .scene-panel p { margin-top: 18px; }
+  .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 30px; }
+  .stats dd { margin-top: 8px; font-size: 0.76rem; }
+  .service-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 22px; }
+  .service-card { padding: 12px; gap: 5px; }
+  .service-card-blurb { display: none; }
+
+  /* The depth stack's zoom already pushes the track ~71px left of the screen
+     edge; the desktop -18vw on top of that buried the active card off-screen.
+     +24vw lands it at a 20px margin with the next card peeking. */
+  .package-track {
+    gap: 12px;
+    transform: translate3d(calc(var(--rail-shift) + var(--rail-drag) + 24vw), 0, 0);
+  }
+  .package-card {
+    flex-basis: min(86vw, 340px);
+    height: clamp(200px, 25vh, 260px);
+    padding: 20px;
+    border-radius: 28px;
+  }
+  .package-icon { top: 18px; right: 18px; width: 46px; height: 46px; }
+  .package-kicker { margin-right: 60px; }
+  .package-meta { left: 20px; right: 20px; bottom: 16px; }
+  .rail-controls {
+    left: 20px;
+    top: calc(var(--rail-screen-top) + clamp(200px, 25vh, 260px) + 16px);
+  }
+
+  .package-dialog {
+    width: 100vw;
+    max-width: 100vw;
+    max-height: 100dvh;
+    height: 100dvh;
+    margin: 0;
+    border-radius: 0;
+  }
+  .package-dialog-inner { max-height: 100dvh; }
+  .package-dialog-body { padding: 22px 20px max(28px, env(safe-area-inset-bottom)); }
+  .package-dialog-media { max-height: 180px; min-height: 150px; }
+}
+
+/* Short windows. The 1180px breakpoint drops the service list to two columns,
+   which is three rows tall — at 1024x768 that ran the services scene 77px past
+   the fold and pushed "View All Packages" off screen entirely. Three columns is
+   two rows. Declared last so it wins over both width breakpoints. */
+@media (max-height: 830px) and (min-width: 700px) {
+  .service-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  /* Three columns alone left it 31px over at 1024x768; the rest is trimmed
+     from the headline and the button block rather than the service copy. */
+  .panel-services h2 { font-size: clamp(1.5rem, 3.1vw, 2.1rem); }
+  .panel-services .service-list { margin-top: 14px; }
+  .panel-services .pill-button { min-height: 46px; margin-top: 12px; }
+  .services-actions { gap: 8px; }
+  .services-actions .pill-button.pill-button-quiet { margin-top: 0; }
+  .panel-services .pill-button { margin-top: 8px; }
+  .panel-services .service-list { margin-top: 10px; }
+  .panel-services > p { margin-top: 12px; }
+  .service-card { padding: 11px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  /* Keep everything usable — only the large motion is removed. Panels and
+     cards still appear and disappear, they just fade instead of travelling. */
+  .scene-layer, .depth-stack, .hero-title, .hero-copy,
+  .scene-panel, .package-track, .package-rail {
+    transition: none;
+  }
+  .package-track { transition: none; }
+  .nav-panel, .nav-drawer-panel, .nav-drawer-backdrop {
+    transition: opacity 120ms ease;
+  }
+  .package-card:hover, .pill-button:hover, .hero-pill:hover,
+  .rail-nav:hover, .buy-button:hover { transform: none; }
+
+  /* The cue still reads without the travelling dot — it just sits still. */
+  .scroll-cue-dot { animation: none; top: 6px; }
+}
+
+/* =========================================================================
+   Category strip — phones only
+   -------------------------------------------------------------------------
+   The header on a phone is one row and the categories live behind the menu
+   icon. The band under it is empty sky, so the categories sit there instead:
+   one tap rather than two, without crowding the bar itself. Hidden from 761px
+   up, where the header already shows all six.
+   ========================================================================= */
+
+.hero-categories { display: none; }
+
+@media (max-width: 760px) {
+  .hero-categories {
+    position: absolute;
+    z-index: 39;
+    top: var(--hero-cat-top, 92px);
+    left: 0;
+    right: 0;
+    display: flex;
+    gap: 8px;
+    padding: 0 0 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+    scroll-padding-left: 14px;
+    pointer-events: auto;
+  }
+  .hero-categories::-webkit-scrollbar { display: none; }
+
+  .hero-category {
+    flex: none;
+    scroll-snap-align: start;
+    padding: 6px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.66);
+    border-radius: 999px;
+    color: var(--navy);
+    background: rgba(255, 255, 255, 0.86);
+    backdrop-filter: blur(14px) saturate(180%);
+    -webkit-backdrop-filter: blur(14px) saturate(180%);
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .hero-category:active { background: #fff; }
+
+  /* Insets that survive the scroll container, so the first chip lines up with
+     the wordmark and the last one clears the edge. */
+  .hero-category:first-child { margin-left: 14px; }
+  .hero-category:last-child { margin-right: 14px; }
+}

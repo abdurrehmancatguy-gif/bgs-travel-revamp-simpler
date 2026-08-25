@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Visa Services — BGS Travel &amp; Tourism</title>
+  <meta name="description" content="Applications prepared, submitted and tracked, so the paperwork is never the reason a trip does not happen." />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png?v=139" />
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png?v=139" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=139" />
+  <!-- The typeface, which blocks nothing but is wanted early: font-display is
+       swap, so a late arrival means the headline visibly re-renders in a
+       different face. crossorigin because fonts are fetched in CORS mode, and
+       a preconnect without it opens the wrong kind of connection and is simply
+       not reused.
+
+       The two Wikimedia preconnects that used to sit here were removed: the
+       homepage contacts neither, so they were two speculative handshakes that
+       never carried a byte. -->
+  <link rel="preconnect" href="https://dcym8fthxf5uu.cloudfront.net" crossorigin />
+  <link rel="stylesheet" href="styles.css?v=139" />
+  <link rel="stylesheet" href="pages.css?v=139" />
+  <script type="module" src="js/analytics.js?v=139"></script>
+  <script type="module" src="js/category-page.js?v=139"></script>
+  <!-- BGS One rewards badge, served by the hub at bgscorner.com. Bump the
+       ?v= token whenever the widget itself changes: the hub serves it with a
+       one-year immutable cache, so without a new token browsers keep the old
+       module. It renders nothing at all unless a [data-bgs-loyalty] element
+       is present on the page. -->
+  <script type="module" src="https://www.bgscorner.com/loyalty-widget.js?v=1"></script>
+</head>
+<body class="page" data-collection="visa">
+  <a class="skip-link" href="#card-grid">Skip to content</a>
+
+  <header class="site-header" aria-label="Primary navigation">
+    <a class="site-logo" href="index.html">
+      <img class="site-logo-mark" src="assets/monogram-96.webp?v=139" alt="" width="40" height="40" />
+      <span class="site-logo-text">
+        <span class="site-logo-name">BGS Travel &amp; Tourism</span>
+        <span class="site-logo-place">Dubai, UAE</span>
+      </span>
+    </a>
+    <nav class="site-nav" id="site-nav" aria-label="Main menu"></nav>
+
+    <div class="header-utility">
+      <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false"
+                aria-controls="nav-drawer" aria-label="Open menu">
+          <span class="nav-toggle-bar" aria-hidden="true"></span>
+          <span class="nav-toggle-bar" aria-hidden="true"></span>
+        </button>
+    </div>
+  </header>
+
+  <!-- Filled by js/category-page.js from the same menus the header and drawer
+       use, so it cannot offer a category that no longer exists. Shown on
+       phones only; on a wide screen the header row already lists these. -->
+  <nav class="page-categories" id="page-categories" aria-label="Browse categories"></nav>
+
+  <main>
+    <section class="page-hero">
+      <img class="page-hero-media" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Passport_of_Belarus%2C_2021%2C_consular_registration.webp/3840px-Passport_of_Belarus%2C_2021%2C_consular_registration.webp.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail" alt="" />
+      <p class="page-eyebrow">Paperwork, handled</p>
+      <h1 class="page-title" id="page-title">Visa Services</h1>
+      <p class="page-intro" id="page-intro">Applications prepared, submitted and tracked, so the paperwork is never the reason a trip does not happen.</p>
+      <div class="page-search">
+        <label class="visually-hidden" for="page-search-input">Search Visa Services</label>
+        <input id="page-search-input" type="search" autocomplete="off"
+               placeholder="Search Dubai, Saudi…" aria-label="Search Visa Services" />
+        <button class="page-search-clear" id="page-search-clear" type="button"
+                aria-label="Clear search" hidden><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg></button>
+      </div>
+      <div class="page-chips" id="page-chips"></div>
+      <p class="page-count" id="page-count" role="status" aria-live="polite"></p>
+    </section>
+
+    <div class="page-body">
+      <!-- The cards are h3, and the page title is h1, so without this the
+           document jumps a level — which a screen reader reads as a missing
+           section rather than a tidy one. Hidden because the page title above
+           already says it on screen; it exists to name the list, not repeat
+           the heading. -->
+      <h2 class="visually-hidden">Visa Services</h2>
+      <ul class="card-grid" id="card-grid"></ul>
+      <div class="page-empty" id="page-empty" hidden>
+        <h3>Nothing matches &ldquo;<span data-empty-query></span>&rdquo;</h3>
+        <p>Try a different search, or ask us to build something around you.</p>
+        <button class="pill-button" type="button"
+                onclick="document.querySelector(&quot;#page-search-clear&quot;).click()">
+          <span>Clear search</span>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <footer class="page-footer">
+    <div class="page-footer-links">
+      <a href="index.html">Home</a>
+      <a href="destinations.html">Destinations</a>
+      <a href="packages.html">Packages</a>
+      <a href="activities.html">Activities</a>
+      <a href="services.html">Services</a>
+      <a href="visa.html">Visa</a>
+      <a href="mice.html">MICE</a>
+    </div>
+    <!-- Contact details and legal links render from data/legal.js -->
+    <div id="footer-contact"></div>
+    <!-- BGS One rewards badge — renders from the live programme, or not at all. -->
+    <div data-bgs-loyalty data-locale="en" data-mode="live"></div>
+    <p>BGS Travel &amp; Tourism — Dubai, UAE</p>
+  </footer>
+
+  <div class="nav-drawer" id="nav-drawer" hidden>
+    <div class="nav-drawer-backdrop" data-drawer-close></div>
+    <div class="nav-drawer-panel" role="dialog" aria-modal="true" aria-label="Menu">
+      <div class="nav-drawer-head">
+        <span class="nav-drawer-title">BGS Travel &amp; Tourism</span>
+        <button class="nav-drawer-close" type="button" data-drawer-close aria-label="Close menu"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg></button>
+      </div>
+      <div class="nav-drawer-body" id="nav-drawer-body"></div>
+    </div>
+  </div>
+</body>
+</html>

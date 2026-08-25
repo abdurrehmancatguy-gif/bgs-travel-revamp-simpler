@@ -1,0 +1,13 @@
+.DS_Store
+node_modules/
+dist/
+# build/ holds the pre-render scripts Netlify runs — tracked on purpose.
+# Only its output is ignored, and that lives in dist/.
+.next/
+.cache/
+*.log
+.env
+.env.*
+!.env.example
+.vercel
+.netlify

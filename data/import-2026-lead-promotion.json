@@ -1,0 +1,1458 @@
+{
+  "activities": [
+    {
+      "id": 1,
+      "slug": "evening-desert-safari",
+      "kind": "activity",
+      "title": "Evening Desert Safari with BBQ Dinner",
+      "destination": "Dubai, UAE",
+      "destinationKey": "uae-dubai",
+      "region": "Dubai",
+      "category": "Adventure / Desert",
+      "tags": [
+        "adventure",
+        "desert"
+      ],
+      "duration": "Full Day",
+      "rating": 4.9,
+      "reviewCount": 142,
+      "price": 180,
+      "currency": "AED",
+      "priceUnit": "per person",
+      "shortDescription": "Thrilling dune bashing, camel rides, belly dancing and a lavish BBQ dinner under the stars in the Arabian desert.",
+      "fullDescription": "The desert changes completely in the late afternoon, and this is the hour we take you into it. You'll ride the dunes in a four-wheel drive, meet the camels, try sandboarding on the slip face, then settle into a traditional camp as the light drops. Dinner is a proper BBQ spread under an open sky, with live entertainment once the stars are out.",
+      "highlights": [
+        "Dune bashing",
+        "Camel ride",
+        "Sandboarding",
+        "Henna",
+        "BBQ dinner",
+        "Live entertainment"
+      ],
+      "included": [
+        "Hotel pickup and drop-off",
+        "Desert activities",
+        "BBQ dinner",
+        "Soft drinks",
+        "Live entertainment"
+      ],
+      "image": {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Ar-Rub%27_Al-Khali_%28Oman%29_kz04.jpg/960px-Ar-Rub%27_Al-Khali_%28Oman%29_kz04.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "alt": "Four-wheel drives crossing the dunes on a Dubai desert safari"
+      },
+      "icon": "desert"
+    },
+    {
+      "id": 2,
+      "slug": "luxury-dhow-cruise-dinner",
+      "kind": "activity",
+      "title": "Luxury Dhow Cruise Dinner",
+      "destination": "Dubai, UAE",
+      "destinationKey": "uae-dubai",
+      "region": "Dubai",
+      "category": "Water Experience",
+      "tags": [
+        "water",
+        "sightseeing"
+      ],
+      "duration": "Half Day",
+      "rating": 4.8,
+      "reviewCount": 98,
+      "price": 120,
+      "currency": "AED",
+      "priceUnit": "per person",
+      "shortDescription": "Cruise along historic Dubai Creek on a traditional wooden dhow with live entertainment, an unlimited buffet and skyline views.",
+      "fullDescription": "Dubai Creek is where the city started trading, and a hand-built wooden dhow is still the best way to read it. You'll board in the evening, take the water slowly past the old quarters and the new towers, and eat an unlimited international buffet on deck while the skyline lights come up around you.",
+      "highlights": [
+        "Traditional dhow",
+        "Dubai Creek views",
+        "International buffet",
+        "Live entertainment",
+        "Evening skyline"
+      ],
+      "image": {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Arabic_dhow_on_Dubai_Creek.jpg/960px-Arabic_dhow_on_Dubai_Creek.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "alt": "A traditional wooden dhow moored on Dubai Creek"
+      },
+      "icon": "water"
+    },
+    {
+      "id": 3,
+      "slug": "private-dubai-city-tour-helicopter",
+      "kind": "activity",
+      "title": "Private Dubai City Tour + Helicopter",
+      "destination": "Dubai, UAE",
+      "destinationKey": "uae-dubai",
+      "region": "Dubai",
+      "category": "Luxury",
+      "tags": [
+        "luxury",
+        "sightseeing"
+      ],
+      "duration": "Full Day",
+      "rating": 5,
+      "reviewCount": 21,
+      "price": 1650,
+      "currency": "AED",
+      "priceUnit": "per person",
+      "shortDescription": "A private tour of Dubai's most iconic landmarks followed by a helicopter flight over Palm Jumeirah and Dubai Marina.",
+      "fullDescription": "A full day with a private vehicle, a private guide and no fixed queue to stand in. You'll cover the landmarks that define the city at ground level first, then take the whole thing from the air — the Palm laid out beneath you, the Marina towers, and the coastline running away in both directions.",
+      "highlights": [
+        "Private vehicle",
+        "Dubai landmarks",
+        "Helicopter flight",
+        "Palm Jumeirah aerial view",
+        "Dubai Marina aerial view"
+      ],
+      "image": {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/1/1f/Vereinigte_Arabische_Emirate_-_Dubai_-_Palm_Jumeirah_und_Dubai_Marina_-_im_Vordergrund_das_Hotel_Atlantis_-_panoramio.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "alt": "Aerial view of the Palm Jumeirah island in Dubai"
+      },
+      "icon": "luxury"
+    },
+    {
+      "id": 4,
+      "slug": "dubai-frame-gold-souk-cultural-tour",
+      "kind": "activity",
+      "title": "Dubai Frame + Gold Souk Cultural Tour",
+      "destination": "Dubai, UAE",
+      "destinationKey": "uae-dubai",
+      "region": "Dubai",
+      "category": "Cultural",
+      "tags": [
+        "cultural",
+        "sightseeing"
+      ],
+      "duration": "Half Day",
+      "rating": 4.7,
+      "reviewCount": 56,
+      "price": 95,
+      "currency": "AED",
+      "priceUnit": "per person",
+      "shortDescription": "Walk the glass bridge at Dubai Frame, then explore the Gold and Spice Souks of old Deira with a local guide.",
+      "fullDescription": "Old Dubai on one side of the glass, new Dubai on the other — the Frame is built to make that contrast unmissable, and the glass floor is worth the nerve. Afterwards you cross into Deira with a guide who knows the lanes, for the Gold Souk, the Spice Souk and the trading city the towers grew out of.",
+      "highlights": [
+        "Dubai Frame",
+        "Glass bridge",
+        "Old and new Dubai views",
+        "Gold Souk",
+        "Spice Souk",
+        "Guided cultural walk"
+      ],
+      "image": {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Panorama_of_Dubai_from_Jumeriah_1.jpg/960px-Panorama_of_Dubai_from_Jumeriah_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "alt": "The observation deck of the Dubai Frame looking out over the city"
+      },
+      "icon": "cultural"
+    },
+    {
+      "id": 5,
+      "slug": "hot-air-balloon-dubai-desert",
+      "kind": "activity",
+      "title": "Hot Air Balloon over Dubai Desert",
+      "destination": "Dubai, UAE",
+      "destinationKey": "uae-dubai",
+      "region": "Dubai",
+      "category": "Adventure / Luxury",
+      "tags": [
+        "adventure",
+        "luxury",
+        "desert"
+      ],
+      "duration": "Early Morning",
+      "rating": 4.9,
+      "reviewCount": 38,
+      "price": 795,
+      "currency": "AED",
+      "priceUnit": "per person",
+      "shortDescription": "Float above the Dubai desert at dawn and enjoy a celebratory breakfast after landing.",
+      "fullDescription": "An early start, and worth every minute of it. You lift off as the sun comes up and the dunes below turn from grey to gold, with the desert completely silent apart from the burner. It's about an hour in the air, a gentle landing, and breakfast waiting on the sand.",
+      "highlights": [
+        "Sunrise departure",
+        "Desert panorama",
+        "Hot-air balloon flight",
+        "Landing breakfast",
+        "Premium morning experience"
+      ],
+      "image": {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/21st_Annual_White_Sands_Balloon_Invitational_120916-F-YJ486-129.jpg/960px-21st_Annual_White_Sands_Balloon_Invitational_120916-F-YJ486-129.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "alt": "A hot air balloon drifting low over desert dunes at sunrise"
+      },
+      "icon": "adventure"
+    },
+    {
+      "id": 6,
+      "slug": "ultimate-dubai-family-day",
+      "kind": "activity",
+      "title": "Ultimate Dubai Family Day",
+      "destination": "Dubai, UAE",
+      "destinationKey": "uae-dubai",
+      "region": "Dubai",
+      "category": "Family",
+      "tags": [
+        "family",
+        "adventure",
+        "water"
+      ],
+      "duration": "Full Day",
+      "rating": 4.7,
+      "reviewCount": 77,
+      "price": 320,
+      "currency": "AED",
+      "priceUnit": "per person",
+      "shortDescription": "Combine theme-park excitement, a family-friendly desert experience and an evening dhow cruise in one Dubai day.",
+      "fullDescription": "Built for families who want one really good day rather than three half-days of logistics. Theme park in the morning while everyone's fresh, a gentler desert afternoon with camels and space to run, then an evening on the water where the kids can eat and the adults can sit down. Transfers between all three are handled.",
+      "highlights": [
+        "Theme park",
+        "Camel experience",
+        "Desert activities",
+        "Dhow cruise",
+        "Family entertainment"
+      ],
+      "image": {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/a/ae/Dubai_Marina_Skyline_93.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+        "alt": "The Dubai Fountain performing in front of the Burj Khalifa"
+      },
+      "icon": "family"
+    }
+  ],
+  "packages": [
+    {
+      "id": 7,
+      "slug": "serengeti-safari-zanzibar",
+      "kind": "package",
+      "title": "Classic Serengeti Safari + Zanzibar Extension",
+      "destination": "Tanzania",
+      "destinationKey": "tanzania",
+      "region": "Africa",
+      "category": "Safari / Beach",
+      "tags": [
+        "safari",
+        "beach",
+        "adventure"
+      ],
+      "duration": "7 Days",
+      "rating": 5,
+      "reviewCount": 34,
+      "price": 2490,
+      "currency": "USD",
+      "priceUnit": "per person",
+      "shortDescription": "Witness the Great Migration and track the Big Five before unwinding on Zanzibar's white-sand beaches.",
+      "fullDescription": "The classic Tanzania pairing, and the reason it endures: several days of game drives across the Serengeti with guides who know where the herds are moving, followed by a short hop to Zanzibar to do absolutely nothing on a white-sand beach. Big Five tracking in the first half, warm Indian Ocean in the second.",
+      "highlights": [
+        "Serengeti game drives",
+        "Big Five wildlife",
+        "Great Migration experience",
+        "Local safari guides",
+        "Zanzibar beach extension"
+      ],
+      "image": {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Wildebeest_on_the_Great_Migration_in_the_northern_Serengeti_%282%29_%2828597231226%29.jpg/960px-Wildebeest_on_the_Great_Migration_in_the_northern_Serengeti_%282%29_%2828597231226%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "alt": "Wildebeest crossing the plains during the Serengeti migration"
+      },
+      "icon": "safari"
+    },
+    {
+      "id": 8,
+      "slug": "bwindi-gorilla-trekking-uganda",
+      "kind": "package",
+      "title": "Bwindi Gorilla Trekking Uganda",
+      "destination": "Uganda",
+      "destinationKey": "uganda",
+      "region": "Africa",
+      "category": "Gorilla Trek / Adventure",
+      "tags": [
+        "adventure",
+        "safari"
+      ],
+      "duration": "5 Days",
+      "rating": 4.9,
+      "reviewCount": 19,
+      "price": 1890,
+      "currency": "USD",
+      "priceUnit": "per person",
+      "shortDescription": "Trek through Bwindi's ancient forest for a face-to-face encounter with mountain gorillas.",
+      "fullDescription": "There is no substitute for this one. You trek into Bwindi with certified local trackers, sometimes for an hour and sometimes for most of a morning, until you're sitting a few metres from a mountain gorilla group going about its day. Small groups only, and permits arranged in advance.",
+      "highlights": [
+        "Bwindi Impenetrable Forest",
+        "Guided forest trek",
+        "Mountain gorilla encounter",
+        "Certified local trackers",
+        "Small-group experience"
+      ],
+      "image": {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Gorila_de_monta%C3%B1a_%28Gorilla_beringei_beringei%29%2C_parque_nacional_de_la_Selva_Impenetrable_de_Bwindi%2C_Uganda%2C_2024-02-02%2C_DD_80.jpg/960px-Gorila_de_monta%C3%B1a_%28Gorilla_beringei_beringei%29%2C_parque_nacional_de_la_Selva_Impenetrable_de_Bwindi%2C_Uganda%2C_2024-02-02%2C_DD_80.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "alt": "A mountain gorilla feeding in dense forest undergrowth"
+      },
+      "icon": "safari"
+    },
+    {
+      "id": 9,
+      "slug": "south-africa-kruger-cape-town",
+      "kind": "package",
+      "title": "South Africa Highlights: Kruger + Cape Town",
+      "destination": "South Africa",
+      "destinationKey": "south-africa",
+      "region": "Africa",
+      "category": "Safari + City",
+      "tags": [
+        "safari",
+        "sightseeing",
+        "adventure"
+      ],
+      "duration": "8 Days",
+      "rating": 4.9,
+      "reviewCount": 27,
+      "price": 2890,
+      "currency": "USD",
+      "priceUnit": "per person",
+      "shortDescription": "Combine Big Five game drives in Kruger with Cape Town, Table Mountain, vineyards and the Cape Peninsula.",
+      "fullDescription": "Two very different halves of the same country. Kruger first, for early game drives and the Big Five, then a flight south to Cape Town for Table Mountain, the winelands, and the drive down the Cape Peninsula where two oceans meet. Good for travellers who want wildlife without giving up restaurants and cities.",
+      "highlights": [
+        "Kruger National Park",
+        "Big Five game drives",
+        "Cape Town",
+        "Table Mountain",
+        "Cape vineyards",
+        "Cape Peninsula"
+      ],
+      "image": {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Kruger_National_Park_%28ZA%29%2C_Elefanten_--_2024_--_0579.jpg/960px-Kruger_National_Park_%28ZA%29%2C_Elefanten_--_2024_--_0579.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "alt": "Table Mountain rising behind the city of Cape Town"
+      },
+      "icon": "safari"
+    },
+    {
+      "id": 10,
+      "slug": "ethiopia-lalibela-addis",
+      "kind": "package",
+      "title": "Ethiopia Historical Circuit: Lalibela + Addis",
+      "destination": "Ethiopia",
+      "destinationKey": "ethiopia",
+      "region": "Africa",
+      "category": "Cultural / Heritage",
+      "tags": [
+        "cultural",
+        "heritage",
+        "sightseeing"
+      ],
+      "duration": "6 Days",
+      "rating": 4.8,
+      "reviewCount": 12,
+      "price": 1690,
+      "currency": "USD",
+      "priceUnit": "per person",
+      "shortDescription": "Explore Lalibela's rock-hewn churches, Addis Ababa's markets and Ethiopia's extraordinary ancient history.",
+      "fullDescription": "Lalibela's churches were cut downward out of solid rock eight centuries ago and are still in daily use, which is a difficult thing to prepare anyone for. This circuit pairs several days there with Addis Ababa's museums and markets, guided throughout by people who can place what you're looking at in its history.",
+      "highlights": [
+        "Lalibela",
+        "Rock-hewn churches",
+        "Addis Ababa",
+        "Traditional markets",
+        "Cultural guides",
+        "Ancient history"
+      ],
+      "image": {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Rock-Hewn_Churches%2C_Lalibela_Ethiopia_%281%29.jpg/960px-Rock-Hewn_Churches%2C_Lalibela_Ethiopia_%281%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "alt": "The rock-hewn Church of Saint George at Lalibela at sunset"
+      },
+      "icon": "heritage"
+    },
+    {
+      "id": 11,
+      "slug": "bali-discovery",
+      "kind": "package",
+      "title": "Bali Discovery: Temples, Rice Terraces + Beaches",
+      "destination": "Indonesia",
+      "destinationKey": "indonesia",
+      "region": "Asia",
+      "category": "Discovery / Beach",
+      "tags": [
+        "beach",
+        "cultural",
+        "sightseeing"
+      ],
+      "duration": "7 Days",
+      "rating": 4.8,
+      "reviewCount": 31,
+      "price": 1290,
+      "currency": "USD",
+      "priceUnit": "per person",
+      "shortDescription": "Discover ancient temples, sunrise rice terraces, traditional ceremonies and Bali's celebrated beaches.",
+      "fullDescription": "Bali rewards an early alarm — the rice terraces around Ubud are at their best just after sunrise, before the day warms up. This week balances the island's temples and ceremonies, which are living practice rather than exhibits, with enough unstructured beach time that you come home actually rested.",
+      "highlights": [
+        "Balinese temples",
+        "Rice terraces",
+        "Traditional ceremonies",
+        "Ubud",
+        "Beach time",
+        "Local cultural experiences"
+      ],
+      "image": {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Tegallalang_rice_terraces_SF0003.jpg/960px-Tegallalang_rice_terraces_SF0003.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "alt": "Terraced rice paddies stepping down a hillside in Bali"
+      },
+      "icon": "beach"
+    },
+    {
+      "id": 12,
+      "slug": "rajasthan-royal-heritage",
+      "kind": "package",
+      "title": "Rajasthan Royal Heritage Tour",
+      "destination": "India",
+      "destinationKey": "india",
+      "region": "Asia",
+      "category": "Heritage",
+      "tags": [
+        "heritage",
+        "cultural",
+        "sightseeing"
+      ],
+      "duration": "8 Days",
+      "rating": 4.9,
+      "reviewCount": 22,
+      "price": 1490,
+      "currency": "USD",
+      "priceUnit": "per person",
+      "shortDescription": "Travel through Rajasthan's palaces, forts and desert landscapes, including Jaipur, Udaipur, Jodhpur and the Taj Mahal.",
+      "fullDescription": "Rajasthan run properly: Jaipur's forts, Udaipur's lake palaces, Jodhpur's blue city and the desert between them, finishing at the Taj Mahal. Eight days is enough to travel it without spending the whole trip in transit, with the major sites scheduled around the quieter hours where possible.",
+      "highlights": [
+        "Jaipur",
+        "Udaipur",
+        "Jodhpur",
+        "Palaces and forts",
+        "Desert landscapes",
+        "Taj Mahal"
+      ],
+      "image": {
+        "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Jaipur_03-2016_05_Amber_Fort.jpg/960px-Jaipur_03-2016_05_Amber_Fort.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+        "alt": "The Taj Mahal reflected in its watercourse at Agra"
+      },
+      "icon": "heritage"
+    },
+    {
+      "id": 13,
+      "slug": "umrah-by-bus",
+      "kind": "package",
+      "title": "Umrah by Bus",
+      "destination": "Makkah & Madinah, Saudi Arabia",
+      "destinationKey": "saudi-arabia",
+      "region": "Middle East",
+      "category": "Pilgrimage",
+      "tags": [
+        "pilgrimage",
+        "umrah"
+      ],
+      "duration": "8 nights",
+      "price": 1250,
+      "currency": "AED",
+      "priceUnit": "per person",
+      "shortDescription": "Six nights in Makkah and two in Madinah, with visa, hotels and return coach transfers included.",
+      "fullDescription": "",
+      "highlights": [
+        "6 nights Makkah",
+        "2 nights Madina",
+        "Visa",
+        "Transportation by bus 2 ways",
+        "Hotel included"
+      ],
+      "included": [],
+      "requirements": [
+        "Clear passport copy",
+        "Passport valid for at least 6 months",
+        "Clear Emirates ID copy — front and back - 6 MONTHS VALID",
+        "Recent passport-size photograph",
+        "White photo background",
+        "Face clearly visible",
+        "No shadows or patterns",
+        "Recommended photo size: 200 × 200 pixels",
+        "Photo file size: 5–100 KB"
+      ],
+      "image": "https://images.pexels.com/photos/28209449/pexels-photo-28209449.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200",
+      "icon": "heritage"
+    },
+    {
+      "id": 14,
+      "slug": "umrah-by-air",
+      "kind": "package",
+      "title": "Umrah by Air",
+      "destination": "Makkah & Madinah, Saudi Arabia",
+      "destinationKey": "saudi-arabia",
+      "region": "Middle East",
+      "category": "Pilgrimage",
+      "tags": [
+        "pilgrimage",
+        "umrah"
+      ],
+      "duration": "",
+      "price": 0,
+      "currency": "AED",
+      "priceUnit": "per person",
+      "shortDescription": "Umrah by air, priced case by case around your dates and group.",
+      "fullDescription": "Price is case to case",
+      "highlights": [],
+      "included": [],
+      "requirements": [],
+      "image": "https://images.pexels.com/photos/20277839/pexels-photo-20277839.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200",
+      "icon": "heritage"
+    }
+  ],
+  "destinations": [
+    {
+      "key": "uae-dubai",
+      "name": "UAE & Dubai",
+      "region": "UAE",
+      "blurb": "Desert, skyline and old trading creek in one city — the easiest place in the world to combine a beach week with a proper adventure.",
+      "bestTime": "November to March",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Burj_Khalifa_%28worlds_tallest_building%29_and_the_Dubai_skyline_%2825781049892%29.jpg/960px-Burj_Khalifa_%28worlds_tallest_building%29_and_the_Dubai_skyline_%2825781049892%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+    },
+    {
+      "key": "tanzania",
+      "name": "Tanzania",
+      "region": "Africa",
+      "blurb": "The Serengeti migration, Ngorongoro Crater and the spice islands of Zanzibar — Africa's most complete safari-and-beach pairing.",
+      "bestTime": "June to October",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Line_of_Zebra_on_the_Plains_%2849688548783%29.jpg/960px-Line_of_Zebra_on_the_Plains_%2849688548783%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+    },
+    {
+      "key": "south-africa",
+      "name": "South Africa",
+      "region": "Africa",
+      "blurb": "Big Five game drives in Kruger, then Table Mountain, the Cape winelands and a coastline that runs two oceans together.",
+      "bestTime": "May to September",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Cape_Town_%28ZA%29%2C_Table_Mountain_--_2024_--_2794%2B96%2B98%2B2800%2B01.jpg/3840px-Cape_Town_%28ZA%29%2C_Table_Mountain_--_2024_--_2794%2B96%2B98%2B2800%2B01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+    },
+    {
+      "key": "ethiopia",
+      "name": "Ethiopia",
+      "region": "Africa",
+      "blurb": "Rock-hewn churches at Lalibela, the highlands, and a coffee culture older than almost anywhere else on earth.",
+      "bestTime": "October to March",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/c/c8/On_Top_of_Inatye_%28Simien_Mountains%2C_Ethiopia%29.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled"
+    },
+    {
+      "key": "uganda",
+      "name": "Uganda",
+      "region": "Africa",
+      "blurb": "Mountain gorillas in Bwindi's forest, the source of the Nile, and some of the greenest country in East Africa.",
+      "bestTime": "June to September",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Vegetation_in_Murchison_Falls_National_Park_Uganda_01.jpg/960px-Vegetation_in_Murchison_Falls_National_Park_Uganda_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+    },
+    {
+      "key": "zambia",
+      "name": "Zambia",
+      "region": "Africa",
+      "blurb": "Victoria Falls at full thunder, walking safaris in South Luangwa, and camps far from anyone else.",
+      "bestTime": "May to October",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Cataratas_Victoria%2C_Zambia-Zimbabue%2C_2018-07-27%2C_DD_30-34_PAN.jpg/960px-Cataratas_Victoria%2C_Zambia-Zimbabue%2C_2018-07-27%2C_DD_30-34_PAN.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+    },
+    {
+      "key": "malawi",
+      "name": "Malawi",
+      "region": "Africa",
+      "blurb": "A freshwater lake big enough to have its own horizon, quiet highlands, and a reputation for warmth that precedes it.",
+      "bestTime": "May to October",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/2/20/Shore_at_malawi_lake.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled"
+    },
+    {
+      "key": "mozambique",
+      "name": "Mozambique",
+      "region": "Africa",
+      "blurb": "Indian Ocean archipelagos, Portuguese-era towns and diving that rivals anywhere in the region.",
+      "bestTime": "May to November",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Bazaruto_Archipelago_National_Park_%28154448_-_oli2_20240803_lrg%29.jpg/960px-Bazaruto_Archipelago_National_Park_%28154448_-_oli2_20240803_lrg%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+    },
+    {
+      "key": "india",
+      "name": "India",
+      "region": "Asia",
+      "blurb": "Rajasthan's forts and palaces, the backwaters of the south, and food worth the trip on its own.",
+      "bestTime": "October to March",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Taj_Mahal_Sunset.jpg/960px-Taj_Mahal_Sunset.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+    },
+    {
+      "key": "pakistan",
+      "name": "Pakistan",
+      "region": "Asia",
+      "blurb": "The Karakoram highway, Hunza in autumn, and mountain scenery that stands with anywhere on the planet.",
+      "bestTime": "April to October",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Hunza_Valley%2C_view_from_Eagle%27s_Nest.jpg/960px-Hunza_Valley%2C_view_from_Eagle%27s_Nest.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+    },
+    {
+      "key": "indonesia",
+      "name": "Indonesia",
+      "region": "Asia",
+      "blurb": "Bali's temples and rice terraces, volcanoes at sunrise, and thousands of islands beyond the ones everyone knows.",
+      "bestTime": "April to October",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/View_from_Bromo_mountain_before_sunrise%2C_Java%2C_Indonesia%2C_20220820_0500_9311.jpg/960px-View_from_Bromo_mountain_before_sunrise%2C_Java%2C_Indonesia%2C_20220820_0500_9311.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+    },
+    {
+      "key": "germany",
+      "name": "Germany",
+      "region": "Europe & Americas",
+      "blurb": "Christmas markets, castles above the Rhine, and cities that reward slow days as much as long lists.",
+      "bestTime": "May to September",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Alpsee_-_Pindarplatz_-_Hohenschwangau_Castle_-_Alpenrose_-_Neuschwanstein_Castle_01.jpg/960px-Alpsee_-_Pindarplatz_-_Hohenschwangau_Castle_-_Alpenrose_-_Neuschwanstein_Castle_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+    },
+    {
+      "key": "united-kingdom",
+      "name": "United Kingdom",
+      "region": "Europe & Americas",
+      "blurb": "London in full swing, the Scottish Highlands, and enough coastline and countryside to fill a fortnight.",
+      "bestTime": "May to September",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Palace_of_Westminster_and_Elizabeth_Tower_20250522.jpg/960px-Palace_of_Westminster_and_Elizabeth_Tower_20250522.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+    },
+    {
+      "key": "moldova",
+      "name": "Moldova",
+      "region": "Europe & Americas",
+      "blurb": "Underground wine cellars measured in kilometres, monasteries in the hills, and almost no crowds.",
+      "bestTime": "May to October",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Tasting_Room%2C_Two%2C_Cricova_Winery%2C_Moldova_%2829871458757%29.jpg/960px-Tasting_Room%2C_Two%2C_Cricova_Winery%2C_Moldova_%2829871458757%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+    },
+    {
+      "key": "panama",
+      "name": "Panama",
+      "region": "Europe & Americas",
+      "blurb": "The canal, Caribbean islands on one side and the Pacific on the other, and rainforest an hour from the capital.",
+      "bestTime": "December to April",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Miraflores_Locks_Panama_1914.JPG/960px-Miraflores_Locks_Panama_1914.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+    }
+  ],
+  "services": [
+    {
+      "key": "visa",
+      "label": "Visa Services",
+      "icon": "visa",
+      "blurb": "Tourist, transit and visit visas for the UAE and beyond, prepared and tracked for you.",
+      "image": "https://images.pexels.com/photos/4922356/pexels-photo-4922356.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200"
+    },
+    {
+      "key": "flights",
+      "label": "Flights",
+      "icon": "flights",
+      "blurb": "Fares held, routings compared and every connection checked before you book.",
+      "image": "https://images.pexels.com/photos/14400667/pexels-photo-14400667.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200"
+    },
+    {
+      "key": "hotels",
+      "label": "Hotels & Stays",
+      "icon": "hotels",
+      "blurb": "City hotels, desert camps, safari lodges and beach resorts, matched to your trip.",
+      "image": "https://images.pexels.com/photos/2736384/pexels-photo-2736384.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200"
+    },
+    {
+      "key": "transport",
+      "label": "Transport & Fleet",
+      "icon": "transport",
+      "blurb": "Airport transfers, private drivers and a fleet sized to your group anywhere in the UAE.",
+      "image": "https://images.pexels.com/photos/28284095/pexels-photo-28284095.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200"
+    },
+    {
+      "key": "concierge",
+      "label": "Concierge",
+      "icon": "concierge",
+      "blurb": "One team on call through the whole trip, from the first idea to the journey home.",
+      "image": "https://images.pexels.com/photos/14036251/pexels-photo-14036251.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200"
+    },
+    {
+      "key": "activities",
+      "label": "Activities & Excursions",
+      "icon": "activities",
+      "blurb": "Desert, water, cultural and family experiences, booked around the rest of your itinerary.",
+      "image": "https://images.pexels.com/photos/1453097/pexels-photo-1453097.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200"
+    }
+  ],
+  "visa": [
+    {
+      "key": "dubai-visa",
+      "name": "Dubai Visa",
+      "country": "United Arab Emirates",
+      "processing": "3 to 5 working days",
+      "validity": "60 days from issue",
+      "blurb": "Tourist and visit visas for the UAE, prepared, submitted and tracked for you — including the paperwork most applications get rejected for.",
+      "requirements": [
+        "Passport valid at least 6 months",
+        "Passport-size photograph, white background",
+        "Confirmed return ticket",
+        "Hotel booking or host details"
+      ],
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Interior_of_Terminal_3_Dubai_Airport._United_Arab_Emirates.jpg/960px-Interior_of_Terminal_3_Dubai_Airport._United_Arab_Emirates.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+    },
+    {
+      "key": "saudi-multiple-entry-visa",
+      "name": "Saudi Multiple Entry Visa",
+      "country": "Saudi Arabia",
+      "processing": "Express 4-5 days · Normal 10-15 days",
+      "validity": "1 year",
+      "visaType": "Multiple Entry",
+      "category": "E-Visa",
+      "price": 899,
+      "currency": "AED",
+      "priceUnit": "per applicant",
+      "blurb": "E-Visa · Multiple Entry for Saudi Arabia, valid 1 year.",
+      "fullDescription": "1 year - 90 days duration of stay.",
+      "requirements": [
+        "Clear passport copy",
+        "Passport valid for at least 6 months",
+        "Clear Emirates ID copy — front and back - 6 MONTHS VALID",
+        "Recent passport-size photograph",
+        "White photo background",
+        "Face clearly visible",
+        "No shadows or patterns",
+        "Recommended photo size: 200 × 200 pixels",
+        "Photo file size: 5–100 KB"
+      ],
+      "image": "https://images.pexels.com/photos/35761/pexels-photo.jpg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200"
+    },
+    {
+      "key": "china-business-visa",
+      "name": "China Business Visa",
+      "country": "China",
+      "processing": "Express 1-2 weeks",
+      "validity": "N/A",
+      "visaType": "Business Visa",
+      "category": "Sticker Visa",
+      "price": 800,
+      "currency": "AED",
+      "priceUnit": "per applicant",
+      "blurb": "Sticker Visa · Business Visa for China, valid N/A.",
+      "fullDescription": "Validity depending on docs.",
+      "requirements": [
+        "Original Passport",
+        "2 Recent Photographs",
+        "UAE Emirates ID and Residence Visa Copy",
+        "Trade Licence Copy for Partner Visa Holders",
+        "Blank Letterhead",
+        "Last 3 Months’ Bank Statements",
+        "Previous Travel History, if Available",
+        "Spouse’s Full Name",
+        "Spouse’s Date of Birth"
+      ],
+      "image": "https://images.pexels.com/photos/30685872/pexels-photo-30685872.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200"
+    },
+    {
+      "key": "schengen-visa",
+      "name": "Schengen Visa",
+      "country": "Schengen Area",
+      "processing": "Normal 2-3 weeks",
+      "validity": "90 days",
+      "visaType": "Single Entry",
+      "category": "Sticker Visa",
+      "price": 1200,
+      "currency": "AED",
+      "priceUnit": "per applicant",
+      "blurb": "Sticker Visa · Single Entry for Schengen Area, valid 90 days.",
+      "fullDescription": "VFS fee separate. The applicant must visit the VFS Centre. Processing Time: 7–10 Working Days.",
+      "requirements": [
+        "Passport Scan Copy",
+        "2 Recent Photographs – JPG and Printed Copies",
+        "UAE Emirates ID and Residence Visa Copy",
+        "Trade Licence Copy for Partner Visa Holders",
+        "Bangladeshi NID or Birth Certificate Copy",
+        "Last 3 Months’ Bank Statements with Bank Stamp",
+        "Blank Sponsor Letterhead with Official Seal",
+        "Ejari Copy, if Available",
+        "UAE Driving Licence Copy, if Available",
+        "Previous Travel History",
+        "Email Address",
+        "Mobile Number",
+        "Current Residential Address"
+      ],
+      "image": "https://images.pexels.com/photos/16496484/pexels-photo-16496484.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200"
+    },
+    {
+      "key": "japan",
+      "name": "Japan Visa",
+      "country": "Japan",
+      "processing": "Normal 2-3 weeks",
+      "validity": "1 month",
+      "visaType": "Single Entry",
+      "category": "E-Visa",
+      "price": 1000,
+      "currency": "AED",
+      "priceUnit": "per applicant",
+      "blurb": "E-Visa · Single Entry for Japan, valid 1 month.",
+      "fullDescription": "VFS fee separate -. The applicant must visit the VFS Centre. Processing Time: 7–10 Working Days.",
+      "requirements": [
+        "Passport Scan Copy",
+        "2 Recent Printed Photographs",
+        "UAE Emirates ID and Residence Visa Copy",
+        "Trade Licence Copy for Partner Visa Holders",
+        "Last 3 Months’ Bank E-Statements",
+        "Blank Sponsor Letterhead with Official Seal",
+        "Ejari Copy, if Available",
+        "UAE Driving Licence Copy, if Available",
+        "Email Address",
+        "Mobile Number",
+        "Current Residential Address"
+      ],
+      "image": "https://images.pexels.com/photos/35100545/pexels-photo-35100545.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200"
+    },
+    {
+      "key": "indonesia",
+      "name": "Indonesia Visa",
+      "country": "Indonesia",
+      "processing": "Normal 2 weeks",
+      "validity": "1 month",
+      "visaType": "Single Entry",
+      "category": "E-Visa",
+      "price": 750,
+      "currency": "AED",
+      "priceUnit": "per applicant",
+      "blurb": "E-Visa · Single Entry for Indonesia, valid 1 month.",
+      "fullDescription": "The agent will submit the application file to the embassy. Processing time: 7–10 working days.",
+      "requirements": [
+        "Original passport",
+        "Two recent printed photographs",
+        "UAE Emirates ID and residence visa copy",
+        "Trade licence copy for partner visa holders",
+        "Last three months’ bank statements",
+        "Blank sponsor letterhead with official seal",
+        "Email address",
+        "Mobile number",
+        "Current residential address"
+      ],
+      "image": "https://images.pexels.com/photos/18144498/pexels-photo-18144498.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200"
+    },
+    {
+      "key": "egypt",
+      "name": "Egypt Visa",
+      "country": "Egypt",
+      "processing": "Normal 2 weeks",
+      "validity": "1 month",
+      "visaType": "Single Entry",
+      "category": "Sticker Visa",
+      "price": 800,
+      "currency": "AED",
+      "priceUnit": "per applicant",
+      "blurb": "Sticker Visa · Single Entry for Egypt, valid 1 month.",
+      "fullDescription": "",
+      "requirements": [],
+      "image": "https://images.pexels.com/photos/262786/pexels-photo-262786.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200"
+    },
+    {
+      "key": "morocco",
+      "name": "Morocco Visa",
+      "country": "Morocco",
+      "processing": "Express 2 weeks",
+      "validity": "1 month",
+      "visaType": "Single Entry",
+      "category": "E-Visa",
+      "price": 600,
+      "currency": "AED",
+      "priceUnit": "per applicant",
+      "blurb": "E-Visa · Single Entry for Morocco, valid 1 month.",
+      "fullDescription": "The agent will submit the application online. Processing Time: 3–7 Working Days.",
+      "requirements": [
+        "Passport Scan Copy",
+        "1 Recent Photograph in JPG Format",
+        "UAE Emirates ID Copy",
+        "UAE Residence Visa Copy"
+      ],
+      "image": "https://images.pexels.com/photos/18487344/pexels-photo-18487344.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200"
+    },
+    {
+      "key": "usa-b1-b2",
+      "name": "USA B1/B2 Visa",
+      "country": "United States",
+      "processing": "Normal 1-2 weeks",
+      "validity": "5 years",
+      "visaType": "Multiple Entry",
+      "category": "Sticker Visa",
+      "price": 1500,
+      "currency": "AED",
+      "priceUnit": "per applicant",
+      "blurb": "Sticker Visa · Multiple Entry for United States, valid 5 years.",
+      "fullDescription": "The applicant must attend an interview at the embassy. Processing Time: 7–10 Working Days After the Interview.",
+      "requirements": [
+        "Passport Scan Copy",
+        "2 Recent Photographs – JPG and Printed Copies",
+        "UAE Emirates ID and Residence Visa Copy",
+        "Trade Licence Copy for Partner Visa Holders",
+        "Blank Sponsor Letterhead with Official Seal",
+        "Ejari Copy, if Available",
+        "UAE Driving Licence Copy, if Available",
+        "Previous Travel History",
+        "Personal Email Address",
+        "Mobile Number",
+        "Current Residential Address",
+        "Family Details",
+        "Educational Details",
+        "Employment Details"
+      ],
+      "image": "https://images.pexels.com/photos/28133996/pexels-photo-28133996.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200"
+    },
+    {
+      "key": "canada",
+      "name": "Canada Visa",
+      "country": "Canada",
+      "processing": "Normal 2-3 weeks",
+      "validity": "10 years",
+      "visaType": "Multiple Entry",
+      "category": "Sticker Visa",
+      "price": 1500,
+      "currency": "AED",
+      "priceUnit": "per applicant",
+      "blurb": "Sticker Visa · Multiple Entry for Canada, valid 10 years.",
+      "fullDescription": "The applicant must visit the VFS Centre for biometrics. Processing Time: 10–20 Working Days.",
+      "requirements": [
+        "Passport Scan Copy",
+        "2 Recent Photographs – JPG and Printed Copies",
+        "UAE Emirates ID and Residence Visa Copy",
+        "Trade Licence Copy for Partner Visa Holders",
+        "Blank Sponsor Letterhead with Official Seal",
+        "Ejari Copy, if Available",
+        "UAE Driving Licence Copy, if Available",
+        "Last 4 Months’ Bank Statements",
+        "Previous Travel History with Entry and Exit Dates",
+        "Personal Email Address",
+        "Mobile Number",
+        "Current Residential Address",
+        "Family Details",
+        "Educational Details",
+        "Employment Details"
+      ],
+      "image": "https://images.pexels.com/photos/33730307/pexels-photo-33730307.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200"
+    },
+    {
+      "key": "uk",
+      "name": "UK Visa",
+      "country": "United Kingdom",
+      "processing": "Normal 2-3 weeks",
+      "validity": "6 months",
+      "visaType": "Multiple Entry",
+      "category": "Sticker Visa",
+      "price": 1500,
+      "currency": "AED",
+      "priceUnit": "per applicant",
+      "blurb": "Sticker Visa · Multiple Entry for United Kingdom, valid 6 months.",
+      "fullDescription": "Embassy fee separate. The applicant must visit the VFS Centre for biometrics. Processing Time: 10–20 Working Days. Passport Scan Copy. 2 Recent Photographs – JPG and Printed Copies. UAE Emirates ID and Residence Visa Copy. Trade Licence Copy for Partner Visa Holders. Passport Scan. 2 Recent Photographs – JPG and Printed Copies. UAE Emirates ID and Residence Visa Copy. Trade Licence CopyR fEorQ PUaIrRtnEeDr VDiOsaC HUoMldEeNrsTS.",
+      "requirements": [
+        "Passport Scan Copy",
+        "Recent Photograph in JPG Format",
+        "UAE Emirates ID and Residence Visa Copy",
+        "Trade Licence Copy for Partner Visa Holders",
+        "Blank Sponsor Letterhead with Official Seal",
+        "Ejari Copy, if Available",
+        "UAE Driving Licence Copy, if Available",
+        "Last 6 Months’ Bank Statements",
+        "Previous Travel History with Entry and Exit Dates",
+        "Personal Email Address",
+        "Mobile Number",
+        "Current Residential Address",
+        "Family Details",
+        "Educational Details",
+        "Employment Details"
+      ],
+      "image": "https://images.pexels.com/photos/30029654/pexels-photo-30029654.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200"
+    },
+    {
+      "key": "australia",
+      "name": "Australia Visa",
+      "country": "Australia",
+      "processing": "Normal 1 month",
+      "validity": "6 months",
+      "visaType": "Multiple Entry",
+      "category": "E-Visa",
+      "price": 1500,
+      "currency": "AED",
+      "priceUnit": "per applicant",
+      "blurb": "E-Visa · Multiple Entry for Australia, valid 6 months.",
+      "fullDescription": "The applicant must visit the VFS Centre for biometrics. Processing Time: 40–60 Days.",
+      "requirements": [
+        "Blank Sponsor Letterhead with Official Seal",
+        "Ejari Copy, if Available",
+        "UAE Driving Licence Copy, if Available",
+        "Last 6 Months’ Bank Statements",
+        "Previous Travel History with Entry and Exit Dates",
+        "Personal Email Address",
+        "Mobile Number",
+        "Current Residential Address",
+        "Family Details",
+        "Educational Details",
+        "Employment Details"
+      ],
+      "image": "https://images.pexels.com/photos/33378301/pexels-photo-33378301.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200"
+    },
+    {
+      "key": "turkey",
+      "name": "Turkey Visa",
+      "country": "Turkey",
+      "processing": "Normal 2 weeks",
+      "validity": "2 months",
+      "visaType": "Single Entry",
+      "category": "Sticker Visa",
+      "price": 750,
+      "currency": "AED",
+      "priceUnit": "per applicant",
+      "blurb": "Sticker Visa · Single Entry for Turkey, valid 2 months.",
+      "fullDescription": "460 VFS fee. The applicant must visit the VFS Centre. Processing Time: 7–10 Working Days.",
+      "requirements": [
+        "Passport Scan Copy",
+        "2 Recent Printed Photographs",
+        "UAE Emirates ID and Residence Visa Copy",
+        "Trade Licence Copy for Partner Visa Holders",
+        "Last 3-6 Months’ Bank Statements with Bank Stamp",
+        "Blank Sponsor Letterhead with Official Seal",
+        "Ejari Copy, if Available",
+        "UAE Driving Licence Copy, if Available",
+        "Previous Travel History",
+        "Email Address",
+        "Mobile Number",
+        "Current Residential Address"
+      ],
+      "image": "https://images.pexels.com/photos/27260270/pexels-photo-27260270.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200"
+    },
+    {
+      "key": "south-korea",
+      "name": "South Korea Visa",
+      "country": "South Korea",
+      "processing": "Normal 1-2 weeks",
+      "validity": "3 months",
+      "visaType": "Single Entry",
+      "category": "E-Visa",
+      "price": 800,
+      "currency": "AED",
+      "priceUnit": "per applicant",
+      "blurb": "E-Visa · Single Entry for South Korea, valid 3 months.",
+      "fullDescription": "( visa fee 160 aed client depends ⏎ on client`s profile have to pay at ⏎ VFS). The applicant must visit the embassy. Processing Time: 7–10 Working Days.",
+      "requirements": [
+        "Applicants must have completed at least 2 years of residence in the U",
+        "Passport Scan Copy",
+        "2 Recent Photographs – Printed and JPG Copies",
+        "UAE Emirates ID and Residence Visa Copy",
+        "Trade Licence Copy for Partner Visa Holders",
+        "Last 3 Months’ Bank Statements with Bank Stamp",
+        "Blank Sponsor Letterhead with Official Seal",
+        "Ejari Copy, if Available",
+        "UAE Driving Licence Copy, if Available",
+        "Previous Travel History with Entry and Exit Dates",
+        "Spouse’s Full Name and Date of Birth",
+        "Highest Education Qualification and College Name",
+        "Personal Email Address",
+        "Personal Mobile Number",
+        "Current Residential Address",
+        "Sponsor’s Email Address",
+        "Sponsor’s Mobile Number",
+        "Sponsor’s Address"
+      ],
+      "image": "https://images.pexels.com/photos/33019230/pexels-photo-33019230.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200"
+    },
+    {
+      "key": "singapore",
+      "name": "Singapore Visa",
+      "country": "Singapore",
+      "processing": "Normal 1-2 weeks",
+      "validity": "2 months",
+      "visaType": "Single Entry",
+      "category": "E-Visa",
+      "price": 650,
+      "currency": "AED",
+      "priceUnit": "per applicant",
+      "blurb": "E-Visa · Single Entry for Singapore, valid 2 months.",
+      "fullDescription": "",
+      "requirements": [
+        "Original Passport",
+        "1 Recent Photograph – PDF and Printed Copy",
+        "UAE Residence Visa Copy",
+        "Blank Sponsor Letterhead with Official Seal",
+        "Email Address",
+        "Mobile Number",
+        "First UAE Entry Date",
+        "Current Residential Address",
+        "Note:",
+        "The agent will submit the application file to the embassy.",
+        "Processing Time: 3–7 Working Days"
+      ],
+      "image": "https://images.pexels.com/photos/15480459/pexels-photo-15480459.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200"
+    },
+    {
+      "key": "malaysia",
+      "name": "Malaysia Visa",
+      "country": "Malaysia",
+      "processing": "Normal 1 week",
+      "validity": "6 months",
+      "visaType": "Single Entry",
+      "category": "E-Visa",
+      "price": 360,
+      "currency": "AED",
+      "priceUnit": "per applicant",
+      "blurb": "E-Visa · Single Entry for Malaysia, valid 6 months.",
+      "fullDescription": "The agent will submit the application online. Processing Time: 1–3 Working Days.",
+      "requirements": [
+        "Passport Scan Copy",
+        "1 Recent Photograph in JPG Format",
+        "UAE Emirates ID and Residence Visa Copy",
+        "Trade Licence Copy for Partner Visa Holders",
+        "Last 3 Months’ Bank Statements",
+        "Blank Sponsor Letterhead with Official Seal",
+        "Mobile Number"
+      ],
+      "image": "https://images.pexels.com/photos/12587157/pexels-photo-12587157.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200"
+    },
+    {
+      "key": "thailand",
+      "name": "Thailand Visa",
+      "country": "Thailand",
+      "processing": "Normal 1 week",
+      "validity": "3 months",
+      "visaType": "Single Entry",
+      "category": "E-Visa",
+      "price": 750,
+      "currency": "AED",
+      "priceUnit": "per applicant",
+      "blurb": "E-Visa · Single Entry for Thailand, valid 3 months.",
+      "fullDescription": "",
+      "requirements": [
+        "Passport Scan Copy",
+        "1 Recent Photograph in JPG Format",
+        "UAE Emirates ID and Residence Visa Copy",
+        "Trade Licence Copy for Partner Visa Holders"
+      ],
+      "image": "https://images.pexels.com/photos/5264308/pexels-photo-5264308.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200"
+    },
+    {
+      "key": "south-africa",
+      "name": "South Africa Visa",
+      "country": "South Africa",
+      "processing": "Normal 1-2 weeks",
+      "validity": "3 months",
+      "visaType": "Single Entry",
+      "category": "Sticker Visa",
+      "price": 750,
+      "currency": "AED",
+      "priceUnit": "per applicant",
+      "blurb": "Sticker Visa · Single Entry for South Africa, valid 3 months.",
+      "fullDescription": "The applicant must visit the VFS Centre. Processing Time: 7–10 Working Days.",
+      "requirements": [
+        "Passport Scan Copy",
+        "2 Recent Printed Photographs",
+        "UAE Emirates ID and Residence Visa Copy",
+        "Trade Licence Copy for Partner Visa Holders",
+        "Last 3 Months’ Bank Statements with Bank Stamp",
+        "Blank Sponsor Letterhead with Official Seal",
+        "Ejari Copy, if Available",
+        "UAE Driving Licence Copy, if Available",
+        "Spouse’s Full Name and Date of Birth",
+        "Email Address",
+        "Mobile Number",
+        "Current Residential Address"
+      ],
+      "image": "https://images.pexels.com/photos/36597753/pexels-photo-36597753.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200"
+    },
+    {
+      "key": "philippines",
+      "name": "Philippines Visa",
+      "country": "Philippines",
+      "processing": "Normal 1-2 weeks",
+      "validity": "3 months",
+      "visaType": "Single Entry",
+      "category": "Sticker Visa",
+      "price": 700,
+      "currency": "AED",
+      "priceUnit": "per applicant",
+      "blurb": "Sticker Visa · Single Entry for Philippines, valid 3 months.",
+      "fullDescription": "260 - VFS fee. The applicant must visit the embassy. Processing Time: 7–10 Working Days.",
+      "requirements": [
+        "Passport Scan Copy",
+        "2 Recent Photographs – Printed and JPG Copies",
+        "UAE Emirates ID and Residence Visa Copy",
+        "Trade Licence Copy for Partner Visa Holders",
+        "Last 3 Months’ Bank Statements with Bank Stamp",
+        "Blank Sponsor Letterhead with Official Seal",
+        "Ejari Copy, if Available",
+        "UAE Driving Licence Copy, if Available",
+        "Email Address",
+        "Mobile Number",
+        "Current Residential Address"
+      ],
+      "image": "https://images.pexels.com/photos/31533424/pexels-photo-31533424.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200"
+    },
+    {
+      "key": "russia",
+      "name": "Russia Visa",
+      "country": "Russia",
+      "processing": "Normal 30 - 40 days",
+      "validity": "5-7 days",
+      "visaType": "Single Entry",
+      "category": "Sticker Visa",
+      "price": 0,
+      "currency": "AED",
+      "priceUnit": "per applicant",
+      "blurb": "Sticker Visa · Single Entry for Russia, valid 5-7 days.",
+      "fullDescription": "Price depends on nationality. The agent will submit the application file to the embassy. Processing Time: 30–40 Days. Passport Scan Copy. 2 Recent Photographs – Printed and JPG Copies. UAE Emirates ID and Residence Visa Copy. Trade Licence Copy for Partner Visa Holders. Last 3 Months’ Bank Statements with Bank Stamp. Passport Scan. 2 Recent Photo. UAE Emirates ID and Residence Visa Copy. Trade Licence Copy for Partner Visa Holders. Last 3 Months’ BankR SEtQatUeImReEnDts D wOitCh UBManEkN STtSa mp.",
+      "requirements": [
+        "Original Passport",
+        "2 Recent Printed Photographs",
+        "UAE Emirates ID and Residence Visa Copy",
+        "Trade Licence Copy for Partner Visa Holders"
+      ],
+      "image": "https://images.pexels.com/photos/10000075/pexels-photo-10000075.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200"
+    },
+    {
+      "key": "montenegro",
+      "name": "Montenegro Visa",
+      "country": "Montenegro",
+      "processing": "Normal 1-2 weeks",
+      "validity": "3 months",
+      "visaType": "Single Entry",
+      "category": "Sticker Visa",
+      "price": 750,
+      "currency": "AED",
+      "priceUnit": "per applicant",
+      "blurb": "Sticker Visa · Single Entry for Montenegro, valid 3 months.",
+      "fullDescription": "The applicant must visit the embassy. Processing Time: 7–10 Working Days.",
+      "requirements": [
+        "Blank Sponsor Letterhead with Official Seal",
+        "Ejari Copy, if Available",
+        "UAE Driving Licence Copy, if Available",
+        "Previous Travel History",
+        "Email Address",
+        "Mobile Number",
+        "Current Residential Address"
+      ],
+      "image": "https://images.pexels.com/photos/18924404/pexels-photo-18924404.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200"
+    },
+    {
+      "key": "india",
+      "name": "India Visa",
+      "country": "India",
+      "processing": "Normal 1-2 weeks",
+      "validity": "3 months",
+      "visaType": "Single Entry",
+      "category": "Sticker Visa",
+      "price": 350,
+      "currency": "AED",
+      "priceUnit": "per applicant",
+      "blurb": "Sticker Visa · Single Entry for India, valid 3 months.",
+      "fullDescription": "Consulate directly. The applicant must visit the BLS Centre. Processing Time: 7–10 Working Days.",
+      "requirements": [
+        "Passport Scan Copy",
+        "2 Recent Printed Photographs",
+        "UAE Emirates ID and Residence Visa Copy",
+        "Trade Licence Copy for Partner Visa Holders",
+        "Bangladeshi NID or Birth Certificate Copy",
+        "Last 6 Months’ Bank Statements with Bank Stamp",
+        "Blank Sponsor Letterhead with Official Seal",
+        "Ejari Copy, if Available",
+        "UAE Driving Licence Copy, if Available",
+        "Previous Travel History",
+        "Email Address",
+        "Mobile Number",
+        "Current Residential Address"
+      ],
+      "image": "https://images.pexels.com/photos/17477652/pexels-photo-17477652.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200"
+    },
+    {
+      "key": "qatar",
+      "name": "Qatar Visa",
+      "country": "Qatar",
+      "processing": "Normal 2-5 days",
+      "validity": "3 months",
+      "visaType": "Single Entry",
+      "category": "E-Visa",
+      "price": 300,
+      "currency": "AED",
+      "priceUnit": "per applicant",
+      "blurb": "E-Visa · Single Entry for Qatar, valid 3 months.",
+      "fullDescription": "The agent will submit the application online. Processing Time: 1–3 Working Days.",
+      "requirements": [
+        "Passport Scan Copy",
+        "1 Recent Photograph in JPG Format",
+        "UAE Emirates ID Copy",
+        "UAE Residence Visa Copy"
+      ],
+      "image": "https://images.pexels.com/photos/10742619/pexels-photo-10742619.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200"
+    },
+    {
+      "key": "hong-kong",
+      "name": "Hong Kong Visa",
+      "country": "Hong Kong",
+      "processing": "Normal 45-60 days",
+      "validity": "3 months",
+      "visaType": "Single Entry",
+      "category": "E-Visa",
+      "price": 700,
+      "currency": "AED",
+      "priceUnit": "per applicant",
+      "blurb": "E-Visa · Single Entry for Hong Kong, valid 3 months.",
+      "fullDescription": "The agent will submit the application online. Processing Time: 45–60 Days.",
+      "requirements": [
+        "Passport Scan Copy",
+        "1 Recent Photograph in JPG Format",
+        "UAE Emirates ID and Residence Visa Copy",
+        "Trade Licence Copy for Partner Visa Holders",
+        "Last 3 Months’ Bank Statements with Bank Stamp",
+        "Blank Sponsor Letterhead with Official Seal",
+        "Ejari Copy, if Available",
+        "UAE Driving Licence Copy, if Available",
+        "Previous Travel History",
+        "Email Address",
+        "Mobile Number",
+        "Current Residential Address",
+        "Family Details",
+        "Educational Details",
+        "Employment Details"
+      ],
+      "image": "https://images.pexels.com/photos/26970225/pexels-photo-26970225.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200"
+    },
+    {
+      "key": "vietnam",
+      "name": "Vietnam Visa",
+      "country": "Vietnam",
+      "processing": "Normal 7–10 Working Days",
+      "validity": "15 days",
+      "visaType": "Single Entry",
+      "category": "E-Visa",
+      "price": 0,
+      "currency": "AED",
+      "priceUnit": "per applicant",
+      "blurb": "E-Visa · Single Entry for Vietnam, valid 15 days.",
+      "fullDescription": "Price depends on nationality.",
+      "requirements": [
+        "Passport Copy",
+        "Recent Photograph in JPG Format",
+        "Processing Time:",
+        "7–10 Working Days"
+      ],
+      "image": "https://images.pexels.com/photos/38116420/pexels-photo-38116420.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200"
+    },
+    {
+      "key": "kyrgyzstan",
+      "name": "Kyrgyzstan Visa",
+      "country": "Kyrgyzstan",
+      "processing": "EXPRESS/DONE Base 1-2 weeks",
+      "validity": "1 month",
+      "visaType": "Single Entry",
+      "category": "Sticker Visa",
+      "price": 1000,
+      "currency": "AED",
+      "priceUnit": "per applicant",
+      "blurb": "Sticker Visa · Single Entry for Kyrgyzstan, valid 1 month.",
+      "fullDescription": "The agent will submit the application file to the embassy. Processing Time: 3–7 Working Days.",
+      "requirements": [
+        "Original Passport",
+        "2 Recent Photographs – JPG and Printed Copies",
+        "UAE Emirates ID and Residence Visa Copy",
+        "Trade Licence Copy for Partner Visa Holders"
+      ],
+      "image": "https://images.pexels.com/photos/30910768/pexels-photo-30910768.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200"
+    },
+    {
+      "key": "tajikistan",
+      "name": "Tajikistan Visa",
+      "country": "Tajikistan",
+      "processing": "",
+      "validity": "1 month",
+      "visaType": "Single Entry",
+      "category": "Sticker Visa",
+      "price": 850,
+      "currency": "AED",
+      "priceUnit": "per applicant",
+      "blurb": "Sticker Visa · Single Entry for Tajikistan, valid 1 month.",
+      "fullDescription": "The agent will submit the application file to the embassy. Processing Time: 3–7 Working Days.",
+      "requirements": [
+        "Original Passport",
+        "2 Recent Photographs – JPG and Printed Copies",
+        "UAE Emirates ID and Residence Visa Copy",
+        "Trade Licence Copy for Partner Visa Holders"
+      ],
+      "image": "https://images.pexels.com/photos/12629557/pexels-photo-12629557.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200"
+    }
+  ],
+  "mice": [
+    {
+      "key": "meetings",
+      "icon": "meetings",
+      "name": "Meetings",
+      "blurb": "Rooms, arrivals and everything around them handled, so the only thing your people have to think about is the agenda.",
+      "items": [
+        "Corporate Meetings",
+        "Business Meetings",
+        "Board Meetings",
+        "Sales & Annual Meetings"
+      ],
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Meeting_with_the_Board_of_Directors_of_NAITA.jpg/960px-Meeting_with_the_Board_of_Directors_of_NAITA.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+    },
+    {
+      "key": "incentive-travel",
+      "icon": "incentive",
+      "name": "Incentive Travel",
+      "blurb": "The trip people actually want to win — planned end to end, with the logistics invisible to everyone but you.",
+      "items": [
+        "Corporate Incentive Trips",
+        "Employee Reward Trips",
+        "Team-Building Tours",
+        "Luxury Group Experiences"
+      ],
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/The_Four_Seasons_Hotel_%26_Resort_Macau_Swimming_Pool_2009.jpg/960px-The_Four_Seasons_Hotel_%26_Resort_Macau_Swimming_Pool_2009.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+    },
+    {
+      "key": "conferences",
+      "icon": "conference",
+      "name": "Conferences & Conventions",
+      "blurb": "Delegates from a dozen countries, one schedule. Flights, transfers, rooms and the venue itself, coordinated from one desk.",
+      "items": [
+        "International Conferences",
+        "Corporate Conferences",
+        "Seminars & Workshops",
+        "Convention Travel & Management"
+      ],
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Audience_-_Saroj_Ghose_Address_-_Strategic_Transformations_-_Museums_in_21st_Century_-_International_Conference_and_Seminar_-_Kolkata_2014-02-14_3013.JPG/960px-Audience_-_Saroj_Ghose_Address_-_Strategic_Transformations_-_Museums_in_21st_Century_-_International_Conference_and_Seminar_-_Kolkata_2014-02-14_3013.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+    },
+    {
+      "key": "exhibitions",
+      "icon": "exhibition",
+      "name": "Exhibitions & Trade Shows",
+      "blurb": "Whether you are exhibiting or attending, the stand and the people reach the hall on time and in one piece.",
+      "items": [
+        "Exhibition Travel",
+        "Trade Fair Packages",
+        "Exhibitor & Visitor Arrangements",
+        "Business Delegation Travel"
+      ],
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/MESAP_2015._-_razni_%C5%A1tandovi.jpg/960px-MESAP_2015._-_razni_%C5%A1tandovi.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+    },
+    {
+      "key": "corporate-events",
+      "icon": "corporateEvent",
+      "name": "Corporate Events",
+      "blurb": "The evenings that get remembered — staged, catered and run, from a product launch to an awards night.",
+      "items": [
+        "Product Launches",
+        "Gala Dinners",
+        "Award Ceremonies",
+        "Networking Events",
+        "Corporate Celebrations"
+      ],
+      "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/DFC_2934_Hosts_present_on_a_brightly_lit_stage_in_front_of_large_screens_as_an_audience_watches_an_evening_awards_ceremony.jpg/960px-DFC_2934_Hosts_present_on_a_brightly_lit_stage_in_front_of_large_screens_as_an_audience_watches_an_evening_awards_ceremony.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+    }
+  ],
+  "copy": {
+    "activities": {
+      "title": "Activities & Experiences",
+      "intro": "Desert, water, culture and sky — single experiences you can book on their own or fold into a longer trip."
+    },
+    "packages": {
+      "title": "Travel Packages",
+      "intro": "Multi-day journeys across Africa, Asia and beyond, planned end to end so every connection is already handled."
+    },
+    "destinations": {
+      "title": "Destinations",
+      "intro": "Fifteen countries we know well enough to plan around you, from the UAE on your doorstep to the far side of the world."
+    },
+    "services": {
+      "title": "Services",
+      "intro": "Flights, stays, transfers and a team on call — the parts of a journey that hold everything else together."
+    },
+    "mice": {
+      "title": "MICE & Corporate Travel",
+      "intro": "Meetings, incentives, conferences and exhibitions — planned, booked and run by one team, from the first flight to the closing dinner."
+    },
+    "visa": {
+      "title": "Visa Services",
+      "intro": "Applications prepared, submitted and tracked, so the paperwork is never the reason a trip does not happen."
+    }
+  }
+}

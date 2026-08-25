@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — BGS Travel &amp; Tourism</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png?v=139" />
+  <link rel="icon" type="image/png" sizes="512x512" href="../assets/icon-512.png?v=139" />
+  <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png?v=139" />
+  <!-- styles.css for the design tokens admin.css reads (--navy, --gold, --cream).
+       pages.css is deliberately not here: nothing in this page matched a single
+       one of its selectors except .page-eyebrow, which admin.css now carries,
+       and its body.page rule paints a 10KB inline contour SVG that admin.css
+       immediately covers over. 36KB computed and thrown away, on the one page
+       whose whole job is a login box. -->
+  <link rel="stylesheet" href="../styles.css?v=139" />
+  <link rel="stylesheet" href="../admin.css?v=139" />
+  <script type="module" src="../js/admin.js?v=139"></script>
+</head>
+<body class="page admin">
+
+  <section class="admin-login" id="admin-login">
+    <form class="admin-login-card" id="login-form">
+      <p class="page-eyebrow">BGS Travel &amp; Tourism</p>
+      <h1>Admin</h1>
+      <p class="admin-login-hint" id="login-hint">Enter the admin password to manage site content.</p>
+      <label class="admin-field" id="login-email-field" hidden>Email
+        <input id="login-email" type="email" autocomplete="username" />
+      </label>
+      <label class="admin-field">Password
+        <input id="login-password" type="password" autocomplete="current-password" required />
+      </label>
+      <p class="admin-error" id="login-error"></p>
+      <button class="pill-button" type="submit"><span>Sign in</span></button>
+    </form>
+  </section>
+
+  <div id="admin-app" hidden>
+    <header class="admin-header">
+      <div>
+        <p class="page-eyebrow">
+          <img class="admin-mark" src="../assets/monogram-96.webp?v=139" alt="" width="20" height="20" />
+          Content manager
+        </p>
+        <h1 class="admin-heading">BGS Admin</h1>
+      </div>
+      <div class="admin-header-actions">
+        <a class="admin-btn" href="../index.html">View site</a>
+        <button class="admin-btn" id="admin-logout" type="button">Lock</button>
+      </div>
+    </header>
+
+    <p class="admin-warning" id="default-password-warning" hidden>
+      You are still using the default password. Change it below.
+    </p>
+
+    <nav class="admin-tabs" id="admin-tabs" aria-label="Content collections"></nav>
+
+    <section class="admin-panel">
+      <div class="admin-panel-head">
+        <span class="admin-count" id="admin-count"></span>
+        <div class="admin-panel-actions">
+          <button class="admin-btn admin-btn-primary" id="admin-add" type="button">Add new</button>
+          <button class="admin-btn" id="admin-reset" type="button">Restore this section</button>
+        </div>
+      </div>
+      <ul class="admin-list" id="admin-list"></ul>
+    </section>
+
+    <section class="admin-panel">
+      <h2 class="admin-subheading">Update from a spreadsheet</h2>
+      <p class="admin-note">
+        Drop a workbook with a tab per section — Visa, Packages, Activities,
+        Destinations, Services, MICE. Only the tabs in the file are touched, and
+        nothing is saved until you have seen what will change. Photographs on
+        existing records are kept; a vendor cost column is ignored.
+      </p>
+      <label class="sheet-drop" id="sheet-drop">
+        <input id="sheet-file" type="file"
+               accept=".xlsx,.xlsm,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden />
+        <span class="sheet-drop-title">Drop a spreadsheet here</span>
+        <span class="sheet-drop-hint">or click to choose — .xlsx or .csv</span>
+      </label>
+      <div class="admin-panel-actions">
+        <button class="admin-btn" id="sheet-template" type="button">Download template</button>
+        <button class="admin-btn" id="sheet-export" type="button">Export XLSX</button>
+        <button class="admin-btn" id="sheet-export-csv" type="button">Export CSV (this tab)</button>
+      </div>
+      <p class="admin-note" id="sheet-status" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="admin-panel">
+      <h2 class="admin-subheading">Backup</h2>
+      <p class="admin-note">
+        Edits live in this browser only until Firebase is connected. Export before
+        clearing browser data, or the changes are gone.
+      </p>
+      <div class="admin-panel-actions">
+        <button class="admin-btn" id="admin-export" type="button">Export JSON</button>
+        <label class="admin-btn">Import JSON
+          <input id="admin-import" type="file" accept="application/json" hidden />
+        </label>
+        <button class="admin-btn admin-btn-danger" id="admin-reset-all" type="button">Restore everything</button>
+      </div>
+    </section>
+
+    <section class="admin-panel">
+      <h2 class="admin-subheading">Password</h2>
+      <form class="admin-password" id="password-form">
+        <label class="admin-field">New password
+          <input id="new-password" type="password" autocomplete="new-password" required />
+        </label>
+        <label class="admin-field">Confirm
+          <input id="confirm-password" type="password" autocomplete="new-password" required />
+        </label>
+        <button class="admin-btn admin-btn-primary" type="submit">Change password</button>
+      </form>
+      <p class="admin-error" id="password-status"></p>
+      <p class="admin-note">
+        This lock runs in the browser, so it keeps casual visitors out but is not
+        real security. Firebase Auth replaces it when the backend is connected.
+      </p>
+    </section>
+  </div>
+
+  <dialog class="admin-editor" id="admin-editor">
+    <h2 id="editor-title"></h2>
+    <div class="admin-editor-fields" id="editor-fields"></div>
+    <p class="admin-error" id="editor-error"></p>
+    <div class="admin-editor-actions">
+      <button class="admin-btn" id="editor-cancel" type="button">Cancel</button>
+      <button class="admin-btn admin-btn-primary" id="editor-save" type="button">Save</button>
+    </div>
+  </dialog>
+
+  <p class="admin-toast" id="admin-toast" data-shown="false"></p>
+  <!-- What a dropped spreadsheet would change. Rendered by js/admin.js -->
+  <dialog class="sheet-dialog" id="sheet-dialog" aria-labelledby="sheet-dialog-title">
+    <article class="sheet-dialog-panel">
+      <header class="sheet-dialog-head">
+        <h2 id="sheet-dialog-title">Review changes</h2>
+        <button class="sheet-dialog-close" type="button" data-sheet-cancel aria-label="Cancel">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor"
+               stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6.5 6.5l11 11M17.5 6.5l-11 11" /></svg>
+        </button>
+      </header>
+      <div class="sheet-dialog-body" id="sheet-dialog-body"></div>
+      <footer class="sheet-dialog-foot">
+        <button class="admin-btn" type="button" data-sheet-cancel>Cancel</button>
+        <button class="admin-btn" id="sheet-apply-merge" type="button">Merge</button>
+        <button class="admin-btn admin-btn-danger" id="sheet-apply-replace" type="button">Replace</button>
+      </footer>
+    </article>
+  </dialog>
+</body>
+</html>

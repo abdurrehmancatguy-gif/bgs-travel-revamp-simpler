@@ -1,0 +1,122 @@
+# The site is plain ES modules with no bundler, so this build does one thing:
+# write the catalogue into the HTML before publishing. Everything else about the
+# source tree is copied across untouched.
+#
+# It reads content from Firestore at build time over the public REST endpoint,
+# so a content change needs a redeploy to reach the pre-rendered HTML. The
+# browser still live-updates from Firestore, so visitors see edits immediately
+# either way — it is only the crawler-visible copy that waits for a build.
+
+[build]
+  # npm ci --omit=optional would skip esbuild, which is the one thing this
+  # install exists for. The build tolerates its absence, but only as a fallback.
+  command = "npm install && node build/build.mjs"
+  publish = "dist"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Hashed-by-version assets can be cached hard; HTML must not be, or an edit
+# takes a day to show up.
+# HTML is the one thing that must never go stale in a browser, and the one
+# thing worth caching at the edge.
+#
+# max-age=0 keeps the browser honest: a visitor always revalidates, so an edit
+# is never more than a refresh away.
+#
+# s-maxage lets Cloudflare answer from the edge instead of asking Netlify every
+# single time. That round trip was the largest fixed cost on the whole site —
+# measured at 350-850ms of server wait on a 6.6KB document, on top of 280ms of
+# connect and TLS, before a single byte could render.
+#
+# stale-while-revalidate is what makes it safe to keep s-maxage short: for a day
+# after a page goes stale the edge serves the old copy immediately and fetches
+# the new one behind the visitor's back, so nobody ever waits for a rebuild.
+#
+# Five minutes of staleness costs nothing here. The catalogue reaches the
+# browser from Firestore on every load regardless of what the HTML says, so a
+# slightly old document affects only what a crawler sees, and only briefly.
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, s-maxage=300, stale-while-revalidate=86400, must-revalidate"
+
+# Netlify serves "/" and "/visa" from the same files, and the rule above matches
+# only the .html spelling.
+[[headers]]
+  for = "/"
+  [headers.values]
+    Cache-Control = "public, max-age=0, s-maxage=300, stale-while-revalidate=86400, must-revalidate"
+
+# The comment above was aspirational: no rule ever granted it, so Netlify's
+# default applied and every asset came back "max-age=0, must-revalidate". A
+# returning visitor was therefore re-validating all seven scene layers on every
+# single load — seven round trips before the hero could paint, even when the
+# answer was always 304 Not Modified.
+#
+# Safe to cache for a year because these URLs carry a revision: the scene layers
+# are requested as ?rev=N (data/images.js) and everything else under /assets is
+# either versioned or genuinely immutable. Change the pixels, change the rev.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Same reasoning for the modules and stylesheets, which already carry ?v=N and
+# get that number bumped on every change.
+[[headers]]
+  for = "/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/data/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/utils/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# The two stylesheets sit at the root, so the /js/* and /assets/* rules never
+# reached them and they fell through to a four-hour revalidate. They carry ?v=
+# like everything else and are just as immutable.
+[[headers]]
+  for = "/styles.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/pages.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/admin.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+
+# The Netlify address still serves the whole site, so until this rule the same
+# 74 pages existed on two hosts with nothing saying which was real. One 301 to
+# the domain, so a link to the old address keeps working and a crawler only ever
+# indexes one copy.
+#
+# force = true because the path exists on both hosts; without it Netlify would
+# serve the file rather than redirect.
+[[redirects]]
+  from = "https://bgs-travel-and-tourism.netlify.app/*"
+  to = "https://bgstravelandtourism.com/:splat"
+  status = 301
+  force = true
