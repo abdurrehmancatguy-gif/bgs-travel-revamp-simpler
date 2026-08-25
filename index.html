@@ -5,438 +5,225 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>BGS Travel &amp; Tourism — Dubai escapes and journeys worldwide</title>
   <meta name="description" content="BGS Travel &amp; Tourism plans Dubai escapes, African safaris and tailor-made journeys across Asia, Europe and beyond — flights, stays, visas and transfers handled by one team." />
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png?v=139" />
-  <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png?v=139" />
-  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=139" />
-  <!-- The typeface, which blocks nothing but is wanted early: font-display is
-       swap, so a late arrival means the headline visibly re-renders in a
-       different face. crossorigin because fonts are fetched in CORS mode, and
-       a preconnect without it opens the wrong kind of connection and is simply
-       not reused.
-
-       The two Wikimedia preconnects that used to sit here were removed: the
-       homepage contacts neither, so they were two speculative handshakes that
-       never carried a byte. -->
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png?v=183" />
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png?v=183" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=183" />
+  <!-- The typeface host. font-display is swap, so a late arrival re-renders the
+       headline in a different face; the preconnect buys the handshake back.
+       crossorigin because fonts fetch in CORS mode — without it the connection
+       opened here is the wrong kind and simply not reused. -->
   <link rel="preconnect" href="https://dcym8fthxf5uu.cloudfront.net" crossorigin />
-  <link rel="preload" as="image" href="assets/monogram-96.webp?v=139" fetchpriority="high" />
-  <link rel="stylesheet" href="styles.css?v=139" />
-
-  <!--
-    The opening curtain, inline rather than in styles.css or main.js on purpose.
-
-    A loading screen that arrives late is worse than none: the stylesheet is a
-    blocking request and the module graph lands about a second after that, so an
-    overlay defined in either would flash in after the visitor had already been
-    looking at the page. Inlined here it paints on the first frame.
-
-    It is one screen deep and only shown once a session — see the script at the
-    end of <body>, which also carries the failsafes.
-  -->
-  <style>
-    #boot {
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      display: grid;
-      place-items: center;
-      gap: 1.4rem;
-      background: #080f18;
-      color: #fff6e8;
-      font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
-      /* Painted out rather than displayed out, so the scene behind it is
-         already composited by the time the fade finishes. */
-      opacity: 1;
-      transition: opacity 520ms ease;
-    }
-    #boot[data-done] { opacity: 0; pointer-events: none; }
-
-    .boot-inner { display: grid; justify-items: center; gap: 1.15rem; text-align: center; }
-
-    .boot-mark {
-      width: 74px; height: 74px;
-      display: grid; place-items: center;
-      border-radius: 50%;
-      /* A ring so the circle reads as deliberate in the moment before the
-         monogram itself decodes. */
-      box-shadow: inset 0 0 0 1px rgba(232, 148, 26, 0.28);
-      animation: boot-breathe 2.4s ease-in-out infinite;
-    }
-    .boot-mark img { width: 46px; height: 46px; display: block; }
-
-    .boot-name {
-      font-size: 0.95rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: rgba(255, 246, 232, 0.82);
-    }
-    .boot-place {
-      font-size: 0.68rem;
-      letter-spacing: 0.34em;
-      text-transform: uppercase;
-      color: rgba(255, 246, 232, 0.42);
-      margin-top: -0.7rem;
-    }
-
-    .boot-bar {
-      width: min(190px, 46vw);
-      height: 2px;
-      border-radius: 2px;
-      background: rgba(255, 246, 232, 0.12);
-      overflow: hidden;
-    }
-    /* Width tracks real decoded images, set by the script. A bar that animates
-       on a timer while the page is still fetching is a lie the visitor can
-       feel, because it finishes before the site does. */
-    .boot-fill {
-      display: block;
-      height: 100%;
-      width: 0%;
-      border-radius: inherit;
-      background: linear-gradient(90deg, #e8941a, #f5a832);
-      transition: width 320ms ease;
-    }
-
-    @keyframes boot-breathe {
-      0%, 100% { transform: scale(1);    opacity: 0.9; }
-      50%      { transform: scale(1.06); opacity: 1; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .boot-mark { animation: none; }
-      #boot, .boot-fill { transition: none; }
-    }
-
-    /* Without scripting nothing would ever take the curtain down, so it must
-       not go up in the first place. */
-    .no-js #boot { display: none; }
-  </style>
-  <noscript><style>#boot { display: none !important; }</style></noscript>
-  <script type="module" src="js/analytics.js?v=139"></script>
-  <script type="module" src="js/main.js?v=139"></script>
-  <!-- BGS One rewards badge, served by the hub at bgscorner.com. Bump the
-       ?v= token whenever the widget itself changes: the hub serves it with a
-       one-year immutable cache, so without a new token browsers keep the old
-       module. It renders nothing at all unless a [data-bgs-loyalty] element
-       is present on the page. -->
+  <link rel="stylesheet" href="styles.css?v=183" />
+  <link rel="stylesheet" href="pages.css?v=183" />
+  <link rel="stylesheet" href="home.css?v=183" />
+  <script type="module" src="js/analytics.js?v=183"></script>
+  <script type="module" src="js/home.js?v=183"></script>
+  <!-- BGS One rewards badge, served by the hub at bgscorner.com. Renders
+       nothing unless a [data-bgs-loyalty] element is present on the page. -->
   <script type="module" src="https://www.bgscorner.com/loyalty-widget.js?v=1"></script>
 </head>
-<body>
-  <!-- role=status rather than a live region that announces every percentage:
-       a screen reader should hear "Loading" once, not a stream of numbers. -->
-  <div id="boot" role="status" aria-label="Loading BGS Travel &amp; Tourism">
-    <div class="boot-inner">
-      <span class="boot-mark">
-        <img src="assets/monogram-96.webp?v=139" alt="" width="46" height="46" />
+<body class="page home">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header" aria-label="Primary navigation">
+    <a class="site-logo" href="index.html">
+      <img class="site-logo-mark" src="assets/monogram-96.webp?v=183" alt="" width="40" height="40" />
+      <span class="site-logo-text">
+        <span class="site-logo-name">BGS Travel &amp; Tourism</span>
+        <span class="site-logo-place">Dubai, UAE</span>
       </span>
-      <span class="boot-name">BGS Travel &amp; Tourism</span>
-      <span class="boot-place">Dubai, UAE</span>
-      <span class="boot-bar"><span class="boot-fill" id="boot-fill"></span></span>
+    </a>
+    <nav class="site-nav" id="site-nav" aria-label="Main menu"></nav>
+
+    <div class="header-utility">
+      <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false"
+              aria-controls="nav-drawer" aria-label="Open menu">
+        <span class="nav-toggle-bar" aria-hidden="true"></span>
+        <span class="nav-toggle-bar" aria-hidden="true"></span>
+      </button>
     </div>
-  </div>
+  </header>
 
-  <a class="skip-link" href="#scene-intro">Skip to main content</a>
+  <!-- Phones only; on a wide screen the header row lists these already. -->
+  <nav class="page-categories" id="page-categories" aria-label="Browse categories"></nav>
 
-  <main class="site-shell">
-    <section class="cinema-scroll" id="cinema" aria-label="BGS Travel &amp; Tourism">
-      <div class="stage">
-        <div class="world">
-          <img class="scene-layer layer-sky" id="layer-sky" src="" alt="" fetchpriority="high" />
+  <!-- tabindex="-1" so the skip link can hand focus here, not just scroll. -->
+  <!-- tabindex="-1" so the skip link can hand focus here, not just scroll. -->
+  <main id="main" tabindex="-1">
+    <!-- ============================================================= ticker -->
+    <!-- True by construction: counts and plain facts, rendered from the
+         catalogue by js/home.js. Decorative for assistive tech — the same
+         facts appear as real text further down the page. -->
+    <div class="hm-ticker" aria-hidden="true">
+      <div class="hm-ticker-track" id="hm-ticker-track"></div>
+    </div>
 
-          <header class="site-header" aria-label="Primary navigation">
-                  <a class="site-logo" href="#scene-intro" data-scene-link="intro">
-            <img class="site-logo-mark" src="assets/monogram-96.webp?v=139" alt="" width="40" height="40" />
-            <span class="site-logo-text">
-              <span class="site-logo-name">BGS Travel &amp; Tourism</span>
-              <span class="site-logo-place">Dubai, UAE</span>
-            </span>
-                  </a>
+    <!-- =============================================================== hero -->
+    <section class="hm-hero" aria-label="BGS Travel &amp; Tourism">
+      <p class="hm-eyebrow hm-reveal" data-hc="eyebrow">Dubai, UAE — travel &amp; tourism</p>
+      <h1 class="hm-title">
+        <span class="hm-reveal" data-hc="titleA">Consider your trip</span>
+        <span class="hm-reveal"><em data-hc="titleB">halfway planned.</em></span>
+      </h1>
+      <p class="hm-sub hm-reveal" data-hc="subtitle">
+        Visas, flights, stays and journeys built around you — one team handles
+        the paperwork and the planning, from the first idea to the trip home.
+      </p>
 
-            <nav class="hero-categories" id="hero-categories" aria-label="Browse categories"></nav>
-
-            <nav class="site-nav" id="site-nav" aria-label="Main menu">
-              <!-- Menus render from data/navigation.js -->
-            </nav>
-
-            <div class="header-utility">
-              <button class="nav-toggle" id="nav-toggle" type="button"
-                        aria-expanded="false" aria-controls="nav-drawer"
-                        aria-label="Open menu">
-                  <span class="nav-toggle-bar" aria-hidden="true"></span>
-                  <span class="nav-toggle-bar" aria-hidden="true"></span>
-                </button>
-            </div>
-
-          </header>
-
-          <div class="depth-stack">
-            <img class="scene-layer layer-depth layer-glow" id="layer-glow" src="" alt="" loading="lazy" />
-
-            <section class="package-rail" id="package-rail" aria-label="BGS travel packages">
-              <div class="package-track" id="package-track" tabindex="0" role="group"
-                   aria-roledescription="carousel" aria-label="Package carousel — use the left and right arrow keys">
-                <!-- Cards render from data/packages.js -->
-              </div>
-            </section>
-
-            <img class="scene-layer layer-depth layer-city" id="layer-city" src="" alt="" loading="lazy" />
+      <!-- Kept exactly this container: the build writes the buttons in for
+           crawlers and js/home.js re-renders them from the store. -->
+      <div class="hero-pills hm-reveal" role="group" aria-label="Start planning">
+            <button class="hero-pill" type="button" data-page="visa" data-query="Saudi Multiple Entry Visa" data-open="1">Saudi Multiple Visa</button>
+            <button class="hero-pill" type="button" data-page="visa" data-query="Schengen Visa" data-open="1">Schengen Visa</button>
+            <button class="hero-pill" type="button" data-page="mice" data-query="">MICE</button>
           </div>
 
-          <div class="rail-controls" id="rail-controls" role="group" aria-label="Carousel controls">
-            <p class="rail-filter" id="rail-filter" role="status" aria-live="polite"></p>
-            <div class="rail-buttons">
-              <button class="rail-nav rail-prev" type="button" aria-label="Previous package">
-                <span aria-hidden="true">&#8592;</span>
-              </button>
-              <button class="rail-nav rail-next" type="button" aria-label="Next package">
-                <span aria-hidden="true">&#8594;</span>
-              </button>
-              <button class="rail-browse-all" id="rail-browse-all" type="button">
-                Browse All Packages
-              </button>
-            </div>
-          </div>
+      <div class="hm-hero-actions hm-reveal">
+        <button class="hm-btn hm-btn-dark" id="hm-chat" type="button">
+          <span data-hc="chatLabel">Chat on WhatsApp</span>
+          <span class="hm-dot" aria-hidden="true"></span>
+        </button>
+        <a class="hm-btn hm-btn-line" href="visa.html" data-hc="browseLabel">Browse visa services</a>
+      </div>
+    </section>
 
-          <h1 class="hero-title" id="scene-intro">
-            <span class="hero-title-line">BGS Travel</span>
-            <span class="hero-title-line">&amp; Tourism</span>
-          </h1>
+    <!-- ============================================================= banner -->
+    <!-- The arch, at banner size: the brand's portal motif holding two of the
+         scene plates, spanning the page rather than sitting in a corner. The
+         sky settles in once, the city is nudged by scroll (js/home.js), and
+         the lead card floats over its right side on wide screens. -->
+    <section class="hm-banner" aria-label="Start a journey">
+      <div class="hm-arch" aria-hidden="true">
+        <picture>
+          <source srcset="assets/scene/sky-1024.avif?rev=1 1024w, assets/scene/sky.avif?rev=1 2048w"
+                  sizes="(max-width: 1320px) 96vw, 1280px" type="image/avif" />
+          <img class="hm-arch-sky" src="assets/scene/sky.webp?rev=1" alt=""
+               loading="eager" fetchpriority="high" decoding="async" />
+        </picture>
+        <picture>
+          <source srcset="assets/scene/city-1024.avif?rev=1 1024w, assets/scene/city.avif?rev=1 2048w"
+                  sizes="(max-width: 1320px) 96vw, 1280px" type="image/avif" />
+          <img class="hm-arch-city" id="hm-arch-city" src="assets/scene/city.webp?rev=1" alt=""
+               loading="eager" decoding="async" />
+        </picture>
+      </div>
 
-          <img class="scene-layer layer-curtain curtain-left" id="layer-curtain-left" src="" alt="" loading="lazy" />
-          <img class="scene-layer layer-curtain curtain-right" id="layer-curtain-right" src="" alt="" loading="lazy" />
+    </section>
 
-          <img class="scene-layer layer-portal" id="layer-portal" src="" alt="" loading="lazy" />
+      <!-- The lead card. No backend and none pretended: Start composes a
+           WhatsApp message to the team with what was typed, which is where
+           every enquiry already lands. Nothing is stored anywhere. -->
+      <div class="hm-form-wrap hm-reveal">
+        <div class="hm-glow" aria-hidden="true"></div>
+        <form class="hm-form-card" id="hm-form" novalidate>
+          <h2 class="hm-form-title" data-hc="formTitle">Where do you want to go?</h2>
+          <p class="hm-form-sub" data-hc="formSub">Tell us the two things that matter — we take it from there on WhatsApp.</p>
+          <label class="hm-field">
+            <span>Your name</span>
+            <input id="hm-form-name" name="name" type="text" autocomplete="name"
+                   placeholder="Full name" required />
+          </label>
+          <label class="hm-field">
+            <span>Destination</span>
+            <input id="hm-form-dest" name="destination" type="text" list="hm-dest-list"
+                   placeholder="Schengen, Saudi Arabia, Bali…" required />
+            <datalist id="hm-dest-list"></datalist>
+          </label>
+          <button class="hm-btn hm-btn-gold hm-form-send" type="submit" data-hc="formButton">Start on WhatsApp</button>
+          <p class="hm-form-note" id="hm-form-note" data-hc="formNote">Opens a WhatsApp chat with our team — nothing is stored on this site.</p>
+        </form>
+      </div>
 
-          <img class="scene-layer layer-reveal" id="layer-reveal" src="" alt="" loading="lazy" />
+    <!-- =========================================================== payments -->
+    <!-- Beneath the banner, as asked: the two instalment providers BGS
+         accepts, named and shown. The label is editable (Homepage → Text). -->
+    <div class="hm-pay hm-reveal">
+      <span class="hm-pay-label" data-hc="payLabel">We accept</span>
+      <img src="assets/pay/tabby.svg?v=183" alt="Tabby" width="128" height="44" loading="lazy" />
+      <img src="assets/pay/tamara.svg?v=183" alt="Tamara" width="138" height="44" loading="lazy" />
+      <span class="hm-pay-note" data-hc="payNote">as well</span>
+    </div>
 
-          <div class="shade"></div>
+    <!-- ============================================================ marquee -->
+    <!-- Destination names from the catalogue, drifting past. Decorative: the
+         real list is a click away, so assistive tech is spared the loop. -->
+    <div class="hm-marquee" aria-hidden="true">
+      <div class="hm-marquee-track" id="hm-marquee-track"></div>
+    </div>
+    <p class="hm-marquee-note hm-reveal" data-hc="marqueeNote">See you in Arabian Travel Mart</p>
+
+    <!-- =========================================================== journeys -->
+    <section class="hm-section" id="journeys" aria-labelledby="hm-journeys-title">
+      <header class="hm-section-head hm-reveal">
+        <p class="hm-eyebrow" data-hc="journeysEyebrow">01 — Begin somewhere</p>
+        <h2 class="hm-h2" id="hm-journeys-title" data-hc="journeysHeading">Chosen journeys</h2>
+        <a class="hm-more" href="packages.html" data-hc="journeysMore">View all packages</a>
+      </header>
+      <!-- The admin-picked row: visas and packages mixed, in the order set
+           under Homepage in the admin. -->
+      <div class="hm-cards" id="hm-cards"></div>
+    </section>
+
+    <!-- =============================================================== band -->
+    <section class="hm-stats" aria-label="BGS Travel &amp; Tourism">
+      <p class="hm-band-line hm-reveal">
+        <span data-hc="bandA">From anywhere</span>
+        <em data-hc="bandB">to everywhere.</em>
+      </p>
+    </section>
+
+    <!-- =========================================================== services -->
+    <section class="hm-section" aria-labelledby="hm-services-title">
+      <header class="hm-section-head hm-reveal">
+        <p class="hm-eyebrow" data-hc="servicesEyebrow">02 — Every detail</p>
+        <h2 class="hm-h2" id="hm-services-title" data-hc="servicesHeading">Handled by one team</h2>
+        <a class="hm-more" href="services.html" data-hc="servicesMore">All services</a>
+      </header>
+      <ul class="hm-services" id="hm-services"></ul>
+    </section>
+
+    <!-- ================================================================ cta -->
+    <section class="hm-cta-band" aria-label="Plan a trip">
+      <div class="hm-cta-panel hm-reveal">
+        <div>
+          <p class="hm-eyebrow hm-eyebrow-oncream" data-hc="ctaEyebrow">03 — Say the word</p>
+          <h2 class="hm-cta-line"><span data-hc="ctaA">The world is waiting.</span><br /><em data-hc="ctaB">Let&rsquo;s take you there.</em></h2>
+          <ul class="hm-cta-list" id="hm-cta-list"></ul>
         </div>
-
-        <section class="hero-copy" aria-label="About BGS Travel &amp; Tourism">
-          <p>
-            From Dubai escapes to once-in-a-lifetime journeys across Africa, Asia,
-            Europe and beyond, we plan every detail so you can experience every moment.
-          </p>
-          <div class="hero-pills" role="group" aria-label="Start planning">
-            <button class="hero-pill" type="button"
-                    data-page="visa" data-query="Saudi">Saudi Multiple Visa</button>
-            <button class="hero-pill" type="button"
-                    data-page="visa" data-query="Schengen">Schengen Visa</button>
-            <button class="hero-pill" type="button" data-page="mice">MICE</button>
-          </div>
-        </section>
-
-        <!-- Decorative: the page scrolls regardless, so this is hidden from AT. -->
-        <div class="scroll-cue" aria-hidden="true">
-          <span class="scroll-cue-label">Scroll</span>
-          <span class="scroll-cue-track"><span class="scroll-cue-dot"></span></span>
+        <div class="hm-cta-actions">
+          <button class="hm-btn hm-btn-dark" id="hm-plan" type="button" data-hc="planLabel">Plan a trip on WhatsApp</button>
+          <a class="hm-btn hm-btn-ghost" href="destinations.html" data-hc="ctaBrowseLabel">Browse destinations</a>
         </div>
-
-        <section class="scene-panel panel-promise" id="scene-promise" aria-label="The BGS promise">
-          <h2>From anywhere<br />to everywhere.</h2>
-          <p>
-            Flights, stays, visas, transfers and unforgettable experiences—connected
-            by one travel team from the first idea to the journey home.
-          </p>
-          <dl class="stats">
-            <div>
-              <dt>10,000+</dt>
-              <dd>Travellers Served</dd>
-            </div>
-            <div>
-              <dt>15</dt>
-              <dd>Destinations Worldwide</dd>
-            </div>
-            <div>
-              <dt>4.9/5</dt>
-              <dd>Average Traveller Rating</dd>
-            </div>
-          </dl>
-        </section>
-
-        <section class="scene-panel panel-discovery" id="scene-discovery" aria-label="Explore BGS packages">
-          <h2>The world is waiting.<br />Let&rsquo;s take you there.</h2>
-          <p>
-            Explore handpicked Dubai experiences, African safaris and international
-            journeys—or ask us to create something entirely around you.
-          </p>
-          <button class="pill-button" id="explore-packages" type="button">
-            <span aria-hidden="true">&#8599;</span>
-            <span>Explore Our Packages</span>
-          </button>
-        </section>
-
-        <section class="scene-panel panel-services" id="scene-services" aria-label="BGS services">
-          <h2>Every detail, handled<br />by one travel team.</h2>
-          <p>
-            From visas and flights to hotels, private transfers and 24/7 concierge
-            assistance, BGS keeps every part of your journey connected.
-          </p>
-          <ul class="service-list" id="service-list">
-            <!-- Services render from data/navigation.js -->
-          </ul>
-          <div class="services-actions">
-            <button class="pill-button" id="plan-trip" type="button">
-              <span aria-hidden="true">&#8599;</span>
-              <span>Plan My Trip</span>
-            </button>
-            <button class="pill-button pill-button-quiet" id="view-all-packages" type="button">
-              <span aria-hidden="true">&#8599;</span>
-              <span>View All Packages</span>
-            </button>
-            <div class="info-actions">
-              <button class="info-button" type="button" data-info="contact">
-                <span class="info-button-dot" aria-hidden="true"></span>
-                <span>Contacts</span>
-              </button>
-              <span class="info-legal">
-                <button class="info-legal-link" type="button" data-info="privacy">Privacy</button>
-                <button class="info-legal-link" type="button" data-info="terms">Terms</button>
-              </span>
-            </div>
-            <!-- BGS One. The rewards badge renders itself from the live
-                 programme at bgscorner.com; if the programme is switched off,
-                 the hub is unreachable, or the script is blocked, this div
-                 simply stays empty. -->
-            <div data-bgs-loyalty data-locale="en" data-mode="live"></div>
-          </div>
-        </section>
       </div>
     </section>
   </main>
 
-  <!-- Mobile navigation drawer -->
+  <footer class="page-footer">
+    <div class="page-footer-links">
+      <a href="index.html">Home</a>
+      <a href="destinations.html">Destinations</a>
+      <a href="packages.html">Packages</a>
+      <a href="activities.html">Activities</a>
+      <a href="services.html">Services</a>
+      <a href="visa.html">Visa</a>
+      <a href="mice.html">MICE</a>
+    </div>
+    <!-- Contact details and legal links render from data/legal.js -->
+    <div id="footer-contact"></div>
+    <!-- BGS One rewards badge — renders from the live programme, or not at all. -->
+    <div data-bgs-loyalty data-locale="en" data-mode="live"></div>
+    <p>BGS Travel &amp; Tourism — Dubai, UAE</p>
+  </footer>
+
   <div class="nav-drawer" id="nav-drawer" hidden>
     <div class="nav-drawer-backdrop" data-drawer-close></div>
     <div class="nav-drawer-panel" role="dialog" aria-modal="true" aria-label="Menu">
       <div class="nav-drawer-head">
         <span class="nav-drawer-title">BGS Travel &amp; Tourism</span>
-        <button class="nav-drawer-close" type="button" data-drawer-close aria-label="Close menu">
-          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>
-        </button>
+        <button class="nav-drawer-close" type="button" data-drawer-close aria-label="Close menu"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg></button>
       </div>
-      <div class="nav-drawer-body" id="nav-drawer-body">
-        <!-- Collapsible groups render from data/navigation.js -->
-      </div>
-      <div class="nav-drawer-foot">
-        <a id="drawer-whatsapp" href="#scene-services">WhatsApp 055 580 9388</a>
-        <a href="mailto:info@bgstravelandtourism.com">info@bgstravelandtourism.com</a>
-      </div>
+      <div class="nav-drawer-body" id="nav-drawer-body"></div>
     </div>
   </div>
-
-  <!-- Package detail dialog -->
-  <dialog class="package-dialog" id="package-dialog" aria-labelledby="package-dialog-title">
-    <article class="package-dialog-inner">
-      <button class="package-dialog-close" type="button" aria-label="Close package details">
-        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>
-      </button>
-      <div class="package-dialog-media">
-        <!-- No src attribute: an empty one is not "no image", it resolves to the
-             document URL, so every homepage load fetched index.html a second time
-             to use as a picture. package-dialog.js assigns the real one on open. -->
-        <!-- A transparent 1x1 rather than no src at all: an <img> without one is
-             invalid, and an empty src is worse still — it resolves to the page
-             URL, so the browser fetches this document a second time to use as a
-             picture. package-dialog.js sets the real one on open. -->
-        <img id="package-dialog-image" alt=""
-             src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-             loading="lazy" decoding="async" />
-      </div>
-      <div class="package-dialog-body">
-        <p class="package-dialog-kicker" id="package-dialog-kicker"></p>
-        <h2 class="package-dialog-title" id="package-dialog-title"></h2>
-        <ul class="package-dialog-meta" id="package-dialog-meta"></ul>
-        <p class="package-dialog-desc" id="package-dialog-desc"></p>
-        <section class="package-dialog-section" id="package-dialog-highlights-wrap">
-          <h3>Experience highlights</h3>
-          <ul class="package-dialog-highlights" id="package-dialog-highlights"></ul>
-        </section>
-        <section class="package-dialog-section" id="package-dialog-included-wrap">
-          <h3>What&rsquo;s included</h3>
-          <ul class="package-dialog-included" id="package-dialog-included"></ul>
-        </section>
-        <div class="package-dialog-buy">
-          <p class="package-dialog-price" id="package-dialog-price"></p>
-          <p class="package-dialog-disclaimer">
-            Prices are starting rates and may vary by date, availability and group size.
-          </p>
-          <a class="buy-button" id="package-dialog-buy" href="https://wa.me/971555809388"
-             target="_blank" rel="noopener noreferrer">
-            Buy Now
-          </a>
-          <p class="package-dialog-note">Opens a WhatsApp conversation with our travel team.</p>
-        </div>
-      </div>
-    </article>
-  </dialog>
-  <!--
-    Takes the curtain down. Inline and classic (not a module) so it runs during
-    parse rather than after it, which is the whole point of the screen.
-  -->
-  <script>
-  (function () {
-    var boot = document.getElementById("boot");
-    if (!boot) return;
-
-    var SEEN = "bgs.booted";
-    var MAX_WAIT = 5000;   // hard ceiling — see below
-    var MIN_SHOW = 550;    // below this it reads as a flicker, not a greeting
-    var started = Date.now();
-
-    function finish() {
-      if (boot.hasAttribute("data-done")) return;
-      boot.setAttribute("data-done", "");
-      try { sessionStorage.setItem(SEEN, "1"); } catch (e) {}
-      // Removed rather than left transparent over the page: a fixed element at
-      // z-index 9999 still swallows clicks in browsers that skip transitions.
-      window.setTimeout(function () { boot.remove(); }, 560);
-    }
-
-    function done() {
-      var waited = Date.now() - started;
-      window.setTimeout(finish, Math.max(0, MIN_SHOW - waited));
-    }
-
-    // Shown once a session. A returning visitor within the same session — or
-    // anyone navigating back to the homepage — gets the site immediately.
-    try {
-      if (sessionStorage.getItem(SEEN)) { boot.remove(); return; }
-    } catch (e) {
-      // Private mode can throw on sessionStorage. Losing the once-a-session
-      // memory is survivable; a broken homepage is not.
-    }
-
-    var fill = document.getElementById("boot-fill");
-    var layers = [].slice.call(document.querySelectorAll("img.scene-layer"));
-    var total = layers.length;
-    var loaded = 0;
-
-    function tick() {
-      loaded++;
-      if (fill && total) fill.style.width = Math.round((loaded / total) * 100) + "%";
-      if (loaded >= total) done();
-    }
-
-    if (!total) {
-      // No scene to wait for. Fall back to the load event rather than hanging.
-      if (document.readyState === "complete") done();
-      else window.addEventListener("load", done);
-    } else {
-      layers.forEach(function (img) {
-        if (img.complete) { tick(); return; }
-        // Both events, because a layer that 404s must still count. Waiting for
-        // success only would leave the visitor staring at a bar stuck at 85%.
-        img.addEventListener("load", tick, { once: true });
-        img.addEventListener("error", tick, { once: true });
-      });
-    }
-
-    // The failsafe that actually matters. Whatever happens — a hung request, a
-    // decode that never fires, an image the browser silently declines — the
-    // curtain comes up. A loading screen is the one piece of UI that can hide
-    // an entire working website, so it is never allowed to outlast this.
-    window.setTimeout(finish, MAX_WAIT);
-  })();
-  </script>
 </body>
 </html>

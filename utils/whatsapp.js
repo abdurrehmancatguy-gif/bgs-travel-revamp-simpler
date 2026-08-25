@@ -72,7 +72,7 @@ export function buildPlanTripUrl() {
 export function openWhatsApp(url) {
   // The site's only conversion — there is no cart and no checkout — and every
   // WhatsApp link goes through here, so this is the one place worth counting.
-  import("../js/analytics.js?v=139")
+  import("../js/analytics.js?v=183")
     .then(({ track }) => track("enquiry_started", {
       intent: decodeURIComponent((url.split("text=")[1] ?? "").slice(0, 120)),
       page: location.pathname,

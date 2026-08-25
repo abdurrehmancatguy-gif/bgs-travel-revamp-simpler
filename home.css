@@ -1,0 +1,865 @@
+/* =========================================================================
+   The homepage, light.
+
+   Modelled on the visaguy.ae reference the client pointed at — bright ground,
+   white cards, one warm glow behind the lead card — but in BGS's own palette:
+   warm off-white, navy ink, gold accents. The page chrome (header pill,
+   drawer, footer, category strip) comes from pages.css; only what is unique
+   to the homepage lives here.
+
+   Gold on light surfaces is always --gold-ink (#a35c00, 5.1:1) for text; the
+   brighter golds are reserved for fills and decoration, where contrast rules
+   don't apply.
+   ========================================================================= */
+
+body.home {
+  overflow-x: clip;
+}
+
+/* ------------------------------------------------------------------- type */
+
+.hm-eyebrow {
+  margin: 0 0 14px;
+  color: var(--gold-ink);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+}
+
+.hm-h2 {
+  margin: 0;
+  font-family: "Ogg Medium", Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(30px, 4.6vw, 52px);
+  line-height: 1.06;
+  color: var(--page-ink);
+}
+
+/* ----------------------------------------------------------------- ticker */
+
+.hm-ticker {
+  margin-top: clamp(8px, 2vh, 20px);
+  padding: 14px 0 4px;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+}
+
+.hm-ticker-track {
+  display: inline-flex;
+  gap: 12px;
+  white-space: nowrap;
+  will-change: transform;
+  animation: hm-ticker 36s linear infinite;
+}
+
+.hm-ticker-track span {
+  padding: 9px 18px;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid rgba(13, 27, 42, 0.08);
+  box-shadow: 0 6px 18px rgba(13, 27, 42, 0.06);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--page-ink);
+}
+
+@keyframes hm-ticker {
+  to { transform: translateX(-50%); }
+}
+
+/* ------------------------------------------------------------------- hero */
+
+.hm-hero {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: clamp(24px, 4.5vh, 56px) clamp(18px, 4vw, 40px) 0;
+  text-align: center;
+}
+
+.hm-title {
+  margin: 0;
+  font-family: "Ogg Medium", Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(44px, 6.4vw, 84px);
+  line-height: 1.0;
+  letter-spacing: -0.01em;
+  color: var(--page-ink);
+}
+
+.hm-title span { display: block; }
+
+.hm-title em {
+  font-style: italic;
+  color: var(--gold-ink);
+}
+
+.hm-sub {
+  max-width: 52ch;
+  margin: 20px auto 0;
+  font-size: clamp(15px, 1.6vw, 17.5px);
+  line-height: 1.65;
+  color: var(--page-muted);
+}
+
+/* The pills keep their site-wide name; on the light ground they read as the
+   reference's badge chips. */
+body.home .hero-pills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 24px 0 0;
+}
+
+body.home .hero-pill {
+  padding: 9px 20px;
+  border: 1px solid rgba(13, 27, 42, 0.14);
+  border-radius: 999px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--page-ink);
+  background: #fff;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(13, 27, 42, 0.05);
+  transition: border-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+}
+
+body.home .hero-pill:hover,
+body.home .hero-pill:focus-visible {
+  border-color: rgba(163, 92, 0, 0.55);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(13, 27, 42, 0.09);
+}
+
+.hm-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 26px;
+}
+
+/* The green pulse that says a person answers. It decorates a button that
+   already says WhatsApp, so it is presentation only. */
+.hm-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #3ddc68;
+  box-shadow: 0 0 0 0 rgba(61, 220, 104, 0.5);
+  animation: hm-pulse 2.2s ease-out infinite;
+}
+
+@keyframes hm-pulse {
+  70% { box-shadow: 0 0 0 9px rgba(61, 220, 104, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(61, 220, 104, 0); }
+}
+
+/* ------------------------------------------------------------------ banner */
+
+.hm-banner {
+  position: relative;
+  max-width: 1280px;
+  margin: clamp(36px, 6vh, 64px) auto 0;
+  padding: 0 clamp(12px, 2vw, 24px);
+}
+
+/* The dome. A half-ellipse top over softly rounded feet — the shape from the
+   old homepage, sized as the banner it was asked to be. */
+.hm-arch {
+  position: relative;
+  width: 100%;
+  height: clamp(320px, 52vw, 560px);
+  border-radius: 50% 50% 26px 26px / 92% 92% 26px 26px;
+  overflow: hidden;
+  /* Ground for the instant before the photo decodes. */
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow:
+    0 34px 90px rgba(13, 27, 42, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 0 rgba(13, 27, 42, 0.05);
+  isolation: isolate;
+}
+
+/* One gold thread inside the glass, tracing the dome; the sheen above it is
+   what makes the band read as liquid rather than matte. */
+.hm-arch::after {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border: 1px solid rgba(163, 92, 0, 0.35);
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* The liquid-glass rim, painted over the photo's edges rather than cut out
+   of them. An inset ring-shadow follows the dome's own curve exactly —
+   parallel everywhere — where the earlier approach inset the image with its
+   own elliptical radius, and two nested ellipses are never parallel: the gap
+   ballooned at the sides and read as the picture being cropped. */
+.hm-arch::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  box-shadow:
+    inset 0 0 0 12px rgba(255, 255, 255, 0.3),
+    inset 0 0 34px 10px rgba(255, 255, 255, 0.3);
+  background: linear-gradient(155deg,
+    rgba(255, 255, 255, 0.42) 0%,
+    rgba(255, 255, 255, 0.1) 22%,
+    rgba(255, 255, 255, 0) 46%);
+  pointer-events: none;
+}
+
+.hm-arch img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.hm-arch-sky {
+  /* One slow settle-in, not a loop: a single drift reads as a curtain
+     lifting, a perpetual zoom reads as a screen saver. */
+  animation: hm-sky 14s ease-out forwards;
+  transform-origin: 50% 30%;
+}
+
+@keyframes hm-sky {
+  from { transform: scale(1.12); }
+  to   { transform: scale(1.02); }
+}
+
+.hm-arch-city {
+  object-position: 50% 100%;
+  z-index: 1;
+  will-change: transform;
+}
+
+/* --------------------------------------------------------- hero form card */
+
+/* The booking bar, in a place of its own: clear air between it and the
+   banner above, overlapping nothing. */
+.hm-form-wrap {
+  position: relative;
+  width: min(880px, calc(100% - 36px));
+  margin: clamp(30px, 5vh, 52px) auto 0;
+  z-index: 3;
+  isolation: isolate;
+}
+
+/* The one warm moment on the page — the reference's gold blob, as a soft
+   radial wash behind the card rather than an illustration. */
+.hm-glow {
+  position: absolute;
+  inset: -12% -18%;
+  z-index: -1;
+  background:
+    radial-gradient(58% 62% at 68% 34%, rgba(232, 148, 26, 0.4) 0%, rgba(232, 148, 26, 0) 70%),
+    radial-gradient(48% 54% at 28% 76%, rgba(245, 168, 50, 0.32) 0%, rgba(245, 168, 50, 0) 72%);
+  filter: blur(6px);
+}
+
+.hm-form-card {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr;
+  padding: clamp(22px, 3vw, 32px);
+  border-radius: 22px;
+  background: #fff;
+  border: 1px solid rgba(13, 27, 42, 0.08);
+  box-shadow: 0 30px 70px rgba(13, 27, 42, 0.14);
+}
+
+.hm-form-title {
+  margin: 0;
+  font-family: "Ogg Medium", Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(22px, 2.4vw, 28px);
+  color: var(--page-ink);
+  text-align: center;
+}
+
+.hm-form-sub {
+  margin: -6px 0 4px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--page-muted);
+  text-align: center;
+}
+
+.hm-field {
+  display: grid;
+  gap: 6px;
+}
+
+.hm-field span {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(13, 27, 42, 0.55);
+}
+
+.hm-field input {
+  padding: 13px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(13, 27, 42, 0.14);
+  background: #fbf8f2;
+  font: inherit;
+  font-size: 15px;
+  color: var(--page-ink);
+}
+
+.hm-field input::placeholder { color: rgba(13, 27, 42, 0.35); }
+
+.hm-field input:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 1px;
+  border-color: transparent;
+}
+
+/* An empty required field is announced by the note turning firm — see
+   js/home.js — not by colour alone. */
+.hm-field input[aria-invalid="true"] { border-color: #b3261e; }
+
+.hm-form-send { width: 100%; }
+
+@media (min-width: 760px) {
+  /* The bar layout: title row, then name — destination — button in one line,
+     the note underneath. A landing strip, not a tower. */
+  .hm-form-card {
+    grid-template-columns: 1fr 1fr auto;
+    align-items: end;
+    gap: 12px 14px;
+  }
+  .hm-form-title,
+  .hm-form-sub,
+  .hm-form-note { grid-column: 1 / -1; }
+  .hm-form-sub { margin-bottom: 2px; }
+  .hm-form-send { width: auto; padding-inline: 30px; }
+}
+
+.hm-form-note {
+  margin: 0;
+  font-size: 12px;
+  text-align: center;
+  color: rgba(13, 27, 42, 0.5);
+}
+
+.hm-form-note[data-error="true"] { color: #b3261e; font-weight: 600; }
+
+/* ---------------------------------------------------------------- buttons */
+
+.hm-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 26px;
+  border-radius: 999px;
+  border: 0;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 200ms ease, box-shadow 200ms ease, background 200ms ease;
+}
+
+.hm-btn-dark {
+  color: var(--cream);
+  background: var(--navy);
+  box-shadow: 0 14px 30px rgba(13, 27, 42, 0.22);
+}
+
+.hm-btn-dark:hover,
+.hm-btn-dark:focus-visible { transform: translateY(-2px); box-shadow: 0 18px 38px rgba(13, 27, 42, 0.3); }
+
+.hm-btn-gold {
+  color: var(--navy-deep);
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  box-shadow: 0 14px 30px rgba(232, 148, 26, 0.35);
+}
+
+.hm-btn-gold:hover,
+.hm-btn-gold:focus-visible { transform: translateY(-2px); box-shadow: 0 18px 40px rgba(232, 148, 26, 0.45); }
+
+.hm-btn-line {
+  border: 1px solid rgba(13, 27, 42, 0.2);
+  color: var(--page-ink);
+  background: transparent;
+}
+
+.hm-btn-line:hover,
+.hm-btn-line:focus-visible { background: rgba(13, 27, 42, 0.05); }
+
+.hm-btn-ghost {
+  border: 1px solid rgba(255, 246, 232, 0.4);
+  color: var(--cream);
+  background: transparent;
+}
+
+.hm-btn-ghost:hover,
+.hm-btn-ghost:focus-visible { background: rgba(255, 246, 232, 0.12); }
+
+/* --------------------------------------------------------------- payments */
+
+.hm-pay {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 14px 18px;
+  max-width: 1180px;
+  margin: clamp(22px, 4vh, 40px) auto 0;
+  padding: 0 clamp(18px, 4vw, 40px);
+}
+
+.hm-pay-label {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--page-muted);
+}
+
+.hm-pay img {
+  height: 30px;
+  width: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 14px rgba(13, 27, 42, 0.08);
+}
+
+.hm-pay-note {
+  font-size: 13px;
+  color: var(--page-muted);
+}
+
+/* ---------------------------------------------------------------- marquee */
+
+.hm-marquee {
+  margin: clamp(48px, 9vh, 96px) 0 0;
+  padding: 16px 0;
+  border-top: 1px solid var(--page-line);
+  border-bottom: 1px solid var(--page-line);
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+}
+
+.hm-marquee-track {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 44px;
+  white-space: nowrap;
+  will-change: transform;
+  animation: hm-marquee 46s linear infinite;
+}
+
+.hm-marquee-track span {
+  font-family: "Ogg Medium", Georgia, serif;
+  font-size: clamp(20px, 2.6vw, 30px);
+  color: rgba(13, 27, 42, 0.45);
+}
+
+.hm-marquee-track i {
+  font-style: normal;
+  color: var(--gold);
+  font-size: 0.55em;
+  transform: translateY(-0.35em);
+}
+
+@keyframes hm-marquee {
+  to { transform: translateX(-50%); }
+}
+
+/* The event announcement. Not an aside any more — BGS is attending, so it
+   reads as a banner of its own: a warm wash band, headline-sized serif. */
+.hm-marquee-note {
+  margin: 0;
+  padding: clamp(34px, 6vh, 60px) 24px;
+  text-align: center;
+  font-family: "Ogg Medium", Georgia, serif;
+  font-style: italic;
+  font-size: clamp(26px, 4.2vw, 48px);
+  line-height: 1.15;
+  color: var(--gold-ink);
+  background: linear-gradient(180deg,
+    rgba(232, 148, 26, 0.07) 0%,
+    rgba(232, 148, 26, 0.12) 50%,
+    rgba(232, 148, 26, 0.07) 100%);
+  border-bottom: 1px solid rgba(163, 92, 0, 0.18);
+}
+
+/* --------------------------------------------------------------- sections */
+
+.hm-section {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: clamp(56px, 10vh, 110px) clamp(18px, 4vw, 40px) 0;
+}
+
+.hm-section-head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 6px 20px;
+  margin-bottom: clamp(24px, 4vh, 40px);
+}
+
+.hm-section-head .hm-eyebrow { grid-column: 1 / -1; margin-bottom: 6px; }
+
+.hm-more {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--gold-ink);
+  border-bottom: 1px solid rgba(163, 92, 0, 0.4);
+  padding-bottom: 3px;
+  transition: color 180ms ease, border-color 180ms ease;
+}
+
+.hm-more:hover,
+.hm-more:focus-visible { color: var(--page-ink); border-color: var(--page-ink); }
+
+/* ------------------------------------------------------------------ cards */
+
+.hm-cards {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: clamp(240px, 27vw, 320px);
+  gap: 18px;
+  overflow-x: auto;
+  /* overflow-x:auto drags overflow-y:auto with it — the spec allows no other
+     combination — so anything leaving the row's box vertically was sliced:
+     the hover lift, the 12° tilt, the shadows, and every card still rising
+     through its reveal. The padding opens vertical headroom inside the clip
+     window; the negative margins hand that space straight back to the layout,
+     so the section's rhythm doesn't change. */
+  padding: 34px 2px 48px;
+  margin: -34px 0 -38px;
+  scroll-snap-type: x proximity;
+  scroll-padding-left: 2px;
+  scrollbar-width: none;
+}
+
+.hm-cards::-webkit-scrollbar { display: none; }
+
+.hm-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: 18px;
+  overflow: hidden;
+  scroll-snap-align: start;
+  border: 1px solid rgba(13, 27, 42, 0.08);
+  background: #fff;
+  color: var(--page-ink);
+  text-align: left;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  box-shadow: 0 10px 30px rgba(13, 27, 42, 0.06);
+  transition: transform 260ms ease, box-shadow 260ms ease;
+}
+
+.hm-card:hover,
+.hm-card:focus-visible {
+  transform: translateY(-4px);
+  box-shadow: 0 22px 46px rgba(13, 27, 42, 0.14);
+}
+
+.hm-card-media {
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: linear-gradient(160deg, #f3ecdd, #e8ddc4);
+}
+
+.hm-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 700ms cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+
+.hm-card:hover .hm-card-media img { transform: scale(1.05); }
+
+.hm-card-body {
+  display: grid;
+  gap: 6px;
+  padding: 16px 18px 18px;
+}
+
+.hm-card-kicker {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-ink);
+}
+
+.hm-card-title {
+  display: block;
+  margin: 0;
+  font-family: "Ogg Medium", Georgia, serif;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+.hm-card-meta {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--page-muted);
+}
+
+/* ------------------------------------------------------------------ stats */
+
+.hm-stats {
+  margin-top: clamp(64px, 11vh, 120px);
+  border-top: 1px solid var(--page-line);
+  border-bottom: 1px solid var(--page-line);
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.hm-band-line {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: clamp(44px, 8vh, 84px) clamp(18px, 4vw, 40px);
+  text-align: center;
+  font-family: "Ogg Medium", Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(32px, 5.4vw, 64px);
+  line-height: 1.08;
+  color: var(--page-ink);
+}
+
+.hm-band-line em {
+  font-style: italic;
+  color: var(--gold-ink);
+}
+
+/* --------------------------------------------------------------- services */
+
+.hm-services {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 14px;
+}
+
+.hm-service {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 14px;
+  align-items: start;
+  padding: 20px;
+  border: 1px solid rgba(13, 27, 42, 0.08);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(13, 27, 42, 0.05);
+  transition: box-shadow 220ms ease, transform 220ms ease;
+}
+
+.hm-service:hover { transform: translateY(-2px); box-shadow: 0 14px 34px rgba(13, 27, 42, 0.1); }
+
+/* The whole tile is the link — a stretched cover, so the grid inside stays
+   untouched and the hit target is the card people actually aim at. */
+.hm-service-cover {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  z-index: 1;
+}
+
+.hm-service-icon {
+  grid-row: 1 / span 2;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  color: var(--gold-ink);
+  background: rgba(232, 148, 26, 0.12);
+}
+
+.hm-service-icon svg { width: 20px; height: 20px; }
+
+.hm-service h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--page-ink);
+}
+
+.hm-service p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--page-muted);
+}
+
+/* -------------------------------------------------------------------- cta */
+
+.hm-cta-band {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: clamp(64px, 11vh, 130px) clamp(18px, 4vw, 40px) clamp(80px, 12vh, 140px);
+}
+
+/* The closing panel goes navy — the one dark moment on the page, mirroring
+   the footer it sits above. */
+.hm-cta-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: clamp(24px, 4vw, 56px);
+  align-items: center;
+  padding: clamp(30px, 5vw, 60px);
+  border-radius: 26px;
+  background:
+    radial-gradient(90% 120% at 85% -10%, rgba(232, 148, 26, 0.25) 0%, rgba(232, 148, 26, 0) 60%),
+    var(--navy);
+  box-shadow: 0 34px 80px rgba(13, 27, 42, 0.3);
+}
+
+.hm-eyebrow-oncream { color: var(--gold-light); }
+
+.hm-cta-line {
+  margin: 0;
+  font-family: "Ogg Medium", Georgia, serif;
+  font-weight: 500;
+  font-size: clamp(30px, 4.6vw, 54px);
+  line-height: 1.05;
+  color: var(--cream);
+}
+
+.hm-cta-line em { font-style: italic; color: var(--gold-light); }
+
+.hm-cta-list {
+  list-style: none;
+  margin: 22px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 8px 18px;
+}
+
+.hm-cta-list li {
+  position: relative;
+  padding-left: 24px;
+  font-size: 14px;
+  color: rgba(255, 246, 232, 0.82);
+}
+
+.hm-cta-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.28em;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: rgba(245, 168, 50, 0.2);
+  box-shadow: inset 0 0 0 1.5px var(--gold-light);
+}
+
+.hm-cta-actions {
+  display: grid;
+  gap: 12px;
+  justify-items: stretch;
+}
+
+.hm-cta-actions .hm-btn-dark {
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  color: var(--navy-deep);
+  box-shadow: 0 14px 34px rgba(232, 148, 26, 0.35);
+}
+
+/* ---------------------------------------------------------------- reveals */
+
+/* Arrival styling only exists when scripting does, so a no-JS visit — or a
+   crawler — sees the finished page, never a blank one. */
+html.hm-js .hm-reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 700ms ease, transform 700ms cubic-bezier(0.2, 0.6, 0.2, 1);
+  /* Set per element by the renders — a row of cards arrives as a wave, left
+     to right, rather than as one simultaneous flash. */
+  transition-delay: var(--d, 0ms);
+}
+
+/* Cards get a touch more travel and a breath of scale, so the wave reads as
+   arrival rather than a fade. */
+html.hm-js .hm-card.hm-reveal,
+html.hm-js .hm-service.hm-reveal {
+  transform: translateY(30px) scale(0.977);
+}
+
+html.hm-js .hm-reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+
+
+/* ----------------------------------------------------------------- motion */
+
+@media (prefers-reduced-motion: reduce) {
+  .hm-ticker-track,
+  .hm-marquee-track,
+  .hm-arch-sky,
+  .hm-dot { animation: none; }
+  html.hm-js .hm-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .hm-card,
+  .hm-card-media img,
+  .hm-btn,
+  .hm-service,
+  body.home .hero-pill { transition: none; }
+  body.home .hero-pill:hover,
+  body.home .hero-pill:focus-visible,
+  .hm-card:hover,
+  .hm-card:focus-visible,
+  .hm-service:hover,
+  .hm-btn:hover,
+  .hm-btn:focus-visible { transform: none; }
+}
+
+/* ----------------------------------------------------------------- narrow */
+
+@media (max-width: 900px) {
+  /* Full-bleed glow spilled 138px past each edge once the card went
+     full-width, giving tablets a sideways scroll. Held inside the card's own
+     column; the wash reads the same. */
+  .hm-glow { inset: -10% 4%; }
+  .hm-arch { height: clamp(280px, 60vw, 420px); }
+}
+
+@media (max-width: 760px) {
+  .hm-hero { padding-top: 74px; }
+  .hm-title { font-size: clamp(40px, 11vw, 64px); }
+  .hm-section-head { grid-template-columns: 1fr; align-items: start; }
+  .hm-cards { grid-auto-columns: min(78vw, 300px); }
+  .hm-cta-panel { grid-template-columns: 1fr; }
+}

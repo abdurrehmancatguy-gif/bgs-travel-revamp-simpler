@@ -1,11 +1,11 @@
 import {
   COLLECTIONS, getCollection, saveCollection, resetCollection, resetAll,
   exportAll, importAll, isCustomised, isCloudEnabled, subscribeSyncFailure,
-} from "./store.js?v=139";
-import { photoQuery } from "./photo-query.mjs?v=139";
-import { CARD_TITLE_KEY } from "../data/packages.js?v=139";
-import { resolvePill } from "../data/home.js?v=139";
-import { signIn } from "./cloud.js?v=139";
+} from "./store.js?v=183";
+import { photoQuery } from "./photo-query.mjs?v=183";
+import { CARD_TITLE_KEY } from "../data/packages.js?v=183";
+import { resolvePill, HOME_COPY } from "../data/home.js?v=183";
+import { signIn } from "./cloud.js?v=183";
 
 /**
  * The admin console.
@@ -199,7 +199,7 @@ const TAB_LABEL = {
 /* Collections with no tab of their own. copy has its own editor at the end of
    the strip; homeCards is edited inside the Homepage panel, and a second tab
    for it would be two doors onto one thing. */
-const HIDDEN_TABS = new Set(["copy", "homeCards"]);
+const HIDDEN_TABS = new Set(["copy", "homeCards", "homeCopy"]);
 
 function renderTabs() {
   el("#admin-tabs").innerHTML = COLLECTIONS.filter((c) => !HIDDEN_TABS.has(c))
@@ -244,6 +244,40 @@ function renderList() {
    is the larger thing and the one people come here to change. */
 let homeSection = "cards";
 
+/* Homepage → Text: every string the homepage speaks, labelled for a person.
+   Order here is display order. tickerPhrases is a list — one phrase per line
+   in a textarea, because commas appear inside sentences. */
+const HOME_COPY_FIELDS = [
+  ["eyebrow", "Small line above the headline"],
+  ["titleA", "Headline, first line"],
+  ["titleB", "Headline, second line (italic gold)"],
+  ["subtitle", "Paragraph under the headline", "textarea"],
+  ["chatLabel", "WhatsApp button"],
+  ["browseLabel", "Second hero button"],
+  ["marqueeNames", "Scrolling place names — leave empty to show the Destinations catalogue, or one name per line to override", "lines"],
+  ["marqueeNote", "Line under the scrolling names"],
+  ["tickerPhrases", "Moving badges — one per line. Write {visas} or {destinations} where a live count should appear; numbers are always counted, never typed", "lines"],
+  ["formTitle", "Form card title"],
+  ["formSub", "Form card sub-line", "textarea"],
+  ["formButton", "Form send button"],
+  ["formNote", "Small print under the form"],
+  ["bandA", "Statement band — first half"],
+  ["bandB", "Statement band — second half (italic gold)"],
+  ["payLabel", "Payments strip — lead-in (We accept…)"],
+  ["payNote", "Payments strip — note after the logos"],
+  ["journeysEyebrow", "Journeys — small line"],
+  ["journeysHeading", "Journeys — heading"],
+  ["journeysMore", "Journeys — corner link"],
+  ["servicesEyebrow", "Services — small line"],
+  ["servicesHeading", "Services — heading"],
+  ["servicesMore", "Services — corner link"],
+  ["ctaEyebrow", "Closing panel — small line"],
+  ["ctaA", "Closing panel — first line"],
+  ["ctaB", "Closing panel — second line (italic)"],
+  ["planLabel", "Closing panel — WhatsApp button"],
+  ["ctaBrowseLabel", "Closing panel — second button"],
+];
+
 /** Every record that could go on the homepage, grouped, minus what is already
  *  chosen. One picker shape serves both halves. */
 function stockOptions(chosen, matches) {
@@ -278,20 +312,40 @@ function renderHomepageEditor() {
   const cards = getCollection("homeCards");
   const pills = getCollection("homePills");
   const isCards = homeSection === "cards";
+  const isText = homeSection === "text";
   const chosen = isCards ? cards : pills;
 
   const switcher = `
     <li class="admin-section-head">
       <div class="admin-subtabs" role="tablist">
         <button class="admin-subtab" type="button" role="tab" data-home-section="cards"
-                aria-selected="${isCards}">Cards <span>${cards.length}</span></button>
+                aria-selected="${homeSection === "cards"}">Cards <span>${cards.length}</span></button>
         <button class="admin-subtab" type="button" role="tab" data-home-section="pills"
-                aria-selected="${!isCards}">Pills <span>${pills.length}</span></button>
+                aria-selected="${homeSection === "pills"}">Pills <span>${pills.length}</span></button>
+        <button class="admin-subtab" type="button" role="tab" data-home-section="text"
+                aria-selected="${isText}">Text <span>${HOME_COPY_FIELDS.length}</span></button>
       </div>
-      <p>${isCards
+      <p>${isText
+        ? "Every line the homepage speaks. Edits save as you leave a field and appear on the site immediately."
+        : isCards
         ? "The carousel across the homepage, in this order. Pick from what the catalogue already holds — a card shows whatever its record says, so editing the visa or package updates the card too."
         : "The buttons under the headline. Each one opens the record it names; a whole section is an option too, which is what MICE is."}</p>
     </li>`;
+
+  if (isText) {
+    const copy = { ...HOME_COPY, ...getCollection("homeCopy") };
+    el("#admin-list").innerHTML = switcher + HOME_COPY_FIELDS.map(([key, label, kind]) => {
+      const value = kind === "lines"
+        ? (copy[key] ?? []).join("\n")
+        : copy[key] ?? "";
+      const control = kind === "textarea" || kind === "lines"
+        ? `<textarea data-home-copy="${key}" rows="${kind === "lines" ? 3 : 2}">${esc(value)}</textarea>`
+        : `<input data-home-copy="${key}" type="text" value="${esc(value)}" />`;
+      return `<li class="admin-row admin-row-copy"><label>${esc(label)}${control}</label></li>`;
+    }).join("");
+    el("#admin-count").textContent = `${HOME_COPY_FIELDS.length} lines of homepage text`;
+    return;
+  }
 
   const rows = chosen.map((entry, i) => {
     const t = isCards
@@ -645,6 +699,18 @@ el("#admin-list").addEventListener("click", (event) => {
 });
 
 el("#admin-list").addEventListener("change", (event) => {
+  const hc = event.target.closest("[data-home-copy]");
+  if (hc) {
+    const key = hc.dataset.homeCopy;
+    const copy = { ...HOME_COPY, ...getCollection("homeCopy") };
+    // list fields: one entry per line; blanks drop out.
+    copy[key] = ["tickerPhrases", "marqueeNames"].includes(key)
+      ? hc.value.split("\n").map((l) => l.trim()).filter(Boolean)
+      : hc.value;
+    saveCollection("homeCopy", copy);
+    toast("Homepage text saved");
+    return;
+  }
   const label = event.target.closest("[data-pill-label]");
   if (label) {
     const pills = getCollection("homePills").map((c) => ({ ...c }));
@@ -831,7 +897,7 @@ async function backfillImages(records, collection, identity) {
 }
 
 async function applySheet(mode) {
-  const { applyMode } = await import("./sheet-import.mjs?v=139");
+  const { applyMode } = await import("./sheet-import.mjs?v=183");
   el("#sheet-dialog").close();
   sheetStatus("Applying…");
 
@@ -854,7 +920,7 @@ async function handleSheet(file) {
   if (!file) return;
   sheetStatus(`Reading ${file.name}…`);
   try {
-    const { parseWorkbook, reconcile } = await import("./sheet-import.mjs?v=139");
+    const { parseWorkbook, reconcile } = await import("./sheet-import.mjs?v=183");
     const { tabs, problems, ignoredCostColumns } = await parseWorkbook(file);
     if (!tabs.length) {
       sheetStatus(`Nothing to import. ${problems.join(" ")}`);
@@ -904,7 +970,7 @@ el("#sheet-apply-replace").addEventListener("click", () => applySheet("replace")
 el("#sheet-export").addEventListener("click", async () => {
   sheetStatus("Building workbook…");
   try {
-    const { exportWorkbook } = await import("./sheet-import.mjs?v=139");
+    const { exportWorkbook } = await import("./sheet-import.mjs?v=183");
     const blob = await exportWorkbook((name) => getCollection(name));
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -928,7 +994,7 @@ el("#sheet-export-csv").addEventListener("click", async () => {
   }
   sheetStatus("Building CSV…");
   try {
-    const { exportCsv } = await import("./sheet-import.mjs?v=139");
+    const { exportCsv } = await import("./sheet-import.mjs?v=183");
     const blob = await exportCsv(active, (name) => getCollection(name));
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -946,7 +1012,7 @@ el("#sheet-export-csv").addEventListener("click", async () => {
 el("#sheet-template").addEventListener("click", async () => {
   sheetStatus("Building template…");
   try {
-    const { exportTemplate } = await import("./sheet-import.mjs?v=139");
+    const { exportTemplate } = await import("./sheet-import.mjs?v=183");
     const blob = await exportTemplate();
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");

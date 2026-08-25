@@ -112,3 +112,55 @@ export const HOME_CARDS = [
   { collection: "packages", name: "Bali Discovery: Temples, Rice Terraces + Beaches" },
   { collection: "packages", name: "Rajasthan Royal Heritage Tour" },
 ];
+
+/**
+ * Every line of text the homepage speaks, editable in the admin under
+ * Homepage → Text. The site never hardcodes these strings anywhere else: the
+ * build writes them into the HTML for crawlers and js/home.js re-applies them
+ * live, so an edit lands everywhere at once.
+ *
+ * tickerPhrases is the human half of the moving badge strip — the counted
+ * halves (visa services, destinations) are computed from the catalogue and
+ * cannot be typed, so they cannot go stale or be invented.
+ */
+export const HOME_COPY = {
+  eyebrow: "Dubai, UAE — travel & tourism",
+  titleA: "Consider your trip",
+  titleB: "halfway planned.",
+  subtitle: "Visas, flights, stays and journeys built around you — one team handles the paperwork and the planning, from the first idea to the trip home.",
+  chatLabel: "Chat on WhatsApp",
+  browseLabel: "Browse visa services",
+  formTitle: "Where do you want to go?",
+  formSub: "Tell us the two things that matter — we take it from there on WhatsApp.",
+  formButton: "Start on WhatsApp",
+  formNote: "Opens a WhatsApp chat with our team — nothing is stored on this site.",
+  journeysEyebrow: "01 — Begin somewhere",
+  journeysHeading: "Chosen journeys",
+  journeysMore: "View all packages",
+  servicesEyebrow: "02 — Every detail",
+  servicesHeading: "Handled by one team",
+  servicesMore: "All services",
+  ctaEyebrow: "03 — Say the word",
+  ctaA: "The world is waiting.",
+  ctaB: "Let\u2019s take you there.",
+  planLabel: "Plan a trip on WhatsApp",
+  ctaBrowseLabel: "Browse destinations",
+  /* The entire moving strip, in order. {visas} and {destinations} expand to
+     live catalogue counts — so every pill is editable, but a number can only
+     ever be counted, never typed. A line whose count is zero is dropped. */
+  payLabel: "We accept",
+  payNote: "as well",
+  /* The serif marquee of place names. Empty means automatic — every name in
+     the Destinations catalogue; put names here (one per line in the admin) to
+     show exactly those instead. */
+  marqueeNames: [],
+  marqueeNote: "See you in Arabian Travel Mart",
+  bandA: "From anywhere",
+  bandB: "to everywhere.",
+  tickerPhrases: [
+    "{visas} visa services",
+    "{destinations} destinations",
+    "One team, end to end",
+    "Dubai, UAE",
+  ],
+};

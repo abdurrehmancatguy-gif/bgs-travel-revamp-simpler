@@ -1,0 +1,524 @@
+import { getCollection, subscribe } from "./store.js?v=183";
+import "./info-modal.js?v=183";
+import { contactStripMarkup, openInfo } from "./info-modal.js?v=183";
+import { createNavigation } from "./navigation.js?v=183";
+import { buildPrimaryNav } from "./nav-model.js?v=183";
+import { resolvePill, HOME_COPY } from "../data/home.js?v=183";
+import { resolveHomeCards, withSlugs, CARD_TITLE_KEY, priceFacts } from "../data/packages.js?v=183";
+import { icon } from "../data/icons.js?v=183";
+import { openItem } from "./item-dialog.js?v=183";
+import { openWhatsApp, buildCustomTripUrl, buildWhatsAppUrl, WHATSAPP_DISPLAY } from "../utils/whatsapp.js?v=183";
+import "./smooth-scroll.js?v=183";
+
+/**
+ * The homepage. Everything on it renders from the store, so an edit made in
+ * the admin — a pill, a card, a service, a new destination — appears here
+ * without anyone touching this file.
+ *
+ * Motion policy: reveals and the counters run once, driven by
+ * IntersectionObserver; the arch parallax is one transform on one element per
+ * frame; the wheel smoothing lives in smooth-scroll.js. Nothing loops forever
+ * except the marquee, which is CSS and pausable by prefers-reduced-motion.
+ */
+
+const esc = (value) =>
+  String(value ?? "").replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
+
+/* Reveal styling only exists once this class is present, so a visitor without
+   JavaScript gets the finished page rather than one stuck at opacity 0. */
+document.documentElement.classList.add("hm-js");
+
+/* ---------------------------------------------------------------- routing */
+
+function routeAction(action) {
+  if (!action) return;
+  if (action.kind === "page") {
+    const params = new URLSearchParams();
+    if (action.q) params.set("q", action.q);
+    if (action.open) params.set("open", "1");
+    const query = params.toString();
+    location.href = query ? `${action.page}.html?${query}` : `${action.page}.html`;
+    return;
+  }
+  if (action.kind === "home") { window.scrollTo({ top: 0, behavior: "smooth" }); return; }
+  if (action.kind === "contact") { openInfo("contact"); return; }
+  // Legacy scene actions from anything not yet updated land on the journeys.
+  if (action.kind === "scene") { location.href = "#journeys"; return; }
+  if (action.kind === "service") { location.href = "services.html"; return; }
+  if (action.kind === "whatsapp") openWhatsApp(buildWhatsAppUrl(action.intent));
+}
+
+createNavigation({
+  nav: document.querySelector("#site-nav"),
+  drawer: document.querySelector("#nav-drawer"),
+  drawerBody: document.querySelector("#nav-drawer-body"),
+  toggle: document.querySelector("#nav-toggle"),
+  onAction: routeAction,
+});
+
+/* ------------------------------------------------- mobile category strip */
+
+function renderPageCategories() {
+  const strip = document.querySelector("#page-categories");
+  if (!strip) return;
+  strip.innerHTML = buildPrimaryNav()
+    .map((menu) => `<a class="page-category" href="${menu.page}.html">${esc(menu.label)}</a>`)
+    .join("");
+}
+
+function placePageCategories() {
+  const header = document.querySelector(".site-header");
+  const strip = document.querySelector("#page-categories");
+  if (!header || !strip) return;
+  document.documentElement.style.setProperty(
+    "--page-cat-top", `${Math.round(header.getBoundingClientRect().height) + 12}px`
+  );
+}
+
+/* ------------------------------------------------------------ hero pills */
+
+function renderHeroPills() {
+  const wrap = document.querySelector(".hero-pills");
+  if (!wrap) return;
+  const pills = getCollection("homePills");
+  if (!pills.length) return;   // keep the pre-rendered buttons over a blank row
+  wrap.innerHTML = pills.map((pill) => {
+    const t = resolvePill(pill, (c) => getCollection(c));
+    if (!t || !t.label) return "";
+    return `<button class="hero-pill" type="button"
+            data-page="${esc(t.page)}" data-query="${esc(t.query)}"
+            data-open="${t.open ? "1" : ""}">${esc(t.label)}</button>`;
+  }).join("");
+}
+
+document.querySelector(".hero-pills")?.addEventListener("click", (event) => {
+  const pill = event.target.closest(".hero-pill");
+  if (!pill) return;
+  const { page, query, open } = pill.dataset;
+  if (!page) { openWhatsApp(buildCustomTripUrl()); return; }
+  // The page name comes from the store, which the admin writes — treat it as
+  // data. Only a plain page word may reach location.href; anything else (a
+  // path, a scheme, a stray URL someone pasted into the admin) is refused.
+  if (!/^[a-z][a-z-]*$/.test(page)) return;
+  location.href = query
+    ? `${page}.html?q=${encodeURIComponent(query)}${open === "1" ? "&open=1" : ""}`
+    : `${page}.html`;
+});
+
+/* ----------------------------------------------------------------- cards */
+
+/** One line of fact per card: a visa shows its validity, a package its
+ *  length — the same choice the old carousel settled on, kept because it is
+ *  the short fact a browser actually compares. */
+function cardMeta(record, kind) {
+  if (kind === "visa") {
+    const validity = record.validity;
+    return validity && !/^n\/?a$/i.test(String(validity).trim()) ? validity : "";
+  }
+  const price = priceFacts(record)[0]?.[1];
+  return [record.duration, price ? `From ${price}` : ""].filter(Boolean).join(" · ");
+}
+
+let homeCards = [];
+
+function renderCards() {
+  const rail = document.querySelector("#hm-cards");
+  if (!rail) return;
+  homeCards = withSlugs(resolveHomeCards(getCollection("homeCards"), (c) => getCollection(c)));
+
+  rail.innerHTML = homeCards.map((record, i) => {
+    const kind = record.__collection ?? "packages";
+    const title = record[CARD_TITLE_KEY[kind] ?? "title"] ?? "";
+    const image = typeof record.image === "string" ? record.image : record.image?.src;
+    const kicker = record.category || record.country || record.region || "";
+    const meta = cardMeta(record, kind);
+    return `
+      <button class="hm-card hm-reveal" type="button" data-idx="${i}"
+              style="--d:${Math.min(i * 80, 480)}ms"
+              aria-label="${esc(title)} — open details">
+        ${image ? `<span class="hm-card-media"><img src="${esc(image)}" alt=""
+            loading="${i < 2 ? "eager" : "lazy"}" decoding="async" /></span>` : ""}
+        <span class="hm-card-body">
+          ${kicker ? `<span class="hm-card-kicker">${esc(kicker)}</span>` : ""}
+          <span class="hm-card-title">${esc(title)}</span>
+          ${meta ? `<span class="hm-card-meta">${esc(meta)}</span>` : ""}
+        </span>
+      </button>`;
+  }).join("");
+  observeReveals(rail);
+}
+
+document.querySelector("#hm-cards")?.addEventListener("click", (event) => {
+  const card = event.target.closest(".hm-card");
+  if (!card) return;
+  const record = homeCards[Number(card.dataset.idx)];
+  if (record) openItem(record, record.__collection ?? "packages");
+});
+
+/* ------------------------------------------------------------------ tilt */
+
+/**
+ * The journey cards lean toward the cursor — a few degrees of perspective,
+ * reset on leave. Delegated from the rail because the cards re-render on
+ * every store change, and inline transforms because the reveal transition
+ * (700ms, staggered) would otherwise drag the tilt behind the hand.
+ *
+ * Fine pointers only: a finger cannot hover, and reduced-motion means what
+ * it says.
+ */
+const TILT_MAX = 12;
+const finePointer = matchMedia("(hover: hover) and (pointer: fine)");
+let tiltRaf = null;
+
+function applyTilt(card, event) {
+  const r = card.getBoundingClientRect();
+  const px = (event.clientX - r.left) / r.width - 0.5;
+  const py = (event.clientY - r.top) / r.height - 0.5;
+  card.style.transition = "transform 120ms ease-out";
+  card.style.transform =
+    `perspective(800px) rotateX(${(-py * TILT_MAX).toFixed(2)}deg) ` +
+    `rotateY(${(px * TILT_MAX).toFixed(2)}deg) translateY(-6px) scale(1.02)`;
+}
+
+document.querySelector("#hm-cards")?.addEventListener("pointermove", (event) => {
+  if (!finePointer.matches || reduceMotion.matches) return;
+  const card = event.target.closest(".hm-card");
+  if (!card) return;
+  if (tiltRaf) return;
+  tiltRaf = requestAnimationFrame(() => {
+    tiltRaf = null;
+    applyTilt(card, event);
+  });
+});
+
+document.querySelector("#hm-cards")?.addEventListener("pointerout", (event) => {
+  const card = event.target.closest(".hm-card");
+  if (!card || card.contains(event.relatedTarget)) return;
+  card.style.transition = "transform 420ms cubic-bezier(0.2, 0.6, 0.2, 1)";
+  card.style.transform = "";
+  // Hand the element back to the stylesheet once the settle finishes, so the
+  // reveal rules own it again.
+  setTimeout(() => { card.style.transition = ""; }, 450);
+});
+
+/* -------------------------------------------------------------- services */
+
+/** Where a service tile leads: its own category page when it has one,
+ *  the services page otherwise. Mirrors SERVICE_PAGE on the services page. */
+const SERVICE_TILE_PAGE = { visa: "visa", activities: "activities" };
+
+function renderServices() {
+  const list = document.querySelector("#hm-services");
+  if (!list) return;
+  list.innerHTML = getCollection("services").map((service, i) => `
+    <li class="hm-service hm-reveal" style="--d:${Math.min(i * 70, 420)}ms">
+      <a class="hm-service-cover"
+         href="${SERVICE_TILE_PAGE[service.key] ?? "services"}.html"
+         aria-label="${esc(service.label)}"></a>
+      <span class="hm-service-icon" aria-hidden="true">${icon(service.icon)}</span>
+      <h3>${esc(service.label)}</h3>
+      <p>${esc(service.blurb ?? "")}</p>
+    </li>`).join("");
+  observeReveals(list);
+}
+
+/* --------------------------------------------------------------- marquee */
+
+function renderMarquee() {
+  const track = document.querySelector("#hm-marquee-track");
+  if (!track) return;
+  // Typed names win; an empty list means the catalogue speaks for itself.
+  const typed = (homeCopy().marqueeNames ?? []).filter(Boolean);
+  const names = typed.length
+    ? typed
+    : getCollection("destinations").map((d) => d.name).filter(Boolean);
+  const wrap = track.closest(".hm-marquee");
+  if (!names.length) { wrap?.setAttribute("hidden", ""); return; }
+  // Cleared as well as set: an admin emptying and refilling the destinations
+  // would otherwise leave the strip hidden forever.
+  wrap?.removeAttribute("hidden");
+  loopTrack(track, names.map((n) => `<span>${esc(n)}</span><i>✦</i>`).join(""), 70);
+}
+
+/* --------------------------------------------------------------- reveals */
+
+/**
+ * Scroll-driven, not IntersectionObserver. IO is the fashionable tool here,
+ * but its delivery is suspended whenever the document is hidden or throttled
+ * — which left every section below the fold at opacity 0 in exactly the
+ * renderers that can't recover from it. A rect check on scroll is boring,
+ * cheap (one pass, rAF-batched, elements leave the list once shown), and
+ * cannot fail to run wherever scrolling itself runs.
+ */
+function checkReveals() {
+  const vh = innerHeight || document.documentElement.clientHeight || 900;
+  document.querySelectorAll(".hm-reveal:not(.is-in)").forEach((el) => {
+    const r = el.getBoundingClientRect();
+    if (r.top < vh * 0.92 && r.bottom > 0) {
+      el.classList.add("is-in");
+    }
+  });
+}
+
+/* Directly, not batched through requestAnimationFrame: frames stop whenever
+   the document is hidden or throttled, and a reveal check that waits for one
+   inherits every failure the IntersectionObserver version had. The pass is a
+   handful of rect reads over elements that leave the list once shown — cheap
+   enough to run as the events arrive. */
+window.addEventListener("scroll", checkReveals, { passive: true });
+window.addEventListener("resize", checkReveals);
+
+/* And a slow timer sweep behind the events. Some renderers — backgrounded
+   panes, certain headless browsers — move the scroll position without ever
+   dispatching a scroll event or an animation frame; timers are the one thing
+   they all still run. The sweep retires itself once everything is shown and
+   is restarted by any render that adds new elements. */
+let revealSweep = null;
+let sweepTicks = 0;
+
+function startRevealSweep() {
+  if (revealSweep !== null) return;
+  sweepTicks = 0;
+  revealSweep = setInterval(() => {
+    checkReveals();
+    sweepTicks += 1;
+    // Retire when everything is shown — or after ~10 seconds regardless. The
+    // sweep exists for renderers that deliver no events at all, and those
+    // only ever see the first viewport; polling layout forever on behalf of
+    // sections a real visitor will scroll to anyway is pure waste.
+    if (sweepTicks > 14 || !document.querySelector(".hm-reveal:not(.is-in)")) {
+      clearInterval(revealSweep);
+      revealSweep = null;
+    }
+  }, 700);
+}
+
+/* Renders call this after writing new .hm-reveal elements. */
+function observeReveals() { checkReveals(); startRevealSweep(); }
+
+startRevealSweep();
+
+/**
+ * The stored homeCopy with the shipped defaults underneath it. An admin who
+ * saved before a field existed has a stored object without it, and letting
+ * that object replace the defaults wholesale silently blanks every newer
+ * feature — which is exactly how the stats band vanished the day it became
+ * editable.
+ */
+const homeCopy = () => ({ ...HOME_COPY, ...getCollection("homeCopy") });
+
+/* ----------------------------------------------------------------- tokens */
+
+/** The numbers the editable text may embed. Counted from the catalogue —
+ *  the one part of any sentence the admin cannot type. */
+function tokenCounts() {
+  return {
+    visas: getCollection("visa").length,
+    destinations: getCollection("destinations").length,
+    journeys: getCollection("packages").length + getCollection("activities").length,
+  };
+}
+
+/* ------------------------------------------------------------------ loops */
+
+/**
+ * Fills a marquee track until the loop is seamless.
+ *
+ * The CSS animates the track to -50%, which is only gapless when the first
+ * half is at least as wide as the container — true for fifteen destination
+ * names, false for four short badges on a wide screen, where the strip ran
+ * out of pills and visibly "ended" before restarting. So the run is repeated
+ * until one half covers the container, and the duration is set from the
+ * distance so the speed stays constant no matter how much content the admin
+ * puts in.
+ *
+ * Re-run on resize and after the webfont lands, both of which change widths.
+ */
+function loopTrack(track, runHtml, pxPerSec) {
+  if (!track || !runHtml) return;
+  track.style.animation = "none";
+  track.innerHTML = runHtml;
+  const runWidth = track.scrollWidth;
+  const container = track.parentElement.clientWidth || innerWidth || 1600;
+  if (!runWidth) { track.innerHTML = runHtml + runHtml; track.style.animation = ""; return; }
+  const copies = Math.max(1, Math.ceil(container / runWidth));
+  const half = runHtml.repeat(copies);
+  track.innerHTML = half + half;
+  // Shorthand first, longhand second: clearing `animation` resets every
+  // animation-* longhand, so a duration set before it would be wiped.
+  track.style.animation = "";
+  track.style.animationDuration = `${Math.round((runWidth * copies) / pxPerSec)}s`;
+}
+
+let loopResizeTimer = null;
+window.addEventListener("resize", () => {
+  clearTimeout(loopResizeTimer);
+  loopResizeTimer = setTimeout(() => { renderTicker(); renderMarquee(); }, 200);
+});
+/* The serif loads late and reflows every width the loops just measured. */
+document.fonts?.ready.then(() => { renderTicker(); renderMarquee(); }).catch(() => {});
+
+/* ------------------------------------------------------------------- copy */
+
+/**
+ * Applies the editable text to every element that declares a hook. One
+ * attribute, one field, no element-by-element wiring — adding an editable
+ * line to the page is a data-hc attribute plus a default in data/home.js.
+ */
+function renderHomeCopy() {
+  const copy = homeCopy();
+  document.querySelectorAll("[data-hc]").forEach((el) => {
+    const value = copy[el.dataset.hc];
+    if (typeof value === "string" && value.trim()) el.textContent = value;
+  });
+}
+
+/* ----------------------------------------------------------------- ticker */
+
+/**
+ * The badge strip over the hero. Counts come from the catalogue and the rest
+ * are plain statements of how the business works — nothing here is a metric
+ * nobody measured. Decorative (aria-hidden): the same facts appear as real
+ * text in the stats band and footer.
+ */
+function renderTicker() {
+  const track = document.querySelector("#hm-ticker-track");
+  if (!track) return;
+  /* Every pill comes from the editable list; {visas} and {destinations}
+     expand to live counts. A pill whose count expands to zero is dropped
+     rather than shown as "0 visa services". */
+  const counts = tokenCounts();
+  const badges = (homeCopy().tickerPhrases ?? [])
+    .map((line) => {
+      let dead = false;
+      const text = String(line).replace(/\{(visas|destinations|journeys)\}/g, (_, key) => {
+        if (!counts[key]) dead = true;
+        return counts[key];
+      });
+      return dead ? "" : text.trim();
+    })
+    .filter(Boolean);
+  loopTrack(track, badges.map((b) => `<span>${esc(b)}</span>`).join(""), 42);
+}
+
+/* ------------------------------------------------------------- lead form */
+
+/**
+ * The hero card. There is no backend and none is pretended: submitting
+ * composes a WhatsApp message carrying the two answers, which is where every
+ * enquiry already lands. The destination list offers the catalogue but
+ * accepts anything — somebody heading somewhere we have not written up yet
+ * is exactly the enquiry worth having.
+ */
+function fillDestinationList() {
+  const list = document.querySelector("#hm-dest-list");
+  if (!list) return;
+  const names = new Set([
+    ...getCollection("destinations").map((d) => d.name),
+    ...getCollection("visa").map((v) => v.country),
+  ]);
+  list.innerHTML = [...names].filter(Boolean).sort()
+    .map((n) => `<option value="${esc(n)}"></option>`).join("");
+}
+
+document.querySelector("#hm-form")?.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const name = document.querySelector("#hm-form-name");
+  const dest = document.querySelector("#hm-form-dest");
+  const note = document.querySelector("#hm-form-note");
+  const missing = [name, dest].filter((el) => !el.value.trim());
+  missing.forEach((el) => el.setAttribute("aria-invalid", "true"));
+  [name, dest].filter((el) => el.value.trim())
+    .forEach((el) => el.removeAttribute("aria-invalid"));
+  if (missing.length) {
+    note.textContent = "Both fields, and we can start — name and destination.";
+    note.dataset.error = "true";
+    missing[0].focus();
+    return;
+  }
+  note.textContent = `Opening WhatsApp (${WHATSAPP_DISPLAY})…`;
+  delete note.dataset.error;
+  openWhatsApp(buildWhatsAppUrl(
+    `Hi BGS Travel & Tourism, I'm ${name.value.trim()}. ` +
+    `I'd like to plan a trip to ${dest.value.trim()} — please tell me what you need from me.`
+  ));
+});
+
+/* ------------------------------------------------------------- cta list */
+
+/** The checklist in the closing panel: the services, by name, from the
+ *  catalogue — the reference site hand-writes this list, we already have it. */
+function renderCtaList() {
+  const list = document.querySelector("#hm-cta-list");
+  if (!list) return;
+  list.innerHTML = getCollection("services")
+    .map((service) => `<li>${esc(service.label)}</li>`).join("");
+}
+
+/* ---------------------------------------------------------- arch parallax */
+
+const archCity = document.querySelector("#hm-arch-city");
+let parallaxQueued = false;
+
+function parallax() {
+  parallaxQueued = false;
+  if (!archCity) return;
+  // The city rises slightly slower than the page scrolls — depth, one line.
+  const y = Math.min(window.scrollY, 900) * 0.08;
+  archCity.style.transform = `translateY(${y}px) scale(1.04)`;
+}
+
+if (archCity && !reduceMotion.matches) {
+  window.addEventListener("scroll", () => {
+    if (!parallaxQueued) { parallaxQueued = true; requestAnimationFrame(parallax); }
+  }, { passive: true });
+}
+
+/* ------------------------------------------------------------------- cta */
+
+document.querySelector("#hm-plan")?.addEventListener("click", () => {
+  openWhatsApp(buildCustomTripUrl());
+});
+
+document.querySelector("#hm-chat")?.addEventListener("click", () => {
+  openWhatsApp(buildCustomTripUrl());
+});
+
+/* ---------------------------------------------------------------- footer */
+
+const footerContact = document.querySelector("#footer-contact");
+if (footerContact) footerContact.innerHTML = contactStripMarkup();
+
+/* ------------------------------------------------------------------ init */
+
+renderPageCategories();
+placePageCategories();
+renderHeroPills();
+renderHomeCopy();
+renderCards();
+renderServices();
+renderMarquee();
+renderTicker();
+renderCtaList();
+fillDestinationList();
+observeReveals();
+
+window.addEventListener("resize", placePageCategories);
+
+/* One delayed pass catches anything the first paint raced past. */
+setTimeout(checkReveals, 600);
+
+/* The admin writes to the same store; re-render whatever it touched. */
+subscribe(() => {
+  renderPageCategories();
+  renderHeroPills();
+  renderHomeCopy();
+  renderCards();
+    renderServices();
+  renderMarquee();
+  renderTicker();
+  renderCtaList();
+  fillDestinationList();
+});

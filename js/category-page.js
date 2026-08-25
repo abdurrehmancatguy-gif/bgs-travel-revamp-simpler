@@ -1,14 +1,17 @@
-import { getCollection, subscribe } from "./store.js?v=139";
-import "./info-modal.js?v=139";
-import { createNavigation } from "./navigation.js?v=139";
-import { icon } from "../data/icons.js?v=139";
-import { priceLabel } from "../data/packages.js?v=139";
-import { openWhatsApp, buildWhatsAppUrl } from "../utils/whatsapp.js?v=139";
-import { MICE_SERVICES } from "../data/mice.js?v=139";
-import { openItem, itemTitle } from "./item-dialog.js?v=139";
-import { buildPrimaryNav } from "./nav-model.js?v=139";
-import { track } from "./analytics.js?v=139";
-import { contactStripMarkup } from "./info-modal.js?v=139";
+import { getCollection, subscribe } from "./store.js?v=183";
+import "./info-modal.js?v=183";
+import { createNavigation } from "./navigation.js?v=183";
+import { icon } from "../data/icons.js?v=183";
+import { priceLabel } from "../data/packages.js?v=183";
+import { openWhatsApp, buildWhatsAppUrl } from "../utils/whatsapp.js?v=183";
+import { MICE_SERVICES } from "../data/mice.js?v=183";
+import { openItem, itemTitle } from "./item-dialog.js?v=183";
+// The same wheel glide the homepage has — the card lists are the longest
+// scrolls on the site, so they benefit most.
+import "./smooth-scroll.js?v=183";
+import { buildPrimaryNav } from "./nav-model.js?v=183";
+import { track } from "./analytics.js?v=183";
+import { contactStripMarkup, openInfo } from "./info-modal.js?v=183";
 
 /**
  * Every category page runs this one module. The page declares which collection
@@ -49,6 +52,16 @@ const esc = (s) =>
  * its fields the search box looks at. Adding a category page means adding an
  * entry here.
  */
+/**
+ * Services that ARE one of the site's own categories go to that category's
+ * page — a card called Visa Services opening a small dialog about visas,
+ * beside a nav item that opens the actual catalogue, was two doors with one
+ * label. Keyed on the record's `key`, so renaming the label cannot break it;
+ * services without a page of their own (flights, hotels, concierge…) keep
+ * their detail panel.
+ */
+const SERVICE_PAGE = { visa: "visa", activities: "activities" };
+
 const SHAPES = {
   activities: {
     chips: (items) => [...new Set(items.flatMap((i) => i.tags ?? []))].sort(),
@@ -82,7 +95,9 @@ const SHAPES = {
     search: (i) => [i.label, i.blurb],
     card: (i) => cardMarkup({
       image: i.image, alt: i.label, iconName: i.icon, kicker: "Service",
-      title: i.label, itemHref: hrefFor(i.label), body: i.blurb, meta: [],
+      title: i.label,
+      itemHref: SERVICE_PAGE[i.key] ? `${SERVICE_PAGE[i.key]}.html` : hrefFor(i.label),
+      body: i.blurb, meta: [],
     }),
   },
   mice: {
@@ -281,7 +296,11 @@ export function routeAction(action) {
     location.href = query ? `${action.page}.html?${query}` : `${action.page}.html`;
     return;
   }
-  if (action.kind === "scene") { location.href = `index.html#scene-${action.scene}`; return; }
+  if (action.kind === "home") { location.href = "index.html"; return; }
+  if (action.kind === "contact") { openInfo("contact"); return; }
+  // Legacy: scene actions targeted anchors inside the old homepage, which no
+  // longer exist. Anything still emitting one lands on the homepage proper.
+  if (action.kind === "scene") { location.href = "index.html"; return; }
   if (action.kind === "service") { location.href = "services.html"; return; }
   if (action.kind === "whatsapp") openWhatsApp(buildWhatsAppUrl(action.intent));
 }
@@ -305,6 +324,37 @@ const footerContact = document.querySelector("#footer-contact");
 if (footerContact) footerContact.innerHTML = contactStripMarkup();
 
 setupReveal();
+// Observe the cards that are already on the page. Without this, the initial
+// render — which happens before the observer exists — was never watched, so
+// the first paint's cards only animated after the Firestore snapshot forced a
+// re-render, and sat at opacity 0 until it arrived.
+revealCards();
+
+/* A timer sweep behind the observer, same reasoning as the homepage engine:
+   IntersectionObserver delivery is suspended in hidden and heavily throttled
+   documents, and a card that starts at opacity 0 with nobody watching for it
+   stays invisible. Timers are the one thing such renderers still run. The
+   sweep shows whatever is inside the viewport, staggers it like the observer
+   would, and retires after ~10 seconds — scrolling in a live document keeps
+   the observer path in charge. */
+(function sweepReveals() {
+  let ticks = 0;
+  const sweep = setInterval(() => {
+    const vh = innerHeight || document.documentElement.clientHeight || 900;
+    let i = 0;
+    document.querySelectorAll(".reveal:not([data-shown])").forEach((el) => {
+      const r = el.getBoundingClientRect();
+      if (r.top < vh * 0.95 && r.bottom > 0) {
+        const delay = Math.min(i++ * 70, 350);
+        setTimeout(() => { el.dataset.shown = "true"; }, delay);
+      }
+    });
+    ticks += 1;
+    if (ticks > 14 || !document.querySelector(".reveal:not([data-shown])")) {
+      clearInterval(sweep);
+    }
+  }, 700);
+})();
 renderCopy();
 renderChips();
 setQuery(query, { push: false });
@@ -352,6 +402,10 @@ grid.addEventListener("click", (event) => {
   if (event.target.closest(".item-card-link")) event.preventDefault();
   const item = visibleItems[Number(card.dataset.idx)];
   track("item_opened", { collection: page, item: itemTitle(item, page) });
+  if (page === "services" && SERVICE_PAGE[item.key]) {
+    location.href = `${SERVICE_PAGE[item.key]}.html`;
+    return;
+  }
   openItem(item, page);
 });
 
@@ -360,7 +414,12 @@ grid.addEventListener("keydown", (event) => {
   const card = event.target.closest(".item-card");
   if (!card) return;
   event.preventDefault();
-  openItem(visibleItems[Number(card.dataset.idx)], page);
+  const item = visibleItems[Number(card.dataset.idx)];
+  if (page === "services" && SERVICE_PAGE[item.key]) {
+    location.href = `${SERVICE_PAGE[item.key]}.html`;
+    return;
+  }
+  openItem(item, page);
 });
 
 // The admin saves to the same store; this is what makes an edit appear on an
