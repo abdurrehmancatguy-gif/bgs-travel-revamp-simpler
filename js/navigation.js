@@ -1,7 +1,7 @@
-import { buildPrimaryNav, buildDrawerMenus } from "./nav-model.js?v=139";
-import { subscribe } from "./store.js?v=139";
-import { contactStripMarkup } from "./info-modal.js?v=139";
-import { icon } from "../data/icons.js?v=139";
+import { buildPrimaryNav, buildDrawerMenus } from "./nav-model.js?v=183";
+import { subscribe } from "./store.js?v=183";
+import { contactStripMarkup } from "./info-modal.js?v=183";
+import { icon } from "../data/icons.js?v=183";
 
 /**
  * Header dropdowns and the mobile drawer.
@@ -32,10 +32,16 @@ export function createNavigation({ nav, drawer, drawerBody, toggle, onAction }) 
 
   /* ---------------- rendering ---------------- */
 
+  /* Menu labels are store content — visa names, package titles, whatever the
+     admin typed — and they land in innerHTML, so they are escaped like any
+     other data. A title containing an angle bracket becomes text, not markup. */
+  const esc = (value) =>
+    String(value ?? "").replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+
   const linkMarkup = (item, id) =>
     `<li><button class="nav-panel-link" type="button" data-action-id="${id}" role="menuitem">` +
     (item.icon ? `<span class="nav-panel-icon" aria-hidden="true">${icon(item.icon)}</span>` : "") +
-    `<span>${item.label}</span></button></li>`;
+    `<span>${esc(item.label)}</span></button></li>`;
 
   const actions = new Map();
   let actionSeq = 0;
@@ -52,7 +58,7 @@ export function createNavigation({ nav, drawer, drawerBody, toggle, onAction }) 
         menu.groups
           .map(
             (group) =>
-              `<div><p class="nav-panel-group-label">${group.label}</p>` +
+              `<div><p class="nav-panel-group-label">${esc(group.label)}</p>` +
               `<ul class="nav-panel-list">` +
               group.items.map((i) => linkMarkup(i, registerAction(i.action))).join("") +
               `</ul></div>`
@@ -78,7 +84,7 @@ export function createNavigation({ nav, drawer, drawerBody, toggle, onAction }) 
         <li class="nav-item" data-menu="${menu.id}">
           <button class="nav-trigger" type="button" id="nav-trigger-${menu.id}"
                   data-action-id="${registerAction(menu.action)}">
-            <span>${menu.label}</span>
+            <span>${esc(menu.label)}</span>
           </button>
         </li>`;
         }
@@ -88,7 +94,7 @@ export function createNavigation({ nav, drawer, drawerBody, toggle, onAction }) 
                   id="nav-trigger-${menu.id}" aria-haspopup="true"
                   aria-expanded="false" aria-controls="nav-panel-${menu.id}"
                   ${menu.page ? `data-nav-page="${menu.page}"` : ""}>
-            <span>${menu.label}</span>
+            <span>${esc(menu.label)}</span>
             <span class="nav-trigger-caret" aria-hidden="true"></span>
           </button>
           <div class="nav-panel${menu.kind === "groups" ? " nav-panel-wide" : ""}"
@@ -108,7 +114,7 @@ export function createNavigation({ nav, drawer, drawerBody, toggle, onAction }) 
       <section class="drawer-group" data-menu="${menu.id}">
         <button class="drawer-group-trigger" type="button"
                 data-action-id="${registerAction(menu.action)}">
-          <span>${menu.label}</span>
+          <span>${esc(menu.label)}</span>
         </button>
       </section>`;
       }
@@ -116,7 +122,7 @@ export function createNavigation({ nav, drawer, drawerBody, toggle, onAction }) 
       <section class="drawer-group" data-menu="${menu.id}">
         <button class="drawer-group-trigger" type="button" aria-expanded="false"
                 aria-controls="drawer-panel-${menu.id}">
-          <span>${menu.label}</span>
+          <span>${esc(menu.label)}</span>
           <span class="nav-trigger-caret" aria-hidden="true"></span>
         </button>
         <div class="drawer-group-panel" id="drawer-panel-${menu.id}">${panelMarkup(menu)}</div>

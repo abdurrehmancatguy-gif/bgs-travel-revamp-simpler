@@ -17,7 +17,6 @@ import { cardHtml, itemPath, itemJsonLd, describe, esc, SHAPE, slug } from "./re
 // The same builder the live card panel uses, so the pre-rendered page and the
 // panel cannot open WhatsApp with two different messages.
 import { buildWhatsAppItemUrl } from "../utils/whatsapp.js";
-import { SCENE, SCENE_LAYER_IDS } from "../data/images.js";
 import { resolvePill } from "../data/home.js";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
@@ -119,9 +118,16 @@ function itemPage(item, collection) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>${esc(title)} — BGS Travel &amp; Tourism</title>
   <meta name="description" content="${esc(description)}" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=139" />
-  <link rel="stylesheet" href="/styles.css" />
-  <link rel="stylesheet" href="/pages.css" />${headExtras({
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=183" />
+  <!-- Versioned like everywhere else. These used to be bare, which was
+       survivable under the old four-hour revalidate — but the stylesheets are
+       now cached immutable for a year, so an unversioned link would wear this
+       redesign's CSS forever, through every future one. -->
+  <link rel="stylesheet" href="/styles.css?v=183" />
+  <link rel="stylesheet" href="/pages.css?v=183" />
+  <!-- The one script these pages carry: the same wheel glide as the rest of
+       the site. Everything else stays static on purpose. -->
+  <script type="module" src="/js/smooth-scroll.js?v=183"></script>${headExtras({
     url, title: `${title} — BGS Travel & Tourism`, description, image,
     jsonLd: [orgJsonLd(), ...itemJsonLd(item, collection, url, `${SITE}/`), {
       "@type": "BreadcrumbList",
@@ -137,7 +143,7 @@ function itemPage(item, collection) {
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="item-page-bar">
     <a class="site-logo" href="/">
-      <img class="site-logo-mark" src="/assets/monogram-96.webp?v=139" alt="" width="40" height="40" />
+      <img class="site-logo-mark" src="/assets/monogram-96.webp?v=183" alt="" width="40" height="40" />
       <span class="site-logo-text">
         <span class="site-logo-name">BGS Travel &amp; Tourism</span>
         <span class="site-logo-place">Dubai, UAE</span>
@@ -236,82 +242,12 @@ for (const [collection, file] of Object.entries(PAGES)) {
 }
 
 /**
- * Writes the scene layer sources into the homepage HTML.
- *
- * The source tree ships these seven <img> tags with src="" and lets js/main.js
- * fill them in, which reads tidily and cost 1.16 seconds: a module script is
- * deferred by definition, so the browser finished parsing, fetched the module
- * graph, ran it, and only then learned there were images to fetch — on a
- * connection that had been idle since the HTML arrived at 400ms. Six of the
- * seven also carried loading="lazy", which is the wrong instruction for
- * artwork occupying the first viewport.
- *
- * Putting the real src in the markup lets the preload scanner start the
- * download while the parser is still working. paintScene() still runs and still
- * assigns the same URLs, which costs nothing — they are already in flight or
- * cached — and keeps the page working when opened from the source tree.
- */
-function paintSceneIntoHtml(html) {
-  let painted = 0;
-  for (const [id, key] of Object.entries(SCENE_LAYER_IDS)) {
-    const asset = SCENE[key];
-    if (!asset) throw new Error(`scene: no SCENE entry for ${key}`);
-    const tag = new RegExp(`<img([^>]*?)\\bid="${id}"([^>]*?)/>`);
-    const found = html.match(tag);
-    if (!found) throw new Error(`scene: no <img id="${id}"> in index.html`);
-
-    let attrs = (found[1] + found[2])
-      .replace(/\ssrc="[^"]*"/g, "")
-      .replace(/\salt="[^"]*"/g, "")
-      .replace(/\sloading="[^"]*"/g, "")
-      .replace(/\sfetchpriority="[^"]*"/g, "")
-      .replace(/\s+/g, " ")
-      .trim();
-
-    // Eager layers are in the first viewport; only `reveal` is genuinely
-    // hidden behind the curtains until the scene opens.
-    const loading = asset.eager ? "eager" : "lazy";
-    const priority = asset.priority ? "high" : asset.eager ? "auto" : "low";
-    // <picture> so AVIF browsers take the smaller file and the rest still get
-    // the WebP. styles.css gives picture `display: contents`, so the wrapper
-    // contributes no box and the absolutely-positioned <img> lays out exactly
-    // as it did when it was a bare tag.
-    // sizes="100vw" because every layer is a full-bleed plate: the browser can
-    // then pick the 1024px file on a phone and the 2048px one on a desktop,
-    // before any script has run.
-    html = html.replace(found[0],
-      `<picture>` +
-      `<source srcset="${asset.srcsetAvif}" sizes="100vw" type="image/avif" />` +
-      `<source srcset="${asset.srcsetWebp}" sizes="100vw" type="image/webp" />` +
-      `<img ${attrs} id="${id}" src="${asset.src}" alt="${esc(asset.alt)}" ` +
-      `loading="${loading}" fetchpriority="${priority}" decoding="async" /></picture>`);
-    painted++;
-  }
-  return { html, painted };
-}
-
-/** Preload only what paints first — preloading all seven would just make them
- *  compete for the same bandwidth and delay the one that matters. */
-function scenePreloads() {
-  return Object.values(SCENE)
-    .filter((a) => a.priority)
-    // type="image/avif" so a browser that cannot decode it skips the preload
-    // rather than downloading a file it will never use.
-    // imagesrcset and imagesizes, so the preload picks the same file the
-    // <picture> will — a preload naming only the 2048px plate would download it
-    // on a phone and then have the markup choose the 1024px one anyway.
-    .map((a) => `<link rel="preload" as="image" imagesrcset="${a.srcsetAvif}" ` +
-                `imagesizes="100vw" type="image/avif" fetchpriority="high" />`)
-    .join("\n  ");
-}
-
-/**
  * Writes the hero pills into the homepage HTML.
  *
- * js/main.js renders these from the store so they are admin-editable, but a
+ * js/home.js renders these from the store so they are admin-editable, but a
  * crawler that does not run scripts would otherwise find an empty div where the
  * three most prominent links on the site should be. Pre-rendering them keeps
- * the markup honest; main.js replaces them with the same content a moment later
+ * the markup honest; home.js replaces them with the same content a moment later
  * and the visitor sees no change.
  *
  * open=1 matches the signal the dropdown menus use, so a pill naming one visa
@@ -321,7 +257,7 @@ function paintPillsIntoHtml(html, pills) {
   if (!pills?.length) return { html, painted: 0 };
   const buttons = pills.map((pill) => {
     // Same resolver the browser uses, so the pre-rendered button and the one
-    // js/main.js draws a moment later cannot say different things.
+    // js/home.js draws a moment later cannot say different things.
     const t = resolvePill(pill, (c) => content[c] ?? []);
     if (!t || !t.label) return "";
     return `<button class="hero-pill" type="button" data-page="${esc(t.page)}" ` +
@@ -329,7 +265,9 @@ function paintPillsIntoHtml(html, pills) {
            `${esc(t.label)}</button>`;
   }).filter(Boolean).join("\n            ");
 
-  const wrap = /(<div class="hero-pills"[^>]*>)([\s\S]*?)(<\/div>)/;
+  // The class list may carry more than "hero-pills" — the homepage adds its
+  // reveal class — so match the token, not the whole attribute.
+  const wrap = /(<div class="hero-pills[^"]*"[^>]*>)([\s\S]*?)(<\/div>)/;
   if (!wrap.test(html)) throw new Error("pills: no .hero-pills container in index.html");
   return {
     html: html.replace(wrap, `$1\n            ${buttons}\n          $3`),
@@ -398,8 +336,21 @@ const home = path.join(DIST, "index.html");
 let homeHtml = fs.readFileSync(home, "utf8");
 const pills = paintPillsIntoHtml(homeHtml, content.homePills);
 homeHtml = pills.html;
-const scene = paintSceneIntoHtml(homeHtml);
-homeHtml = scene.html.replace("</head>", `  ${scenePreloads()}\n</head>`);
+
+/* The editable homepage text, painted into the markup so a crawler reads what
+   the admin wrote rather than the shipped defaults. Same hooks js/home.js
+   re-applies live; tickerPhrases is client-side decoration and skipped. */
+for (const [key, value] of Object.entries(content.homeCopy ?? {})) {
+  if (typeof value !== "string" || !value.trim()) continue;
+  homeHtml = homeHtml.replace(
+    new RegExp(`(<[^>]*data-hc="${key}"[^>]*>)([^<]*)`),
+    (_, open) => `${open}${esc(value)}`
+  );
+}
+
+/* The stats band, from the same counts this build just rendered. Counted, not
+   typed: the old band claimed traveller totals nobody had measured, and a
+   crawler was the one visitor who would never see the client-side correction. */
 homeHtml = homeHtml.replace("</head>", `${headExtras({
   url: `${SITE}/`,
   title: "BGS Travel & Tourism — Dubai escapes and journeys worldwide",
@@ -463,7 +414,6 @@ ${Object.entries(PAGES).flatMap(([c]) => (content[c] ?? []).map((i) =>
 
 console.log(`  cards pre-rendered: ${cardCount}   item pages: ${pageCount}`);
 console.log(`  sitemap entries:    ${urls.length}`);
-console.log(`  scene layers in HTML: ${scene.painted}`);
 console.log(`  hero pills in HTML:   ${pills.painted}`);
 const min = await minifyDist();
 console.log(`  minified:           ${min.files} files, ${Math.round(min.saved / 1024)} KB saved`);

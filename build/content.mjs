@@ -47,7 +47,7 @@ async function fromFirestore() {
 
 async function fromFiles() {
   const [{ ACTIVITIES, PACKAGES }, { DESTINATIONS, VISA_TYPES, PAGE_COPY },
-         { MICE_SECTIONS }, { SERVICES }, { HOME_PILLS, HOME_CARDS }] = await Promise.all([
+         { MICE_SECTIONS }, { SERVICES }, { HOME_PILLS, HOME_CARDS, HOME_COPY }] = await Promise.all([
     import("../data/packages.js"), import("../data/content.js"),
     import("../data/mice.js"), import("../data/navigation.js"),
     import("../data/home.js"),
@@ -55,7 +55,7 @@ async function fromFiles() {
   return {
     activities: ACTIVITIES, packages: PACKAGES, destinations: DESTINATIONS,
     services: SERVICES, visa: VISA_TYPES, mice: MICE_SECTIONS,
-    homePills: HOME_PILLS, homeCards: HOME_CARDS, copy: PAGE_COPY,
+    homePills: HOME_PILLS, homeCards: HOME_CARDS, homeCopy: HOME_COPY, copy: PAGE_COPY,
   };
 }
 
@@ -66,7 +66,11 @@ export async function loadContent() {
     // Firestore wins per collection, exactly as the browser store treats it,
     // so a collection nobody has edited still comes from the files.
     console.log(`  content: Firestore (${Object.keys(remote).join(", ")})`);
-    return { ...local, ...remote };
+    const merged = { ...local, ...remote };
+    // homeCopy is an object of named fields: a store saved before a field
+    // existed must not blank it, so the defaults sit underneath.
+    if (remote.homeCopy) merged.homeCopy = { ...local.homeCopy, ...remote.homeCopy };
+    return merged;
   } catch (error) {
     console.warn(`  content: falling back to data files — ${error.message}`);
     return fromFiles();

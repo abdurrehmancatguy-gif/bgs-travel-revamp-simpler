@@ -1,27 +1,3 @@
-/**
- * Navigation content and what each item does. Every entry carries an `action`
- * so nothing in the menus is a dead `#` link.
- *
- * Action shapes:
- *   { kind: "page", page, q }                         open a category page with
- *       its search box pre-filled with `q` and already filtered. This is how
- *       every dropdown item behaves: pick "Desert" and you land on Activities
- *       with "Desert" searched.
- *   { kind: "scene", scene }                          scroll to a home scene.
- *   { kind: "service", service }                      scroll to Services and
- *       select that service panel.
- *   { kind: "whatsapp", intent }                      open a WhatsApp enquiry.
- */
-
-/** Scroll offsets (px into the pinned cinematic section) for each scene. */
-export const SCENES = {
-  intro: 0,
-  promise: 1180,
-  discovery: 2320,
-  packages: 3150,
-  services: 4200,
-};
-
 export const DESTINATION_GROUPS = [
   {
     label: "UAE",
@@ -229,8 +205,12 @@ export const UTILITY_NAV = {
   label: "More",
   kind: "list",
   items: [
-    { label: "About", action: { kind: "scene", scene: "promise" } },
-    { label: "Contact", action: { kind: "scene", scene: "services" } },
+    // These used to target scroll positions inside the old cinematic homepage
+    // ("scenes"); that page is gone, and the anchors with it. About is the
+    // homepage itself now, and Contact opens the Contacts panel — the same one
+    // the footer buttons open — rather than scrolling anywhere.
+    { label: "About", action: { kind: "home" } },
+    { label: "Contact", action: { kind: "contact" } },
   ],
 };
 
