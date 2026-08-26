@@ -1,4 +1,4 @@
-import { PHOTOS } from "./photos.js?v=183";
+import { PHOTOS } from "./photos.js?v=188";
 /**
  * Content for the category pages that is not a package or an activity.
  *
@@ -204,30 +204,36 @@ export const PAGE_COPY = {
     title: "Activities & Experiences",
     intro:
       "Desert, water, culture and sky — single experiences you can book on their own or fold into a longer trip.",
+    notFound: "Couldn\u2019t find your desired activity?",
   },
   packages: {
     title: "Travel Packages",
     intro:
       "Multi-day journeys across Africa, Asia and beyond, planned end to end so every connection is already handled.",
+    notFound: "Couldn\u2019t find your desired package?",
   },
   destinations: {
     title: "Destinations",
     intro:
       "Fifteen countries we know well enough to plan around you, from the UAE on your doorstep to the far side of the world.",
+    notFound: "Couldn\u2019t find your desired destination?",
   },
   services: {
     title: "Services",
     intro:
       "Flights, stays, transfers and a team on call — the parts of a journey that hold everything else together.",
+    notFound: "Couldn\u2019t find your desired service?",
   },
   mice: {
     title: "MICE & Corporate Travel",
     intro:
       "Meetings, incentives, conferences and exhibitions — planned, booked and run by one team, from the first flight to the closing dinner.",
+    notFound: "Couldn\u2019t find your desired MICE service?",
   },
   visa: {
     title: "Visa Services",
     intro:
       "Applications prepared, submitted and tracked, so the paperwork is never the reason a trip does not happen.",
+    notFound: "Couldn\u2019t find your desired visa?",
   },
 };

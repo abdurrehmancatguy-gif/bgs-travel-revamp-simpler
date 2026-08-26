@@ -1,17 +1,18 @@
-import { getCollection, subscribe } from "./store.js?v=183";
-import "./info-modal.js?v=183";
-import { createNavigation } from "./navigation.js?v=183";
-import { icon } from "../data/icons.js?v=183";
-import { priceLabel } from "../data/packages.js?v=183";
-import { openWhatsApp, buildWhatsAppUrl } from "../utils/whatsapp.js?v=183";
-import { MICE_SERVICES } from "../data/mice.js?v=183";
-import { openItem, itemTitle } from "./item-dialog.js?v=183";
+import { getCollection, subscribe } from "./store.js?v=188";
+import "./info-modal.js?v=188";
+import { createNavigation } from "./navigation.js?v=188";
+import { icon } from "../data/icons.js?v=188";
+import { priceLabel } from "../data/packages.js?v=188";
+import { openWhatsApp, buildWhatsAppUrl } from "../utils/whatsapp.js?v=188";
+import { MICE_SERVICES } from "../data/mice.js?v=188";
+import { openItem, itemTitle } from "./item-dialog.js?v=188";
 // The same wheel glide the homepage has — the card lists are the longest
 // scrolls on the site, so they benefit most.
-import "./smooth-scroll.js?v=183";
-import { buildPrimaryNav } from "./nav-model.js?v=183";
-import { track } from "./analytics.js?v=183";
-import { contactStripMarkup, openInfo } from "./info-modal.js?v=183";
+import "./smooth-scroll.js?v=188";
+import { enableTilt } from "./tilt.js?v=188";
+import { buildPrimaryNav } from "./nav-model.js?v=188";
+import { track } from "./analytics.js?v=188";
+import { contactStripMarkup, openInfo } from "./info-modal.js?v=188";
 
 /**
  * Every category page runs this one module. The page declares which collection
@@ -60,7 +61,7 @@ const esc = (s) =>
  * services without a page of their own (flights, hotels, concierge…) keep
  * their detail panel.
  */
-const SERVICE_PAGE = { visa: "visa", activities: "activities" };
+const SERVICE_PAGE = { visa: "visa", activities: "activities", flights: "destinations" };
 
 const SHAPES = {
   activities: {
@@ -320,6 +321,40 @@ if (miceServices) {
   miceServices.innerHTML = MICE_SERVICES.map((s) => `<li>${esc(s)}</li>`).join("");
 }
 
+/* ------------------------------------------------------- couldn't-find CTA */
+
+/**
+ * The last thing on every catalogue page: an admission that the list is not
+ * the whole world, and a door. The noun changes with the page; the admin can
+ * replace the whole line per page under Page copy.
+ */
+const NOT_FOUND_NOUN = {
+  visa: "visa", packages: "package", activities: "activity",
+  destinations: "destination", services: "service", mice: "MICE service",
+};
+
+(function renderNotFound() {
+  const footer = document.querySelector(".page-footer");
+  if (!footer) return;
+  const noun = NOT_FOUND_NOUN[page] ?? "trip";
+  // Stored copy may predate this field; the default steps in underneath.
+  const line = getCollection("copy")[page]?.notFound
+    || `Couldn\u2019t find your desired ${noun}?`;
+  const block = document.createElement("section");
+  block.className = "page-notfound";
+  block.setAttribute("aria-label", "Contact us");
+  block.innerHTML = `
+    <p class="page-notfound-line">${esc(line)}</p>
+    <button class="page-notfound-btn" type="button">Contact us — we\u2019ll check for you</button>`;
+  block.querySelector("button").addEventListener("click", () => {
+    track("not_found_contact", { collection: page });
+    openWhatsApp(buildWhatsAppUrl(
+      `Hi BGS Travel & Tourism, I couldn't find the ${noun} I'm looking for on the site — can you help?`
+    ));
+  });
+  footer.before(block);
+})();
+
 const footerContact = document.querySelector("#footer-contact");
 if (footerContact) footerContact.innerHTML = contactStripMarkup();
 
@@ -396,6 +431,9 @@ chipRow.addEventListener("click", (event) => {
 
 /* A card opens its detail panel. The WhatsApp enquiry moved inside that panel,
    so it happens after someone has read the detail rather than instead of it. */
+/* Every card leans toward the cursor — the same engine the homepage uses. */
+enableTilt(grid, ".item-card");
+
 grid.addEventListener("click", (event) => {
   const card = event.target.closest(".item-card");
   if (!card) return;

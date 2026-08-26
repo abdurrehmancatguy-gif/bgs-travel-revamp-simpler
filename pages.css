@@ -319,6 +319,10 @@ body.page .page-hero {
   transition: transform 260ms ease, box-shadow 260ms ease;
 }
 
+/* While hovered (tilting), the card rides above its grid neighbours. */
+.item-card:hover,
+.item-card:focus-visible { z-index: 5; }
+
 .item-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 22px 46px rgba(13, 27, 42, 0.14);
@@ -419,6 +423,50 @@ body.page .page-hero {
     transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 .reveal-ready .reveal[data-shown="true"] { opacity: 1; transform: none; }
+
+/* ---------------------------------------------------- couldn't-find CTA */
+
+.page-notfound {
+  padding: clamp(44px, 8vh, 72px) 24px clamp(50px, 8vh, 80px);
+  text-align: center;
+}
+
+.page-notfound-line {
+  margin: 0 0 18px;
+  font-family: var(--font-display);
+  font-size: clamp(22px, 3vw, 32px);
+  font-weight: 500;
+  color: var(--page-ink);
+}
+
+.page-notfound-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 28px;
+  border: 0;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--navy-deep);
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  box-shadow: 0 14px 30px rgba(232, 148, 26, 0.3);
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.page-notfound-btn:hover,
+.page-notfound-btn:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 40px rgba(232, 148, 26, 0.4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-notfound-btn { transition: none; }
+  .page-notfound-btn:hover { transform: none; }
+}
 
 /* ----------------------------------------------------------------- footer */
 

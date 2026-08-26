@@ -157,6 +157,22 @@ export const HOME_COPY = {
   marqueeNote: "See you in Arabian Travel Mart",
   bandA: "From anywhere",
   bandB: "to everywhere.",
+  faqEyebrow: "04 \u2014 Questions",
+  faqHeading: "Asked often",
+  /* One per line as "Question | Answer" \u2014 the pipe splits them. Also fed to
+     search engines as FAQPage structured data by the build. */
+  faq: [
+    "How do I start a visa application? | Send us your destination on WhatsApp \u2014 we reply with the exact document list and the price before you commit to anything.",
+    "How long does processing take? | It depends on the country: every visa card lists its turnaround, and we confirm current timings before you pay.",
+    "Do you handle flights and hotels too? | Yes \u2014 flights, stays, transfers and full itineraries are arranged by the same team that files your visa.",
+    "How do payments work? | We accept Tabby and Tamara as well as the usual methods, and nothing is charged until you\u2019ve confirmed the plan with our team.",
+    "Where are you based? | Dubai, UAE \u2014 and we plan journeys worldwide.",
+  ],
+  cformEyebrow: "05 \u2014 Or just ask",
+  cformTitle: "Tell us what you need",
+  cformSub: "One message \u2014 a person replies on WhatsApp.",
+  cformButton: "Send on WhatsApp",
+  cformNote: "Opens a WhatsApp chat with our team \u2014 nothing is stored on this site.",
   tickerPhrases: [
     "{visas} visa services",
     "{destinations} destinations",

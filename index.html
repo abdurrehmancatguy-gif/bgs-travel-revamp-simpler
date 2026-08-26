@@ -5,19 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>BGS Travel &amp; Tourism — Dubai escapes and journeys worldwide</title>
   <meta name="description" content="BGS Travel &amp; Tourism plans Dubai escapes, African safaris and tailor-made journeys across Asia, Europe and beyond — flights, stays, visas and transfers handled by one team." />
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png?v=183" />
-  <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png?v=183" />
-  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=183" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png?v=188" />
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png?v=188" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=188" />
   <!-- The typeface host. font-display is swap, so a late arrival re-renders the
        headline in a different face; the preconnect buys the handshake back.
        crossorigin because fonts fetch in CORS mode — without it the connection
        opened here is the wrong kind and simply not reused. -->
   <link rel="preconnect" href="https://dcym8fthxf5uu.cloudfront.net" crossorigin />
-  <link rel="stylesheet" href="styles.css?v=183" />
-  <link rel="stylesheet" href="pages.css?v=183" />
-  <link rel="stylesheet" href="home.css?v=183" />
-  <script type="module" src="js/analytics.js?v=183"></script>
-  <script type="module" src="js/home.js?v=183"></script>
+  <link rel="stylesheet" href="styles.css?v=188" />
+  <link rel="stylesheet" href="pages.css?v=188" />
+  <link rel="stylesheet" href="home.css?v=188" />
+  <script type="module" src="js/analytics.js?v=188"></script>
+  <script type="module" src="js/home.js?v=188"></script>
   <!-- BGS One rewards badge, served by the hub at bgscorner.com. Renders
        nothing unless a [data-bgs-loyalty] element is present on the page. -->
   <script type="module" src="https://www.bgscorner.com/loyalty-widget.js?v=1"></script>
@@ -27,7 +27,7 @@
 
   <header class="site-header" aria-label="Primary navigation">
     <a class="site-logo" href="index.html">
-      <img class="site-logo-mark" src="assets/monogram-96.webp?v=183" alt="" width="40" height="40" />
+      <img class="site-logo-mark" src="assets/monogram-96.webp?v=188" alt="" width="40" height="40" />
       <span class="site-logo-text">
         <span class="site-logo-name">BGS Travel &amp; Tourism</span>
         <span class="site-logo-place">Dubai, UAE</span>
@@ -139,8 +139,8 @@
          accepts, named and shown. The label is editable (Homepage → Text). -->
     <div class="hm-pay hm-reveal">
       <span class="hm-pay-label" data-hc="payLabel">We accept</span>
-      <img src="assets/pay/tabby.svg?v=183" alt="Tabby" width="128" height="44" loading="lazy" />
-      <img src="assets/pay/tamara.svg?v=183" alt="Tamara" width="138" height="44" loading="lazy" />
+      <img src="assets/pay/tabby.svg?v=188" alt="Tabby" width="128" height="44" loading="lazy" />
+      <img src="assets/pay/tamara.svg?v=188" alt="Tamara" width="138" height="44" loading="lazy" />
       <span class="hm-pay-note" data-hc="payNote">as well</span>
     </div>
 
@@ -195,6 +195,39 @@
           <a class="hm-btn hm-btn-ghost" href="destinations.html" data-hc="ctaBrowseLabel">Browse destinations</a>
         </div>
       </div>
+    </section>
+
+    <!-- ================================================================ faq -->
+    <section class="hm-section" aria-labelledby="hm-faq-title">
+      <header class="hm-section-head hm-reveal">
+        <p class="hm-eyebrow" data-hc="faqEyebrow">04 — Questions</p>
+        <h2 class="hm-h2" id="hm-faq-title" data-hc="faqHeading">Asked often</h2>
+      </header>
+      <!-- Native details/summary: the browser gives keyboard support and state
+           for free, and a crawler reads every answer without running a line of
+           script. Filled by the build and re-rendered live by js/home.js. -->
+      <div class="hm-faq" id="hm-faq"></div>
+    </section>
+
+    <!-- ========================================================== ask form -->
+    <section class="hm-cform-band" aria-label="Ask us anything">
+      <form class="hm-form-card hm-cform hm-reveal" id="hm-cform" novalidate>
+        <p class="hm-eyebrow" data-hc="cformEyebrow">05 — Or just ask</p>
+        <h2 class="hm-form-title" data-hc="cformTitle">Tell us what you need</h2>
+        <p class="hm-form-sub" data-hc="cformSub">One message — a person replies on WhatsApp.</p>
+        <label class="hm-field">
+          <span>Your name</span>
+          <input id="hm-cform-name" name="name" type="text" autocomplete="name"
+                 placeholder="Full name" required />
+        </label>
+        <label class="hm-field">
+          <span>What do you need?</span>
+          <textarea id="hm-cform-msg" name="message" rows="3" required
+                    placeholder="A visa, a trip, a question — anything"></textarea>
+        </label>
+        <button class="hm-btn hm-btn-gold hm-form-send" type="submit" data-hc="cformButton">Send on WhatsApp</button>
+        <p class="hm-form-note" id="hm-cform-note" data-hc="cformNote">Opens a WhatsApp chat with our team — nothing is stored on this site.</p>
+      </form>
     </section>
   </main>
 

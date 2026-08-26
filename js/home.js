@@ -1,14 +1,15 @@
-import { getCollection, subscribe } from "./store.js?v=183";
-import "./info-modal.js?v=183";
-import { contactStripMarkup, openInfo } from "./info-modal.js?v=183";
-import { createNavigation } from "./navigation.js?v=183";
-import { buildPrimaryNav } from "./nav-model.js?v=183";
-import { resolvePill, HOME_COPY } from "../data/home.js?v=183";
-import { resolveHomeCards, withSlugs, CARD_TITLE_KEY, priceFacts } from "../data/packages.js?v=183";
-import { icon } from "../data/icons.js?v=183";
-import { openItem } from "./item-dialog.js?v=183";
-import { openWhatsApp, buildCustomTripUrl, buildWhatsAppUrl, WHATSAPP_DISPLAY } from "../utils/whatsapp.js?v=183";
-import "./smooth-scroll.js?v=183";
+import { getCollection, subscribe } from "./store.js?v=188";
+import "./info-modal.js?v=188";
+import { contactStripMarkup, openInfo } from "./info-modal.js?v=188";
+import { createNavigation } from "./navigation.js?v=188";
+import { buildPrimaryNav } from "./nav-model.js?v=188";
+import { resolvePill, HOME_COPY } from "../data/home.js?v=188";
+import { resolveHomeCards, withSlugs, CARD_TITLE_KEY, priceFacts } from "../data/packages.js?v=188";
+import { icon } from "../data/icons.js?v=188";
+import { openItem } from "./item-dialog.js?v=188";
+import { openWhatsApp, buildCustomTripUrl, buildWhatsAppUrl, WHATSAPP_DISPLAY } from "../utils/whatsapp.js?v=188";
+import "./smooth-scroll.js?v=188";
+import { enableTilt } from "./tilt.js?v=188";
 
 /**
  * The homepage. Everything on it renders from the store, so an edit made in
@@ -159,55 +160,14 @@ document.querySelector("#hm-cards")?.addEventListener("click", (event) => {
 
 /* ------------------------------------------------------------------ tilt */
 
-/**
- * The journey cards lean toward the cursor — a few degrees of perspective,
- * reset on leave. Delegated from the rail because the cards re-render on
- * every store change, and inline transforms because the reveal transition
- * (700ms, staggered) would otherwise drag the tilt behind the hand.
- *
- * Fine pointers only: a finger cannot hover, and reduced-motion means what
- * it says.
- */
-const TILT_MAX = 12;
-const finePointer = matchMedia("(hover: hover) and (pointer: fine)");
-let tiltRaf = null;
-
-function applyTilt(card, event) {
-  const r = card.getBoundingClientRect();
-  const px = (event.clientX - r.left) / r.width - 0.5;
-  const py = (event.clientY - r.top) / r.height - 0.5;
-  card.style.transition = "transform 120ms ease-out";
-  card.style.transform =
-    `perspective(800px) rotateX(${(-py * TILT_MAX).toFixed(2)}deg) ` +
-    `rotateY(${(px * TILT_MAX).toFixed(2)}deg) translateY(-6px) scale(1.02)`;
-}
-
-document.querySelector("#hm-cards")?.addEventListener("pointermove", (event) => {
-  if (!finePointer.matches || reduceMotion.matches) return;
-  const card = event.target.closest(".hm-card");
-  if (!card) return;
-  if (tiltRaf) return;
-  tiltRaf = requestAnimationFrame(() => {
-    tiltRaf = null;
-    applyTilt(card, event);
-  });
-});
-
-document.querySelector("#hm-cards")?.addEventListener("pointerout", (event) => {
-  const card = event.target.closest(".hm-card");
-  if (!card || card.contains(event.relatedTarget)) return;
-  card.style.transition = "transform 420ms cubic-bezier(0.2, 0.6, 0.2, 1)";
-  card.style.transform = "";
-  // Hand the element back to the stylesheet once the settle finishes, so the
-  // reveal rules own it again.
-  setTimeout(() => { card.style.transition = ""; }, 450);
-});
+enableTilt(document.querySelector("#hm-cards"), ".hm-card");
+enableTilt(document.querySelector("#hm-services"), ".hm-service");
 
 /* -------------------------------------------------------------- services */
 
 /** Where a service tile leads: its own category page when it has one,
  *  the services page otherwise. Mirrors SERVICE_PAGE on the services page. */
-const SERVICE_TILE_PAGE = { visa: "visa", activities: "activities" };
+const SERVICE_TILE_PAGE = { visa: "visa", activities: "activities", flights: "destinations" };
 
 function renderServices() {
   const list = document.querySelector("#hm-services");
@@ -223,6 +183,52 @@ function renderServices() {
     </li>`).join("");
   observeReveals(list);
 }
+
+/* ------------------------------------------------------------------- faq */
+
+/** "Question | Answer" lines from the editable copy, as native disclosure
+ *  widgets. A line without a pipe is skipped rather than shown half-made. */
+function renderFaq() {
+  const wrap = document.querySelector("#hm-faq");
+  if (!wrap) return;
+  const items = (homeCopy().faq ?? [])
+    .map((line) => {
+      const [q, ...rest] = String(line).split("|");
+      const a = rest.join("|").trim();
+      return q.trim() && a ? [q.trim(), a] : null;
+    })
+    .filter(Boolean);
+  wrap.closest("section")?.toggleAttribute("hidden", !items.length);
+  wrap.innerHTML = items.map(([q, a], i) => `
+    <details class="hm-faq-item hm-reveal" style="--d:${Math.min(i * 60, 300)}ms">
+      <summary>${esc(q)}<span class="hm-faq-mark" aria-hidden="true"></span></summary>
+      <p>${esc(a)}</p>
+    </details>`).join("");
+  observeReveals(wrap);
+}
+
+/* -------------------------------------------------------------- ask form */
+
+document.querySelector("#hm-cform")?.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const name = document.querySelector("#hm-cform-name");
+  const msg = document.querySelector("#hm-cform-msg");
+  const note = document.querySelector("#hm-cform-note");
+  const missing = [name, msg].filter((el) => !el.value.trim());
+  missing.forEach((el) => el.setAttribute("aria-invalid", "true"));
+  [name, msg].filter((el) => el.value.trim()).forEach((el) => el.removeAttribute("aria-invalid"));
+  if (missing.length) {
+    note.textContent = "Your name and a line about what you need — that's all.";
+    note.dataset.error = "true";
+    missing[0].focus();
+    return;
+  }
+  note.textContent = `Opening WhatsApp (${WHATSAPP_DISPLAY})…`;
+  delete note.dataset.error;
+  openWhatsApp(buildWhatsAppUrl(
+    `Hi BGS Travel & Tourism, I'm ${name.value.trim()}. ${msg.value.trim()}`
+  ));
+});
 
 /* --------------------------------------------------------------- marquee */
 
@@ -502,6 +508,7 @@ renderServices();
 renderMarquee();
 renderTicker();
 renderCtaList();
+renderFaq();
 fillDestinationList();
 observeReveals();
 
@@ -520,5 +527,6 @@ subscribe(() => {
   renderMarquee();
   renderTicker();
   renderCtaList();
+  renderFaq();
   fillDestinationList();
 });

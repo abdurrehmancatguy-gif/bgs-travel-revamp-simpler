@@ -1,11 +1,11 @@
 import {
   COLLECTIONS, getCollection, saveCollection, resetCollection, resetAll,
   exportAll, importAll, isCustomised, isCloudEnabled, subscribeSyncFailure,
-} from "./store.js?v=183";
-import { photoQuery } from "./photo-query.mjs?v=183";
-import { CARD_TITLE_KEY } from "../data/packages.js?v=183";
-import { resolvePill, HOME_COPY } from "../data/home.js?v=183";
-import { signIn } from "./cloud.js?v=183";
+} from "./store.js?v=188";
+import { photoQuery } from "./photo-query.mjs?v=188";
+import { CARD_TITLE_KEY } from "../data/packages.js?v=188";
+import { resolvePill, HOME_COPY } from "../data/home.js?v=188";
+import { signIn } from "./cloud.js?v=188";
 
 /**
  * The admin console.
@@ -271,6 +271,14 @@ const HOME_COPY_FIELDS = [
   ["servicesEyebrow", "Services — small line"],
   ["servicesHeading", "Services — heading"],
   ["servicesMore", "Services — corner link"],
+  ["faqEyebrow", "FAQ — small line"],
+  ["faqHeading", "FAQ — heading"],
+  ["faq", "FAQ — one per line as: Question | Answer", "lines"],
+  ["cformEyebrow", "Bottom form — small line"],
+  ["cformTitle", "Bottom form — heading"],
+  ["cformSub", "Bottom form — sub-line"],
+  ["cformButton", "Bottom form — send button"],
+  ["cformNote", "Bottom form — small print"],
   ["ctaEyebrow", "Closing panel — small line"],
   ["ctaA", "Closing panel — first line"],
   ["ctaB", "Closing panel — second line (italic)"],
@@ -419,6 +427,7 @@ function renderCopyEditor() {
         <strong>${esc(page)}</strong>
         <label>Title<input data-copy="${esc(page)}.title" value="${esc(value.title)}" /></label>
         <label>Intro<textarea data-copy="${esc(page)}.intro" rows="2">${esc(value.intro)}</textarea></label>
+        <label>Couldn\u2019t-find line (bottom of the page)<input data-copy="${esc(page)}.notFound" value="${esc(value.notFound ?? "")}" /></label>
       </li>`)
     .join("");
   el("#admin-count").textContent = `${Object.keys(copy).length} pages`;
@@ -704,7 +713,7 @@ el("#admin-list").addEventListener("change", (event) => {
     const key = hc.dataset.homeCopy;
     const copy = { ...HOME_COPY, ...getCollection("homeCopy") };
     // list fields: one entry per line; blanks drop out.
-    copy[key] = ["tickerPhrases", "marqueeNames"].includes(key)
+    copy[key] = ["tickerPhrases", "marqueeNames", "faq"].includes(key)
       ? hc.value.split("\n").map((l) => l.trim()).filter(Boolean)
       : hc.value;
     saveCollection("homeCopy", copy);
@@ -897,7 +906,7 @@ async function backfillImages(records, collection, identity) {
 }
 
 async function applySheet(mode) {
-  const { applyMode } = await import("./sheet-import.mjs?v=183");
+  const { applyMode } = await import("./sheet-import.mjs?v=188");
   el("#sheet-dialog").close();
   sheetStatus("Applying…");
 
@@ -920,7 +929,7 @@ async function handleSheet(file) {
   if (!file) return;
   sheetStatus(`Reading ${file.name}…`);
   try {
-    const { parseWorkbook, reconcile } = await import("./sheet-import.mjs?v=183");
+    const { parseWorkbook, reconcile } = await import("./sheet-import.mjs?v=188");
     const { tabs, problems, ignoredCostColumns } = await parseWorkbook(file);
     if (!tabs.length) {
       sheetStatus(`Nothing to import. ${problems.join(" ")}`);
@@ -970,7 +979,7 @@ el("#sheet-apply-replace").addEventListener("click", () => applySheet("replace")
 el("#sheet-export").addEventListener("click", async () => {
   sheetStatus("Building workbook…");
   try {
-    const { exportWorkbook } = await import("./sheet-import.mjs?v=183");
+    const { exportWorkbook } = await import("./sheet-import.mjs?v=188");
     const blob = await exportWorkbook((name) => getCollection(name));
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -994,7 +1003,7 @@ el("#sheet-export-csv").addEventListener("click", async () => {
   }
   sheetStatus("Building CSV…");
   try {
-    const { exportCsv } = await import("./sheet-import.mjs?v=183");
+    const { exportCsv } = await import("./sheet-import.mjs?v=188");
     const blob = await exportCsv(active, (name) => getCollection(name));
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -1012,7 +1021,7 @@ el("#sheet-export-csv").addEventListener("click", async () => {
 el("#sheet-template").addEventListener("click", async () => {
   sheetStatus("Building template…");
   try {
-    const { exportTemplate } = await import("./sheet-import.mjs?v=183");
+    const { exportTemplate } = await import("./sheet-import.mjs?v=188");
     const blob = await exportTemplate();
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
