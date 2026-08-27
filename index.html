@@ -3,21 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <!-- The serif face is on every page's largest text; fetch it first, not
+       after the CSS names it. gstatic resolves early for the Firestore sync
+       that follows at idle. -->
+  <link rel="preconnect" href="https://dcym8fthxf5uu.cloudfront.net" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="https://dcym8fthxf5uu.cloudfront.net/fonts/247a073c-29f5-4a89-aa3a-741020f346fc/OggText-Medium.woff2" crossorigin />
+  <link rel="dns-prefetch" href="https://www.gstatic.com" />
+  <!-- The arch skyline is the homepage's largest paint; start it with the
+       document instead of after layout discovers the <picture>. -->
+  <link rel="preload" as="image" type="image/avif"
+        imagesrcset="assets/scene/city-1024.avif?rev=1 1024w, assets/scene/city.avif?rev=1 2048w"
+        imagesizes="(max-width: 1320px) 96vw, 1280px" />
   <title>BGS Travel &amp; Tourism — Dubai escapes and journeys worldwide</title>
   <meta name="description" content="BGS Travel &amp; Tourism plans Dubai escapes, African safaris and tailor-made journeys across Asia, Europe and beyond — flights, stays, visas and transfers handled by one team." />
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png?v=193" />
-  <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png?v=193" />
-  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=193" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png?v=200" />
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png?v=200" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=200" />
   <!-- The typeface host. font-display is swap, so a late arrival re-renders the
        headline in a different face; the preconnect buys the handshake back.
        crossorigin because fonts fetch in CORS mode — without it the connection
        opened here is the wrong kind and simply not reused. -->
   <link rel="preconnect" href="https://dcym8fthxf5uu.cloudfront.net" crossorigin />
-  <link rel="stylesheet" href="styles.css?v=193" />
-  <link rel="stylesheet" href="pages.css?v=193" />
-  <link rel="stylesheet" href="home.css?v=193" />
-  <script type="module" src="js/analytics.js?v=193"></script>
-  <script type="module" src="js/home.js?v=193"></script>
+  <link rel="stylesheet" href="styles.css?v=200" />
+  <link rel="stylesheet" href="pages.css?v=200" />
+  <link rel="stylesheet" href="home.css?v=200" />
+  <script type="module" src="js/analytics.js?v=200"></script>
+  <script type="module" src="js/home.js?v=200"></script>
   <!-- BGS One rewards badge, served by the hub at bgscorner.com. Renders
        nothing unless a [data-bgs-loyalty] element is present on the page. -->
   <script type="module" src="https://www.bgscorner.com/loyalty-widget.js?v=1"></script>
@@ -27,7 +38,7 @@
 
   <header class="site-header">
     <a class="site-logo" href="index.html">
-      <img class="site-logo-mark" src="assets/monogram-96.webp?v=193" alt="" width="40" height="40" />
+      <img class="site-logo-mark" src="assets/monogram-96.webp?v=200" alt="" width="40" height="40" />
       <span class="site-logo-text">
         <span class="site-logo-name">BGS Travel &amp; Tourism</span>
         <span class="site-logo-place">Dubai, UAE</span>
@@ -139,8 +150,8 @@
          accepts, named and shown. The label is editable (Homepage → Text). -->
     <div class="hm-pay hm-reveal">
       <span class="hm-pay-label" data-hc="payLabel">We accept</span>
-      <img src="assets/pay/tabby.svg?v=193" alt="Tabby" data-pay="tabby" width="128" height="44" loading="lazy" hidden />
-      <img src="assets/pay/tamara.svg?v=193" alt="Tamara" data-pay="tamara" width="138" height="44" loading="lazy" />
+      <img src="assets/pay/tabby.svg?v=200" alt="Tabby" data-pay="tabby" width="128" height="44" loading="lazy" hidden />
+      <img src="assets/pay/tamara.svg?v=200" alt="Tamara" data-pay="tamara" width="138" height="44" loading="lazy" />
       <span class="hm-pay-note" data-hc="payNote">as well</span>
     </div>
 

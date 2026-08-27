@@ -1,9 +1,9 @@
-import { ACTIVITIES, PACKAGES } from "../data/packages.js?v=193";
-import { DESTINATIONS, VISA_TYPES, PAGE_COPY } from "../data/content.js?v=193";
-import { MICE_SECTIONS } from "../data/mice.js?v=193";
-import { SERVICES } from "../data/navigation.js?v=193";
-import { HOME_PILLS, HOME_CARDS, HOME_COPY } from "../data/home.js?v=193";
-import { cloudEnabled, watchContent, pushCollection, removeCollection } from "./cloud.js?v=193";
+import { ACTIVITIES, PACKAGES } from "../data/packages.js?v=200";
+import { DESTINATIONS, VISA_TYPES, PAGE_COPY } from "../data/content.js?v=200";
+import { MICE_SECTIONS } from "../data/mice.js?v=200";
+import { SERVICES } from "../data/navigation.js?v=200";
+import { HOME_PILLS, HOME_CARDS, HOME_COPY } from "../data/home.js?v=200";
+import { cloudEnabled, watchContent, pushCollection, removeCollection } from "./cloud.js?v=200";
 
 /**
  * The single door between the site's content and where that content lives.
@@ -88,8 +88,16 @@ function writeOverlay(overlay) {
  * listener, and re-rendering every open page for content it already has is
  * wasted work at best and a flicker at worst.
  */
+/** Collections the cloud has spoken for this session — even when what it
+ *  said matched what we had. Distinguishes "defaults because no snapshot
+ *  yet" from "the cloud really says this". */
+const remoteSeen = new Set();
+
+export const cloudHas = (name) => remoteSeen.has(name);
+
 function applyRemote(name, data) {
   if (!(name in DEFAULTS)) return;
+  remoteSeen.add(name);
   const overlay = readOverlay();
   const incoming = data === null ? undefined : data;
   if (JSON.stringify(overlay[name]) === JSON.stringify(incoming)) return;
@@ -98,10 +106,15 @@ function applyRemote(name, data) {
   writeOverlay(overlay);
 }
 
-/* Starts as the module loads, so the first snapshot is usually in before anyone
-   scrolls. No-ops entirely when no project is configured. */
+/* The admin needs the snapshot immediately — it edits live data. The public
+   pages are pre-rendered and correct already, so their watch waits for the
+   first idle moment: the Firestore SDK (~117KB) must not race the catalogue
+   photography for bandwidth while the page is still painting. */
 if (cloudEnabled()) {
-  watchContent(applyRemote);
+  const start = () => watchContent(applyRemote);
+  if (document.body?.classList.contains("admin")) start();
+  else if ("requestIdleCallback" in window) requestIdleCallback(start, { timeout: 2500 });
+  else setTimeout(start, 1200);
 }
 
 export const isCloudEnabled = cloudEnabled;

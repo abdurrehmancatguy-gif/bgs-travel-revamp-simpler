@@ -93,8 +93,20 @@ export const itemPath = (item, collection) =>
 export const describe = (item) =>
   item.fullDescription || item.blurb || item.shortDescription || "";
 
-/** A card, with a real link so the item page is reachable by crawling. */
-export function cardHtml(item, collection) {
+/** Cards render at ~380px; ask Pexels for card-sized renditions (800w covers
+ *  2x DPR) instead of the stored 1200w. Mirrors cardSized in category-page.js. */
+const cardSized = (url) =>
+  typeof url === "string" && url.includes("images.pexels.com")
+    ? url.replace(/([?&])h=\d+/, "$1h=500").replace(/([?&])w=\d+/, "$1w=800")
+    : url;
+
+/** A card, with a real link so the item page is reachable by crawling.
+ *  `index` decides loading: ONLY the first image is eager and high-priority —
+ *  it is the page's largest paint, and every other eager image on a slow
+ *  connection is bandwidth taken from it (three extra eager cards measured
+ *  +4s of modeled LCP). The rest stay lazy; on mobile they are all below
+ *  the fold anyway. */
+export function cardHtml(item, collection, index = Infinity) {
   const s = SHAPE[collection];
   const title = s.title(item);
   const image = typeof item.image === "string" ? item.image : item.image?.src;
@@ -103,7 +115,8 @@ export function cardHtml(item, collection) {
   const imageAlt = (typeof item.image === "object" && item.image?.alt) || "";
   const facts = s.facts(item).filter(([, v]) => v);
   return `<li class="item-card" data-title="${esc(title)}">
-      ${image ? `<div class="item-card-media"><img src="${esc(image)}" alt="${esc(imageAlt)}" loading="lazy" /></div>` : ""}
+      ${image ? `<div class="item-card-media"><img src="${esc(cardSized(image))}" alt="${esc(imageAlt)}"${
+        index === 0 ? ` loading="eager" fetchpriority="high"` : ` loading="lazy"`} decoding="async" /></div>` : ""}
       <div class="item-card-inner">
         ${s.kicker(item) ? `<p class="item-card-kicker">${esc(s.kicker(item))}</p>` : ""}
         <h3><a class="item-card-link" href="/${itemPath(item, collection)}">${esc(title)}</a></h3>

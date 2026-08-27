@@ -1,18 +1,18 @@
-import { getCollection, subscribe } from "./store.js?v=193";
-import "./info-modal.js?v=193";
-import { createNavigation } from "./navigation.js?v=193";
-import { icon } from "../data/icons.js?v=193";
-import { priceLabel } from "../data/packages.js?v=193";
-import { openWhatsApp, buildWhatsAppUrl } from "../utils/whatsapp.js?v=193";
-import { MICE_SERVICES } from "../data/mice.js?v=193";
-import { openItem, itemTitle } from "./item-dialog.js?v=193";
+import { getCollection, subscribe, isCloudEnabled, cloudHas } from "./store.js?v=200";
+import "./info-modal.js?v=200";
+import { createNavigation } from "./navigation.js?v=200";
+import { icon } from "../data/icons.js?v=200";
+import { priceLabel } from "../data/packages.js?v=200";
+import { openWhatsApp, buildWhatsAppUrl } from "../utils/whatsapp.js?v=200";
+import { MICE_SERVICES } from "../data/mice.js?v=200";
+import { openItem, itemTitle } from "./item-dialog.js?v=200";
 // The same wheel glide the homepage has — the card lists are the longest
 // scrolls on the site, so they benefit most.
-import "./smooth-scroll.js?v=193";
-import { enableTilt } from "./tilt.js?v=193";
-import { buildPrimaryNav } from "./nav-model.js?v=193";
-import { track } from "./analytics.js?v=193";
-import { contactStripMarkup, openInfo } from "./info-modal.js?v=193";
+import "./smooth-scroll.js?v=200";
+import { enableTilt } from "./tilt.js?v=200";
+import { buildPrimaryNav } from "./nav-model.js?v=200";
+import { track } from "./analytics.js?v=200";
+import { contactStripMarkup, openInfo } from "./info-modal.js?v=200";
 
 /**
  * Every category page runs this one module. The page declares which collection
@@ -136,6 +136,13 @@ const SHAPES = {
  * smaller size at resolve time (iiurlwidth) and store both, which is a change to
  * data/photos.js rather than something this renderer can do.
  */
+/** Cards render at ~380px; Pexels serves whatever size the URL asks for, so
+ *  ask for card-sized (800w covers 2x DPR) instead of the stored 1200w. */
+const cardSized = (url) =>
+  typeof url === "string" && url.includes("images.pexels.com")
+    ? url.replace(/([?&])h=\d+/, "$1h=500").replace(/([?&])w=\d+/, "$1w=800")
+    : url;
+
 function cardMarkup({ image, alt, iconName, kicker, title, body, meta = [], list = [], itemHref = "" }) {
   // Package photography is stored as { src, alt } while destination and visa
   // images are plain strings, so accept either rather than forcing one shape.
@@ -150,7 +157,7 @@ function cardMarkup({ image, alt, iconName, kicker, title, body, meta = [], list
   return `
     <li class="item-card reveal" data-title="${esc(title)}">
       ${image ? `<div class="item-card-media">
-        <img src="${esc(image)}" alt="${esc(alt || title)}" loading="lazy" />
+        <img src="${esc(cardSized(image))}" alt="${esc(alt || title)}" loading="lazy" />
         ${iconName ? `<span class="item-card-icon" aria-hidden="true">${icon(iconName)}</span>` : ""}
       </div>` : ""}
       <div class="item-card-inner">
@@ -200,6 +207,10 @@ const matches = (item, q) => {
  *
  * Comparing the string is cheap next to what a needless re-render costs. */
 let lastMarkup = grid.innerHTML;
+/* True while the grid still holds the build's server-rendered cards — the
+   version with the eager, high-priority first images the largest paint
+   depends on. Flips off at the first rebuild or adoption. */
+let serverGrid = grid.querySelectorAll(".item-card").length > 0;
 
 function render() {
   const visible = items.filter((item) => matches(item, query));
@@ -207,11 +218,48 @@ function render() {
 
   const markup = visible.length ? visible.map(shape.card).join("") : "";
   if (markup !== lastMarkup) {
+    if (serverGrid && !query) {
+      const existing = [...grid.querySelectorAll(".item-card")];
+      /* Adopt the pre-rendered grid instead of rebuilding it when it matches
+         the store, card for card. Replacing it with lazy runtime cards re-hid
+         painted content and pushed the largest paint from ~2.5s to ~7.5s on a
+         slow connection. data-title per card is the fingerprint — titles
+         aligning by index is what makes dataset.idx safe. */
+      if (existing.length === visible.length &&
+          existing.every((el, i) => el.dataset.title === itemTitle(visible[i], page))) {
+        serverGrid = false;
+        lastMarkup = markup;
+        grid.querySelectorAll(".item-card").forEach((el, i) => { el.dataset.idx = i; });
+        return finishRender(visible);
+      }
+      /* Mismatch before any snapshot: the build baked live cloud content and
+         the shipped defaults can be far behind it (2 visas vs 28) — tearing
+         the richer grid down to the defaults for a second or two, then
+         rebuilding when the snapshot lands, is exactly the flash this branch
+         exists to prevent. Hold the server DOM; clicks resolve by title or
+         follow the card's own link; the snapshot re-enters here. */
+      if (!cloudHas(page) && isCloudEnabled() && existing.length > visible.length) {
+        countEl.textContent = `${existing.length} results`;
+        return;
+      }
+    }
+    serverGrid = false;
     grid.innerHTML = markup;
+    /* Cards already on screen are born shown — re-hiding painted content
+       behind the reveal fade flashes it out. The fade stays for cards
+       scrolled to later. */
+    const fold = window.innerHeight + 120;
+    grid.querySelectorAll(".item-card.reveal:not([data-shown])").forEach((el) => {
+      if (el.getBoundingClientRect().top < fold) el.dataset.shown = "true";
+    });
     lastMarkup = markup;
     // Stamped after render rather than woven through every shape's card builder.
     grid.querySelectorAll(".item-card").forEach((el, i) => { el.dataset.idx = i; });
   }
+  finishRender(visible);
+}
+
+function finishRender(visible) {
 
   const empty = document.querySelector("#page-empty");
   empty.hidden = visible.length > 0;
@@ -245,9 +293,14 @@ function renderCopy() {
 
 function renderChips() {
   const values = shape.chips(items);
-  chipRow.innerHTML = values
+  const html = values
     .map((v) => `<button class="page-chip" type="button" data-value="${esc(v)}">${esc(v)}</button>`)
     .join("");
+  // Skip identical rebuilds: a snapshot that changed nothing must not wipe
+  // the chip row out from under keyboard focus.
+  if (chipRow.__lastMarkup === html) return;
+  chipRow.__lastMarkup = html;
+  chipRow.innerHTML = html;
 }
 
 /** Keeps the URL shareable: the search you see is the search you can send. */
@@ -447,7 +500,17 @@ grid.addEventListener("click", (event) => {
   const card = event.target.closest(".item-card");
   if (!card) return;
   if (event.target.closest(".item-card-link")) event.preventDefault();
-  const item = visibleItems[Number(card.dataset.idx)];
+  /* A held server card carries no idx (the local model was staler than the
+     DOM). Resolve it by title; a record the model doesn't know yet falls
+     through to the card's own item-page link. */
+  const item = card.dataset.idx !== undefined
+    ? visibleItems[Number(card.dataset.idx)]
+    : items.find((i) => itemTitle(i, page) === card.dataset.title);
+  if (!item) {
+    const link = card.querySelector(".item-card-link");
+    if (link) window.location.href = link.href;
+    return;
+  }
   track("item_opened", { collection: page, item: itemTitle(item, page) });
   if (page === "services" && SERVICE_PAGE[item.key]) {
     location.href = `${SERVICE_PAGE[item.key]}.html`;

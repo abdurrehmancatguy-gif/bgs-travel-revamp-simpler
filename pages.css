@@ -257,6 +257,26 @@ body.page .page-hero {
   max-width: 760px;
 }
 
+/* On phones the chips are one swipeable row, not a six-row wall: 28 wrapped
+   chips ate half the first screen — and, worse, they arrive mid-stream while
+   the HTML is still parsing, so the row growing from one line to six shoved
+   the whole catalogue down 192px (measured 0.10 CLS). A single fixed-height
+   scroll row cannot grow, so nothing below it ever moves. */
+@media (max-width: 760px) {
+  .page-chips {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    min-height: 30px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+    scroll-padding-left: 2px;
+  }
+  .page-chips::-webkit-scrollbar { display: none; }
+  .page-chip { flex: none; scroll-snap-align: start; white-space: nowrap; }
+}
+
 .page-chip {
   padding: 8px 18px;
   border: 1px solid rgba(13, 27, 42, 0.12);
@@ -802,6 +822,9 @@ body.item-page .site-logo-place { color: rgba(13, 27, 42, 0.6); }
 
 @media (max-width: 760px) {
   .page-categories {
+    /* Chip row height, reserved before JS fills it: the strip popping in
+       above the hero measured 0.10 CLS on phones. */
+    min-height: 35px;
     position: sticky;
     /* Under the sticky header, not behind it. The offset is the header's own
        measured height plus a gap — set by placePageCategories, because the pill

@@ -41,6 +41,18 @@ const NOT_FOUND_NOUN = {
   destinations: "destination", services: "service", mice: "MICE service",
 };
 
+/** Same chip derivation the runtime uses (SHAPES[*].chips in
+ *  js/category-page.js) — pre-painted so the row doesn't pop in after load
+ *  and shove the whole grid down (that pop-in measured 0.10 CLS). */
+const CHIPS = {
+  activities: (items) => [...new Set(items.flatMap((i) => i.tags ?? []))].sort(),
+  packages: (items) => [...new Set(items.flatMap((i) => [i.region, ...(i.tags ?? [])]))].sort(),
+  destinations: (items) => [...new Set(items.map((i) => i.region))],
+  services: () => [],
+  mice: (items) => items.map((i) => i.name),
+  visa: (items) => [...new Set(items.map((i) => i.country))],
+};
+
 const PAGES = {
   visa: "visa.html", packages: "packages.html", activities: "activities.html",
   destinations: "destinations.html", services: "services.html", mice: "mice.html",
@@ -124,18 +136,21 @@ function itemPage(item, collection) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <link rel="preconnect" href="https://dcym8fthxf5uu.cloudfront.net" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="https://dcym8fthxf5uu.cloudfront.net/fonts/247a073c-29f5-4a89-aa3a-741020f346fc/OggText-Medium.woff2" crossorigin />${
+    image ? `\n  <link rel="preconnect" href="${esc(new URL(image).origin)}" />` : ""}
   <title>${esc(title)} — BGS Travel &amp; Tourism</title>
   <meta name="description" content="${esc(description)}" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=193" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=200" />
   <!-- Versioned like everywhere else. These used to be bare, which was
        survivable under the old four-hour revalidate — but the stylesheets are
        now cached immutable for a year, so an unversioned link would wear this
        redesign's CSS forever, through every future one. -->
-  <link rel="stylesheet" href="/styles.css?v=193" />
-  <link rel="stylesheet" href="/pages.css?v=193" />
+  <link rel="stylesheet" href="/styles.css?v=200" />
+  <link rel="stylesheet" href="/pages.css?v=200" />
   <!-- The one script these pages carry: the same wheel glide as the rest of
        the site. Everything else stays static on purpose. -->
-  <script type="module" src="/js/smooth-scroll.js?v=193"></script>${headExtras({
+  <script type="module" src="/js/smooth-scroll.js?v=200"></script>${headExtras({
     url, title: `${title} — BGS Travel & Tourism`, description, image,
     jsonLd: [orgJsonLd(), ...itemJsonLd(item, collection, url, `${SITE}/`), {
       "@type": "BreadcrumbList",
@@ -151,7 +166,7 @@ function itemPage(item, collection) {
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="item-page-bar">
     <a class="site-logo" href="/">
-      <img class="site-logo-mark" src="/assets/monogram-96.webp?v=193" alt="" width="40" height="40" />
+      <img class="site-logo-mark" src="/assets/monogram-96.webp?v=200" alt="" width="40" height="40" />
       <span class="site-logo-text">
         <span class="site-logo-name">BGS Travel &amp; Tourism</span>
         <span class="site-logo-place">Dubai, UAE</span>
@@ -164,7 +179,7 @@ function itemPage(item, collection) {
       <a href="/${PAGES[collection]}">${esc(s.label)}</a> <span aria-hidden="true">›</span>
       <span aria-current="page">${esc(title)}</span>
     </nav>
-    ${image ? `<img class="item-page-media" src="${esc(image)}" alt="${esc(imageAlt)}" />` : ""}
+    ${image ? `<img class="item-page-media" src="${esc(image)}" alt="${esc(imageAlt)}" fetchpriority="high" />` : ""}
     ${s.kicker(item) ? `<p class="item-page-kicker">${esc(s.kicker(item))}</p>` : ""}
     <h1>${esc(title)}</h1>
     <p class="item-page-lede">${esc(lede)}</p>
@@ -222,9 +237,21 @@ for (const [collection, file] of Object.entries(PAGES)) {
   // 1. the grid, filled
   html = html.replace(
     '<ul class="card-grid" id="card-grid"></ul>',
-    `<ul class="card-grid" id="card-grid">${items.map((i) => cardHtml(i, collection)).join("")}</ul>`
+    `<ul class="card-grid" id="card-grid">${items.map((i, n) => cardHtml(i, collection, n)).join("")}</ul>`
   );
   cardCount += items.length;
+
+  {
+    const chips = (CHIPS[collection]?.(items) ?? []).filter(Boolean);
+    const chipHtml = chips
+      .map((v) => `<button class="page-chip" type="button" data-value="${esc(v)}">${esc(v)}</button>`)
+      .join("");
+    const chipAnchor = '<div class="page-chips" id="page-chips"></div>';
+    if (chips.length && !html.includes(chipAnchor)) {
+      throw new Error(`chips: no empty #page-chips container in ${PAGES[collection]}`);
+    }
+    html = html.replace(chipAnchor, `<div class="page-chips" id="page-chips">${chipHtml}</div>`);
+  }
 
   // 2. head: canonical, social, and a list of what the page holds
   html = html.replace("</head>", `${headExtras({
