@@ -184,13 +184,15 @@ body.home .hero-pill:focus-visible {
   padding: 0 clamp(12px, 2vw, 24px);
 }
 
-/* The dome. A half-ellipse top over softly rounded feet — the shape from the
-   old homepage, sized as the banner it was asked to be. */
+/* An airplane window, landscape: the same deep elliptical rounding on all
+   four corners — the cabin-window squircle — instead of the old dome that
+   only curved at the top. The glass ring and gold thread inherit the radius,
+   which is exactly the double-pane rim a real window has. */
 .hm-arch {
   position: relative;
   width: 100%;
   height: clamp(320px, 52vw, 560px);
-  border-radius: 50% 50% 26px 26px / 92% 92% 26px 26px;
+  border-radius: clamp(90px, 18vw, 240px) / clamp(80px, 15vw, 200px);
   overflow: hidden;
   /* Ground for the instant before the photo decodes. */
   background: rgba(255, 255, 255, 0.4);
@@ -579,11 +581,21 @@ body.home .hero-pill:focus-visible {
   scrollbar-width: none;
 }
 
-/* The view-all link and the rail arrows share the head's right cell. */
-.hm-rail-tools {
+/* The controls sit in the clear space under the rail: centred on a phone,
+   where the thumb is, and to the right on a wide screen, where the eye
+   leaves the row. Beside the heading they would have sat over a card — the
+   rail runs edge to edge, so it has no margin to put them in. */
+.hm-rail-nav {
   display: flex;
-  align-items: center;
-  gap: 14px;
+  justify-content: center;
+  gap: 12px;
+  /* The rail hands back its clip-window headroom with a negative bottom
+     margin, so this starts from that corrected baseline. */
+  margin-top: 22px;
+}
+
+@media (min-width: 760px) {
+  .hm-rail-nav { justify-content: flex-end; }
 }
 
 .hm-rail-btn {

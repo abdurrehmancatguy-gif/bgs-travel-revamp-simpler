@@ -1,17 +1,17 @@
-import { getCollection, subscribe } from "./store.js?v=208";
-import "./info-modal.js?v=208";
-import { contactStripMarkup, openInfo } from "./info-modal.js?v=208";
-import { createNavigation } from "./navigation.js?v=208";
-import { buildPrimaryNav } from "./nav-model.js?v=208";
-import { resolvePill, HOME_COPY } from "../data/home.js?v=208";
-import { resolveHomeCards, withSlugs, CARD_TITLE_KEY, priceFacts } from "../data/packages.js?v=208";
-import { icon } from "../data/icons.js?v=208";
-import { openItem } from "./item-dialog.js?v=208";
-import { openWhatsApp, buildCustomTripUrl, buildWhatsAppUrl, WHATSAPP_DISPLAY } from "../utils/whatsapp.js?v=208";
-import "./smooth-scroll.js?v=208";
-import { enableTilt } from "./tilt.js?v=208";
-import { cardSrc } from "../utils/images.js?v=208";
-import { enableCategoryRail } from "./category-rail.js?v=208";
+import { getCollection, subscribe } from "./store.js?v=210";
+import "./info-modal.js?v=210";
+import { contactStripMarkup, openInfo } from "./info-modal.js?v=210";
+import { createNavigation } from "./navigation.js?v=210";
+import { buildPrimaryNav } from "./nav-model.js?v=210";
+import { resolvePill, HOME_COPY } from "../data/home.js?v=210";
+import { resolveHomeCards, withSlugs, CARD_TITLE_KEY, priceFacts } from "../data/packages.js?v=210";
+import { icon } from "../data/icons.js?v=210";
+import { openItem } from "./item-dialog.js?v=210";
+import { openWhatsApp, buildCustomTripUrl, buildWhatsAppUrl, WHATSAPP_DISPLAY } from "../utils/whatsapp.js?v=210";
+import "./smooth-scroll.js?v=210";
+import { enableTilt } from "./tilt.js?v=210";
+import { cardSrc } from "../utils/images.js?v=210";
+import { enableCategoryRail } from "./category-rail.js?v=210";
 
 /**
  * The homepage. Everything on it renders from the store, so an edit made in
@@ -197,16 +197,43 @@ function renderCards() {
     const card = rail.querySelector(".hm-card");
     return card ? card.getBoundingClientRect().width + 18 : 320;
   };
-  const nudge = (dir) =>
-    rail.scrollBy({ left: dir * step(), behavior: reduceMotion.matches ? "auto" : "smooth" });
+  /* Put the viewer back on the middle copy. Instant, and exactly one set
+     wide, so the pixels under the pointer do not change. */
+  const recentre = () => {
+    if (rail.dataset.loop !== "3") return;
+    const setW = rail.scrollWidth / 3;
+    if (!setW) return;
+    if (rail.scrollLeft < setW * 0.5) rail.scrollLeft += setW;
+    else if (rail.scrollLeft > setW * 1.5) rail.scrollLeft -= setW;
+  };
+
+  /* A smooth scroll fixes its absolute destination the moment it is asked
+     for. Teleporting while one is in flight therefore achieved nothing — the
+     animation carried on to the old destination and undid the wrap — and
+     forwards that walked the rail into the true end of the track, where it
+     ran out of room and stopped. So: correct the position BEFORE asking for
+     the glide, and leave the wrap alone until the glide has landed. */
+  let animatingUntil = 0;
+  const nudge = (dir) => {
+    recentre();
+    const smooth = !reduceMotion.matches;
+    rail.scrollBy({ left: dir * step(), behavior: smooth ? "smooth" : "auto" });
+    if (!smooth) return;
+    animatingUntil = performance.now() + 700;
+    // A later click pushes animatingUntil out, so a stale timer stands down.
+    setTimeout(() => {
+      if (performance.now() >= animatingUntil) recentre();
+    }, 720);
+  };
   document.querySelector("#hm-cards-prev")?.addEventListener("click", () => nudge(-1));
   document.querySelector("#hm-cards-next")?.addEventListener("click", () => nudge(1));
 
-  /* Keep the viewer inside the middle copy. The wrap points sit half a set
+  /* Wheel and touch scrolling wrap from here. The wrap points sit half a set
      away in either direction, far from where a one-card glide ever lands. */
   let wrapQueued = false;
   rail.addEventListener("scroll", () => {
     if (rail.dataset.loop !== "3" || wrapQueued) return;
+    if (performance.now() < animatingUntil) return;
     wrapQueued = true;
     requestAnimationFrame(() => {
       wrapQueued = false;
@@ -215,10 +242,7 @@ function renderCards() {
          scrolling never matches :focus-visible, so the loop stays seamless
          for everyone else. */
       if (rail.querySelector(".hm-card:focus-visible")) return;
-      const setW = rail.scrollWidth / 3;
-      if (!setW) return;
-      if (rail.scrollLeft < setW * 0.5) rail.scrollLeft += setW;
-      else if (rail.scrollLeft > setW * 1.5) rail.scrollLeft -= setW;
+      recentre();
     });
   }, { passive: true });
 })();
