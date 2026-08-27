@@ -1,15 +1,15 @@
-import { getCollection, subscribe } from "./store.js?v=188";
-import "./info-modal.js?v=188";
-import { contactStripMarkup, openInfo } from "./info-modal.js?v=188";
-import { createNavigation } from "./navigation.js?v=188";
-import { buildPrimaryNav } from "./nav-model.js?v=188";
-import { resolvePill, HOME_COPY } from "../data/home.js?v=188";
-import { resolveHomeCards, withSlugs, CARD_TITLE_KEY, priceFacts } from "../data/packages.js?v=188";
-import { icon } from "../data/icons.js?v=188";
-import { openItem } from "./item-dialog.js?v=188";
-import { openWhatsApp, buildCustomTripUrl, buildWhatsAppUrl, WHATSAPP_DISPLAY } from "../utils/whatsapp.js?v=188";
-import "./smooth-scroll.js?v=188";
-import { enableTilt } from "./tilt.js?v=188";
+import { getCollection, subscribe } from "./store.js?v=190";
+import "./info-modal.js?v=190";
+import { contactStripMarkup, openInfo } from "./info-modal.js?v=190";
+import { createNavigation } from "./navigation.js?v=190";
+import { buildPrimaryNav } from "./nav-model.js?v=190";
+import { resolvePill, HOME_COPY } from "../data/home.js?v=190";
+import { resolveHomeCards, withSlugs, CARD_TITLE_KEY, priceFacts } from "../data/packages.js?v=190";
+import { icon } from "../data/icons.js?v=190";
+import { openItem } from "./item-dialog.js?v=190";
+import { openWhatsApp, buildCustomTripUrl, buildWhatsAppUrl, WHATSAPP_DISPLAY } from "../utils/whatsapp.js?v=190";
+import "./smooth-scroll.js?v=190";
+import { enableTilt } from "./tilt.js?v=190";
 
 /**
  * The homepage. Everything on it renders from the store, so an edit made in
@@ -80,18 +80,37 @@ function placePageCategories() {
 
 /* ------------------------------------------------------------ hero pills */
 
+/**
+ * Replace a container's markup only when it actually changed. The Firestore
+ * snapshot fires right after every page load and again on every admin save;
+ * rebuilding identical DOM would throw keyboard focus (and any open state)
+ * out of the region for nothing.
+ */
+function setIfChanged(el, html) {
+  if (el.__lastMarkup === html) return false;
+  el.__lastMarkup = html;
+  el.innerHTML = html;
+  return true;
+}
+
 function renderHeroPills() {
   const wrap = document.querySelector(".hero-pills");
   if (!wrap) return;
   const pills = getCollection("homePills");
   if (!pills.length) return;   // keep the pre-rendered buttons over a blank row
-  wrap.innerHTML = pills.map((pill) => {
+  setIfChanged(wrap, pills.map((pill) => {
     const t = resolvePill(pill, (c) => getCollection(c));
     if (!t || !t.label) return "";
+    // "MICE" is trade jargon; the pill is where most visitors first meet it,
+    // so the pill itself carries the expansion (visible label kept first).
+    const mice = /\bMICE\b/.test(t.label)
+      ? ` title="MICE — Meetings, Incentives, Conferences and Exhibitions"
+          aria-label="${esc(t.label)} — Meetings, Incentives, Conferences and Exhibitions"`
+      : "";
     return `<button class="hero-pill" type="button"
             data-page="${esc(t.page)}" data-query="${esc(t.query)}"
-            data-open="${t.open ? "1" : ""}">${esc(t.label)}</button>`;
-  }).join("");
+            data-open="${t.open ? "1" : ""}"${mice}>${esc(t.label)}</button>`;
+  }).join(""));
 }
 
 document.querySelector(".hero-pills")?.addEventListener("click", (event) => {
@@ -129,7 +148,7 @@ function renderCards() {
   if (!rail) return;
   homeCards = withSlugs(resolveHomeCards(getCollection("homeCards"), (c) => getCollection(c)));
 
-  rail.innerHTML = homeCards.map((record, i) => {
+  const changed = setIfChanged(rail, homeCards.map((record, i) => {
     const kind = record.__collection ?? "packages";
     const title = record[CARD_TITLE_KEY[kind] ?? "title"] ?? "";
     const image = typeof record.image === "string" ? record.image : record.image?.src;
@@ -147,8 +166,8 @@ function renderCards() {
           ${meta ? `<span class="hm-card-meta">${esc(meta)}</span>` : ""}
         </span>
       </button>`;
-  }).join("");
-  observeReveals(rail);
+  }).join(""));
+  if (changed) observeReveals(rail);
 }
 
 document.querySelector("#hm-cards")?.addEventListener("click", (event) => {
@@ -172,7 +191,7 @@ const SERVICE_TILE_PAGE = { visa: "visa", activities: "activities", flights: "de
 function renderServices() {
   const list = document.querySelector("#hm-services");
   if (!list) return;
-  list.innerHTML = getCollection("services").map((service, i) => `
+  const changed = setIfChanged(list, getCollection("services").map((service, i) => `
     <li class="hm-service hm-reveal" style="--d:${Math.min(i * 70, 420)}ms">
       <a class="hm-service-cover"
          href="${SERVICE_TILE_PAGE[service.key] ?? "services"}.html"
@@ -180,8 +199,8 @@ function renderServices() {
       <span class="hm-service-icon" aria-hidden="true">${icon(service.icon)}</span>
       <h3>${esc(service.label)}</h3>
       <p>${esc(service.blurb ?? "")}</p>
-    </li>`).join("");
-  observeReveals(list);
+    </li>`).join(""));
+  if (changed) observeReveals(list);
 }
 
 /* ------------------------------------------------------------------- faq */
@@ -199,12 +218,12 @@ function renderFaq() {
     })
     .filter(Boolean);
   wrap.closest("section")?.toggleAttribute("hidden", !items.length);
-  wrap.innerHTML = items.map(([q, a], i) => `
+  const changed = setIfChanged(wrap, items.map(([q, a], i) => `
     <details class="hm-faq-item hm-reveal" style="--d:${Math.min(i * 60, 300)}ms">
       <summary>${esc(q)}<span class="hm-faq-mark" aria-hidden="true"></span></summary>
       <p>${esc(a)}</p>
-    </details>`).join("");
-  observeReveals(wrap);
+    </details>`).join(""));
+  if (changed) observeReveals(wrap);
 }
 
 /* -------------------------------------------------------------- ask form */
@@ -344,6 +363,12 @@ function tokenCounts() {
  */
 function loopTrack(track, runHtml, pxPerSec) {
   if (!track || !runHtml) return;
+  // A snapshot that changed nothing must not restart the loop mid-glide.
+  // The key carries the container width (resize re-runs) and the font-load
+  // state (the fonts.ready re-measure still happens exactly once).
+  const key = `${runHtml}|${track.parentElement.clientWidth}|${document.fonts?.status ?? ""}`;
+  if (track.__loopKey === key) return;
+  track.__loopKey = key;
   track.style.animation = "none";
   track.innerHTML = runHtml;
   const runWidth = track.scrollWidth;
@@ -459,8 +484,8 @@ document.querySelector("#hm-form")?.addEventListener("submit", (event) => {
 function renderCtaList() {
   const list = document.querySelector("#hm-cta-list");
   if (!list) return;
-  list.innerHTML = getCollection("services")
-    .map((service) => `<li>${esc(service.label)}</li>`).join("");
+  setIfChanged(list, getCollection("services")
+    .map((service) => `<li>${esc(service.label)}</li>`).join(""));
 }
 
 /* ---------------------------------------------------------- arch parallax */
@@ -503,6 +528,7 @@ renderPageCategories();
 placePageCategories();
 renderHeroPills();
 renderHomeCopy();
+  renderPayments();
 renderCards();
 renderServices();
 renderMarquee();
@@ -514,6 +540,36 @@ observeReveals();
 
 window.addEventListener("resize", placePageCategories);
 
+/* ------------------------------------------------------------- payments */
+
+/** The admin's badge list decides which payment icons show; an empty list
+ *  hides the strip. Mirrored statically by build/build.mjs. */
+function renderPayments() {
+  const strip = document.querySelector(".hm-pay");
+  if (!strip) return;
+  const methods = (homeCopy().payMethods ?? [])
+    .map((m) => String(m).trim().toLowerCase()).filter(Boolean);
+  strip.toggleAttribute("hidden", !methods.length);
+  strip.querySelectorAll("[data-pay]").forEach((img) => {
+    img.toggleAttribute("hidden", !methods.includes(img.dataset.pay));
+  });
+}
+
+/* ---------------------------------------------------------- motion pause */
+
+/* The one control that stops everything moving on its own — ticker, marquee,
+   pulse dot. The OS reduced-motion setting also stops them, but a page-level
+   pause must not require changing system settings. */
+const motionToggle = document.querySelector("#hm-motion-toggle");
+motionToggle?.addEventListener("click", () => {
+  const paused = document.documentElement.classList.toggle("motion-paused");
+  motionToggle.setAttribute("aria-pressed", String(paused));
+  const label = paused ? "Play moving content" : "Pause moving content";
+  motionToggle.title = label;
+  const hidden = motionToggle.querySelector(".visually-hidden");
+  if (hidden) hidden.textContent = label;
+});
+
 /* One delayed pass catches anything the first paint raced past. */
 setTimeout(checkReveals, 600);
 
@@ -522,6 +578,7 @@ subscribe(() => {
   renderPageCategories();
   renderHeroPills();
   renderHomeCopy();
+  renderPayments();
   renderCards();
     renderServices();
   renderMarquee();

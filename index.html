@@ -5,19 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>BGS Travel &amp; Tourism — Dubai escapes and journeys worldwide</title>
   <meta name="description" content="BGS Travel &amp; Tourism plans Dubai escapes, African safaris and tailor-made journeys across Asia, Europe and beyond — flights, stays, visas and transfers handled by one team." />
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png?v=188" />
-  <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png?v=188" />
-  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=188" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png?v=190" />
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png?v=190" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=190" />
   <!-- The typeface host. font-display is swap, so a late arrival re-renders the
        headline in a different face; the preconnect buys the handshake back.
        crossorigin because fonts fetch in CORS mode — without it the connection
        opened here is the wrong kind and simply not reused. -->
   <link rel="preconnect" href="https://dcym8fthxf5uu.cloudfront.net" crossorigin />
-  <link rel="stylesheet" href="styles.css?v=188" />
-  <link rel="stylesheet" href="pages.css?v=188" />
-  <link rel="stylesheet" href="home.css?v=188" />
-  <script type="module" src="js/analytics.js?v=188"></script>
-  <script type="module" src="js/home.js?v=188"></script>
+  <link rel="stylesheet" href="styles.css?v=190" />
+  <link rel="stylesheet" href="pages.css?v=190" />
+  <link rel="stylesheet" href="home.css?v=190" />
+  <script type="module" src="js/analytics.js?v=190"></script>
+  <script type="module" src="js/home.js?v=190"></script>
   <!-- BGS One rewards badge, served by the hub at bgscorner.com. Renders
        nothing unless a [data-bgs-loyalty] element is present on the page. -->
   <script type="module" src="https://www.bgscorner.com/loyalty-widget.js?v=1"></script>
@@ -25,15 +25,15 @@
 <body class="page home">
   <a class="skip-link" href="#main">Skip to content</a>
 
-  <header class="site-header" aria-label="Primary navigation">
+  <header class="site-header">
     <a class="site-logo" href="index.html">
-      <img class="site-logo-mark" src="assets/monogram-96.webp?v=188" alt="" width="40" height="40" />
+      <img class="site-logo-mark" src="assets/monogram-96.webp?v=190" alt="" width="40" height="40" />
       <span class="site-logo-text">
         <span class="site-logo-name">BGS Travel &amp; Tourism</span>
         <span class="site-logo-place">Dubai, UAE</span>
       </span>
     </a>
-    <nav class="site-nav" id="site-nav" aria-label="Main menu"></nav>
+    <nav class="site-nav" id="site-nav" aria-label="Primary"></nav>
 
     <div class="header-utility">
       <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false"
@@ -54,14 +54,22 @@
     <!-- True by construction: counts and plain facts, rendered from the
          catalogue by js/home.js. Decorative for assistive tech — the same
          facts appear as real text further down the page. -->
-    <div class="hm-ticker" aria-hidden="true">
-      <div class="hm-ticker-track" id="hm-ticker-track"></div>
+    <div class="hm-ticker-row">
+      <div class="hm-ticker" aria-hidden="true">
+        <div class="hm-ticker-track" id="hm-ticker-track"></div>
+      </div>
+      <button class="hm-motion-toggle" id="hm-motion-toggle" type="button"
+              aria-pressed="false" title="Pause moving content">
+        <span class="visually-hidden">Pause moving content</span>
+        <svg class="hm-motion-pause" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5.5v13M16 5.5v13" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
+        <svg class="hm-motion-play" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8.5 5.8v12.4L18.5 12z" fill="currentColor"/></svg>
+      </button>
     </div>
 
     <!-- =============================================================== hero -->
-    <section class="hm-hero" aria-label="BGS Travel &amp; Tourism">
+    <section class="hm-hero" aria-labelledby="hm-hero-title">
       <p class="hm-eyebrow hm-reveal" data-hc="eyebrow">Dubai, UAE — travel &amp; tourism</p>
-      <h1 class="hm-title">
+      <h1 class="hm-title" id="hm-hero-title">
         <span class="hm-reveal" data-hc="titleA">Consider your trip</span>
         <span class="hm-reveal"><em data-hc="titleB">halfway planned.</em></span>
       </h1>
@@ -92,7 +100,7 @@
          scene plates, spanning the page rather than sitting in a corner. The
          sky settles in once, the city is nudged by scroll (js/home.js), and
          the lead card floats over its right side on wide screens. -->
-    <section class="hm-banner" aria-label="Start a journey">
+    <section class="hm-banner">
       <div class="hm-arch" aria-hidden="true">
         <picture>
           <source srcset="assets/scene/sky-1024.avif?rev=1 1024w, assets/scene/sky.avif?rev=1 2048w"
@@ -119,18 +127,18 @@
           <h2 class="hm-form-title" data-hc="formTitle">Where do you want to go?</h2>
           <p class="hm-form-sub" data-hc="formSub">Tell us the two things that matter — we take it from there on WhatsApp.</p>
           <label class="hm-field">
-            <span>Your name</span>
+            <span>Your name <span class="hm-req" aria-hidden="true">(required)</span></span>
             <input id="hm-form-name" name="name" type="text" autocomplete="name"
-                   placeholder="Full name" required />
+                   placeholder="Full name" required aria-describedby="hm-form-note" />
           </label>
           <label class="hm-field">
-            <span>Destination</span>
+            <span>Destination <span class="hm-req" aria-hidden="true">(required)</span></span>
             <input id="hm-form-dest" name="destination" type="text" list="hm-dest-list"
-                   placeholder="Schengen, Saudi Arabia, Bali…" required />
+                   placeholder="Schengen, Saudi Arabia, Bali…" required aria-describedby="hm-form-note" />
             <datalist id="hm-dest-list"></datalist>
           </label>
           <button class="hm-btn hm-btn-gold hm-form-send" type="submit" data-hc="formButton">Start on WhatsApp</button>
-          <p class="hm-form-note" id="hm-form-note" data-hc="formNote">Opens a WhatsApp chat with our team — nothing is stored on this site.</p>
+          <p class="hm-form-note" id="hm-form-note" role="status" data-hc="formNote">Opens a WhatsApp chat with our team — nothing is stored on this site.</p>
         </form>
       </div>
 
@@ -139,8 +147,8 @@
          accepts, named and shown. The label is editable (Homepage → Text). -->
     <div class="hm-pay hm-reveal">
       <span class="hm-pay-label" data-hc="payLabel">We accept</span>
-      <img src="assets/pay/tabby.svg?v=188" alt="Tabby" width="128" height="44" loading="lazy" />
-      <img src="assets/pay/tamara.svg?v=188" alt="Tamara" width="138" height="44" loading="lazy" />
+      <img src="assets/pay/tabby.svg?v=190" alt="Tabby" data-pay="tabby" width="128" height="44" loading="lazy" hidden />
+      <img src="assets/pay/tamara.svg?v=190" alt="Tamara" data-pay="tamara" width="138" height="44" loading="lazy" />
       <span class="hm-pay-note" data-hc="payNote">as well</span>
     </div>
 
@@ -165,7 +173,7 @@
     </section>
 
     <!-- =============================================================== band -->
-    <section class="hm-stats" aria-label="BGS Travel &amp; Tourism">
+    <section class="hm-stats">
       <p class="hm-band-line hm-reveal">
         <span data-hc="bandA">From anywhere</span>
         <em data-hc="bandB">to everywhere.</em>
@@ -216,17 +224,17 @@
         <h2 class="hm-form-title" data-hc="cformTitle">Tell us what you need</h2>
         <p class="hm-form-sub" data-hc="cformSub">One message — a person replies on WhatsApp.</p>
         <label class="hm-field">
-          <span>Your name</span>
+          <span>Your name <span class="hm-req" aria-hidden="true">(required)</span></span>
           <input id="hm-cform-name" name="name" type="text" autocomplete="name"
-                 placeholder="Full name" required />
+                 placeholder="Full name" required aria-describedby="hm-cform-note" />
         </label>
         <label class="hm-field">
-          <span>What do you need?</span>
-          <textarea id="hm-cform-msg" name="message" rows="3" required
+          <span>What do you need? <span class="hm-req" aria-hidden="true">(required)</span></span>
+          <textarea id="hm-cform-msg" name="message" rows="3" required aria-describedby="hm-cform-note"
                     placeholder="A visa, a trip, a question — anything"></textarea>
         </label>
         <button class="hm-btn hm-btn-gold hm-form-send" type="submit" data-hc="cformButton">Send on WhatsApp</button>
-        <p class="hm-form-note" id="hm-cform-note" data-hc="cformNote">Opens a WhatsApp chat with our team — nothing is stored on this site.</p>
+        <p class="hm-form-note" id="hm-cform-note" role="status" data-hc="cformNote">Opens a WhatsApp chat with our team — nothing is stored on this site.</p>
       </form>
     </section>
   </main>
@@ -239,7 +247,7 @@
       <a href="activities.html">Activities</a>
       <a href="services.html">Services</a>
       <a href="visa.html">Visa</a>
-      <a href="mice.html">MICE</a>
+      <a href="mice.html"><abbr title="Meetings, Incentives, Conferences and Exhibitions">MICE</abbr></a>
     </div>
     <!-- Contact details and legal links render from data/legal.js -->
     <div id="footer-contact"></div>

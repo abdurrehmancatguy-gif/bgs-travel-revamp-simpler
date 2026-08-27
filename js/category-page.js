@@ -1,18 +1,18 @@
-import { getCollection, subscribe } from "./store.js?v=188";
-import "./info-modal.js?v=188";
-import { createNavigation } from "./navigation.js?v=188";
-import { icon } from "../data/icons.js?v=188";
-import { priceLabel } from "../data/packages.js?v=188";
-import { openWhatsApp, buildWhatsAppUrl } from "../utils/whatsapp.js?v=188";
-import { MICE_SERVICES } from "../data/mice.js?v=188";
-import { openItem, itemTitle } from "./item-dialog.js?v=188";
+import { getCollection, subscribe } from "./store.js?v=190";
+import "./info-modal.js?v=190";
+import { createNavigation } from "./navigation.js?v=190";
+import { icon } from "../data/icons.js?v=190";
+import { priceLabel } from "../data/packages.js?v=190";
+import { openWhatsApp, buildWhatsAppUrl } from "../utils/whatsapp.js?v=190";
+import { MICE_SERVICES } from "../data/mice.js?v=190";
+import { openItem, itemTitle } from "./item-dialog.js?v=190";
 // The same wheel glide the homepage has — the card lists are the longest
 // scrolls on the site, so they benefit most.
-import "./smooth-scroll.js?v=188";
-import { enableTilt } from "./tilt.js?v=188";
-import { buildPrimaryNav } from "./nav-model.js?v=188";
-import { track } from "./analytics.js?v=188";
-import { contactStripMarkup, openInfo } from "./info-modal.js?v=188";
+import "./smooth-scroll.js?v=190";
+import { enableTilt } from "./tilt.js?v=190";
+import { buildPrimaryNav } from "./nav-model.js?v=190";
+import { track } from "./analytics.js?v=190";
+import { contactStripMarkup, openInfo } from "./info-modal.js?v=190";
 
 /**
  * Every category page runs this one module. The page declares which collection
@@ -117,7 +117,13 @@ const SHAPES = {
     card: (i) => cardMarkup({
       image: i.image, alt: i.name, iconName: "visa", kicker: i.country,
       title: i.name, itemHref: hrefFor(i.name), body: i.blurb,
-      meta: [i.processing, i.validity, priceLabel(i)],
+      // Labelled: two bare durations side by side ("3 to 5 working days",
+      // "60 days from issue") don't say which is processing and which validity.
+      meta: [
+        i.processing && `Processing: ${i.processing}`,
+        i.validity && `Valid: ${i.validity}`,
+        priceLabel(i),
+      ],
     }),
   },
 };
@@ -137,9 +143,12 @@ function cardMarkup({ image, alt, iconName, kicker, title, body, meta = [], list
   const altText = (typeof image === "object" && image?.alt) || alt || title;
   image = src;
   alt = altText;
+  // The card is a plain list item: the h3 link inside is the one tab stop and
+  // carries the name from its visible text. A role="button" wrapper would
+  // flatten the heading/list out of the accessibility tree and cost keyboard
+  // users two stops per card.
   return `
-    <li class="item-card reveal" role="button" tabindex="0"
-        aria-label="${esc(title)} — buy now on WhatsApp" data-title="${esc(title)}">
+    <li class="item-card reveal" data-title="${esc(title)}">
       ${image ? `<div class="item-card-media">
         <img src="${esc(image)}" alt="${esc(alt || title)}" loading="lazy" />
         ${iconName ? `<span class="item-card-icon" aria-hidden="true">${icon(iconName)}</span>` : ""}
@@ -345,7 +354,7 @@ const NOT_FOUND_NOUN = {
   block.setAttribute("aria-label", "Contact us");
   block.innerHTML = `
     <p class="page-notfound-line">${esc(line)}</p>
-    <button class="page-notfound-btn" type="button">Contact us — we\u2019ll check for you</button>`;
+    <button class="page-notfound-btn" type="button">Contact us on WhatsApp — we\u2019ll check for you</button>`;
   block.querySelector("button").addEventListener("click", () => {
     track("not_found_contact", { collection: page });
     openWhatsApp(buildWhatsAppUrl(
@@ -447,18 +456,8 @@ grid.addEventListener("click", (event) => {
   openItem(item, page);
 });
 
-grid.addEventListener("keydown", (event) => {
-  if (event.key !== "Enter" && event.key !== " ") return;
-  const card = event.target.closest(".item-card");
-  if (!card) return;
-  event.preventDefault();
-  const item = visibleItems[Number(card.dataset.idx)];
-  if (page === "services" && SERVICE_PAGE[item.key]) {
-    location.href = `${SERVICE_PAGE[item.key]}.html`;
-    return;
-  }
-  openItem(item, page);
-});
+/* No grid keydown handler: keyboard activation is the inner link's native
+   Enter, which fires a click that the delegated handler above intercepts. */
 
 // The admin saves to the same store; this is what makes an edit appear on an
 // open page without a refresh.

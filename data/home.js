@@ -150,6 +150,10 @@ export const HOME_COPY = {
      ever be counted, never typed. A line whose count is zero is dropped. */
   payLabel: "We accept",
   payNote: "as well",
+  /* Which payment badges the strip shows — one per line in the admin.
+     Known names: tabby, tamara. Remove a line to drop a badge, add it back
+     to restore it; an empty list hides the strip entirely. */
+  payMethods: ["tamara"],
   /* The serif marquee of place names. Empty means automatic — every name in
      the Destinations catalogue; put names here (one per line in the admin) to
      show exactly those instead. */

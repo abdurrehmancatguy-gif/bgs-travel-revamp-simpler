@@ -197,7 +197,9 @@ body.page .page-hero {
   width: 100%;
   height: 58px;
   padding: 0 52px 0 24px;
-  border: 1px solid rgba(13, 27, 42, 0.1);
+  /* 0.55 alpha navy blends to ~3.5:1 on the white fill — the field's edge
+     has to be visible on its own, not only via the drop shadow. */
+  border: 1px solid rgba(13, 27, 42, 0.55);
   border-radius: 999px;
   color: var(--navy);
   background: var(--white);
@@ -211,8 +213,10 @@ body.page .page-hero {
 
 .page-search input:focus {
   outline: none;
-  border-color: var(--gold);
-  box-shadow: 0 0 0 4px rgba(232, 148, 26, 0.18);
+  border-color: var(--gold-ink);
+  /* Solid dark-gold ring (5.14:1 on white); the resting lift shadow stays so
+     the pill doesn't drop flat the moment it takes focus. */
+  box-shadow: 0 14px 38px rgba(13, 27, 42, 0.1), 0 0 0 3px var(--gold-ink);
 }
 
 /* Safari and Chrome draw their own clear button inside a type="search" input,
@@ -319,9 +323,10 @@ body.page .page-hero {
   transition: transform 260ms ease, box-shadow 260ms ease;
 }
 
-/* While hovered (tilting), the card rides above its grid neighbours. */
+/* While hovered (tilting) or holding focus, the card rides above its grid
+   neighbours — focus lives on the inner link now, hence :focus-within. */
 .item-card:hover,
-.item-card:focus-visible { z-index: 5; }
+.item-card:focus-within { z-index: 5; }
 
 .item-card:hover {
   transform: translateY(-4px);

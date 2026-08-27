@@ -1,11 +1,11 @@
 import {
   COLLECTIONS, getCollection, saveCollection, resetCollection, resetAll,
   exportAll, importAll, isCustomised, isCloudEnabled, subscribeSyncFailure,
-} from "./store.js?v=188";
-import { photoQuery } from "./photo-query.mjs?v=188";
-import { CARD_TITLE_KEY } from "../data/packages.js?v=188";
-import { resolvePill, HOME_COPY } from "../data/home.js?v=188";
-import { signIn } from "./cloud.js?v=188";
+} from "./store.js?v=190";
+import { photoQuery } from "./photo-query.mjs?v=190";
+import { CARD_TITLE_KEY } from "../data/packages.js?v=190";
+import { resolvePill, HOME_COPY } from "../data/home.js?v=190";
+import { signIn } from "./cloud.js?v=190";
 
 /**
  * The admin console.
@@ -265,6 +265,7 @@ const HOME_COPY_FIELDS = [
   ["bandB", "Statement band — second half (italic gold)"],
   ["payLabel", "Payments strip — lead-in (We accept…)"],
   ["payNote", "Payments strip — note after the logos"],
+  ["payMethods", "Payments strip — badges, one per line (tamara, tabby)", "lines"],
   ["journeysEyebrow", "Journeys — small line"],
   ["journeysHeading", "Journeys — heading"],
   ["journeysMore", "Journeys — corner link"],
@@ -713,7 +714,7 @@ el("#admin-list").addEventListener("change", (event) => {
     const key = hc.dataset.homeCopy;
     const copy = { ...HOME_COPY, ...getCollection("homeCopy") };
     // list fields: one entry per line; blanks drop out.
-    copy[key] = ["tickerPhrases", "marqueeNames", "faq"].includes(key)
+    copy[key] = ["tickerPhrases", "marqueeNames", "faq", "payMethods"].includes(key)
       ? hc.value.split("\n").map((l) => l.trim()).filter(Boolean)
       : hc.value;
     saveCollection("homeCopy", copy);
@@ -906,7 +907,7 @@ async function backfillImages(records, collection, identity) {
 }
 
 async function applySheet(mode) {
-  const { applyMode } = await import("./sheet-import.mjs?v=188");
+  const { applyMode } = await import("./sheet-import.mjs?v=190");
   el("#sheet-dialog").close();
   sheetStatus("Applying…");
 
@@ -929,7 +930,7 @@ async function handleSheet(file) {
   if (!file) return;
   sheetStatus(`Reading ${file.name}…`);
   try {
-    const { parseWorkbook, reconcile } = await import("./sheet-import.mjs?v=188");
+    const { parseWorkbook, reconcile } = await import("./sheet-import.mjs?v=190");
     const { tabs, problems, ignoredCostColumns } = await parseWorkbook(file);
     if (!tabs.length) {
       sheetStatus(`Nothing to import. ${problems.join(" ")}`);
@@ -979,7 +980,7 @@ el("#sheet-apply-replace").addEventListener("click", () => applySheet("replace")
 el("#sheet-export").addEventListener("click", async () => {
   sheetStatus("Building workbook…");
   try {
-    const { exportWorkbook } = await import("./sheet-import.mjs?v=188");
+    const { exportWorkbook } = await import("./sheet-import.mjs?v=190");
     const blob = await exportWorkbook((name) => getCollection(name));
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -1003,7 +1004,7 @@ el("#sheet-export-csv").addEventListener("click", async () => {
   }
   sheetStatus("Building CSV…");
   try {
-    const { exportCsv } = await import("./sheet-import.mjs?v=188");
+    const { exportCsv } = await import("./sheet-import.mjs?v=190");
     const blob = await exportCsv(active, (name) => getCollection(name));
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -1021,7 +1022,7 @@ el("#sheet-export-csv").addEventListener("click", async () => {
 el("#sheet-template").addEventListener("click", async () => {
   sheetStatus("Building template…");
   try {
-    const { exportTemplate } = await import("./sheet-import.mjs?v=188");
+    const { exportTemplate } = await import("./sheet-import.mjs?v=190");
     const blob = await exportTemplate();
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");

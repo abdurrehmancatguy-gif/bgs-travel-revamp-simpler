@@ -114,13 +114,21 @@ button { border: 0; font: inherit; }
 }
 .skip-link:focus { top: 0; }
 
-/* Shared focus treatment — gold ring reads on both cream and photography. */
+/* Shared focus treatment. Dark gold: bright gold measures 1.77:1 on the cream
+   page and 1.99:1 on white cards — invisible; this reads at 4.6:1 on cream,
+   5.14:1 on white and 3.3:1 on navy, so one ring works on every surface.
+   Navy bands re-brighten it below for looks; both pass. */
 :where(a,
 button,
 [tabindex]):focus-visible {
-  outline: 3px solid var(--gold-light);
+  outline: 3px solid var(--gold-ink);
   outline-offset: 3px;
   border-radius: 6px;
+}
+
+.page-footer :where(a, button, [tabindex]):focus-visible,
+.hm-cta-panel :where(a, button, [tabindex]):focus-visible {
+  outline-color: var(--gold-light);
 }
 
 /* =========================================================================

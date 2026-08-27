@@ -95,6 +95,9 @@ function itemPage(item, collection) {
   const title = s.title(item);
   const url = `${SITE}/${itemPath(item, collection)}`;
   const image = typeof item.image === "string" ? item.image : item.image?.src;
+  // Curated description when the record has one; empty otherwise — the h1
+  // directly beneath already carries the title.
+  const imageAlt = (typeof item.image === "object" && item.image?.alt) || "";
   const body = describe(item);
   const facts = s.facts(item).filter(([, v]) => v);
   const lists = [["items", "What this covers"], ["highlights", "Highlights"],
@@ -123,16 +126,16 @@ function itemPage(item, collection) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>${esc(title)} — BGS Travel &amp; Tourism</title>
   <meta name="description" content="${esc(description)}" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=188" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=190" />
   <!-- Versioned like everywhere else. These used to be bare, which was
        survivable under the old four-hour revalidate — but the stylesheets are
        now cached immutable for a year, so an unversioned link would wear this
        redesign's CSS forever, through every future one. -->
-  <link rel="stylesheet" href="/styles.css?v=188" />
-  <link rel="stylesheet" href="/pages.css?v=188" />
+  <link rel="stylesheet" href="/styles.css?v=190" />
+  <link rel="stylesheet" href="/pages.css?v=190" />
   <!-- The one script these pages carry: the same wheel glide as the rest of
        the site. Everything else stays static on purpose. -->
-  <script type="module" src="/js/smooth-scroll.js?v=188"></script>${headExtras({
+  <script type="module" src="/js/smooth-scroll.js?v=190"></script>${headExtras({
     url, title: `${title} — BGS Travel & Tourism`, description, image,
     jsonLd: [orgJsonLd(), ...itemJsonLd(item, collection, url, `${SITE}/`), {
       "@type": "BreadcrumbList",
@@ -148,20 +151,20 @@ function itemPage(item, collection) {
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="item-page-bar">
     <a class="site-logo" href="/">
-      <img class="site-logo-mark" src="/assets/monogram-96.webp?v=188" alt="" width="40" height="40" />
+      <img class="site-logo-mark" src="/assets/monogram-96.webp?v=190" alt="" width="40" height="40" />
       <span class="site-logo-text">
         <span class="site-logo-name">BGS Travel &amp; Tourism</span>
         <span class="site-logo-place">Dubai, UAE</span>
       </span>
     </a>
   </header>
-  <main id="main" class="item-page-main">
+  <main id="main" class="item-page-main" tabindex="-1">
     <nav class="item-page-crumbs" aria-label="Breadcrumb">
       <a href="/">Home</a> <span aria-hidden="true">›</span>
       <a href="/${PAGES[collection]}">${esc(s.label)}</a> <span aria-hidden="true">›</span>
       <span aria-current="page">${esc(title)}</span>
     </nav>
-    ${image ? `<img class="item-page-media" src="${esc(image)}" alt="${esc(title)}" />` : ""}
+    ${image ? `<img class="item-page-media" src="${esc(image)}" alt="${esc(imageAlt)}" />` : ""}
     ${s.kicker(item) ? `<p class="item-page-kicker">${esc(s.kicker(item))}</p>` : ""}
     <h1>${esc(title)}</h1>
     <p class="item-page-lede">${esc(lede)}</p>
@@ -179,7 +182,7 @@ function itemPage(item, collection) {
     <p class="page-notfound-line">${esc(content.copy?.[collection]?.notFound ?? `Couldn\u2019t find your desired ${NOT_FOUND_NOUN[collection] ?? "trip"}?`)}</p>
     <a class="page-notfound-btn" href="https://wa.me/971555809388?text=${
       encodeURIComponent(`Hi BGS Travel & Tourism, I couldn't find the ${NOT_FOUND_NOUN[collection] ?? "trip"} I'm looking for on the site — can you help?`)}"
-       target="_blank" rel="noopener">Contact us — we\u2019ll check for you</a>
+       target="_blank" rel="noopener">Contact us on WhatsApp — we\u2019ll check for you</a>
   </section>
   <footer class="page-footer">
     <p><a href="tel:+971555809388">055 580 9388</a> ·
@@ -271,8 +274,14 @@ function paintPillsIntoHtml(html, pills) {
     // js/home.js draws a moment later cannot say different things.
     const t = resolvePill(pill, (c) => content[c] ?? []);
     if (!t || !t.label) return "";
+    // Same MICE expansion js/home.js renders — trade jargon explained
+    // where a visitor first meets it, visible label kept first in the name.
+    const mice = /\bMICE\b/.test(t.label)
+      ? ` title="MICE — Meetings, Incentives, Conferences and Exhibitions"` +
+        ` aria-label="${esc(t.label)} — Meetings, Incentives, Conferences and Exhibitions"`
+      : "";
     return `<button class="hero-pill" type="button" data-page="${esc(t.page)}" ` +
-           `data-query="${esc(t.query)}" data-open="${t.open ? "1" : ""}">` +
+           `data-query="${esc(t.query)}" data-open="${t.open ? "1" : ""}"${mice}>` +
            `${esc(t.label)}</button>`;
   }).filter(Boolean).join("\n            ");
 
@@ -374,6 +383,27 @@ for (const [key, value] of Object.entries(content.homeCopy ?? {})) {
     new RegExp(`(<[^>]*data-hc="${key}"[^>]*>)([^<]*)`),
     (_, open) => `${open}${esc(value)}`
   );
+}
+
+/* Payment badges: the admin's list decides which icons show. Painted rather
+   than assumed: the source ships tabby hidden, so this both reveals a badge
+   the admin turned on and hides one they turned off; an empty list hides the
+   strip. Mirrors renderPayments in js/home.js. */
+{
+  if ((homeHtml.match(/data-pay="/g) ?? []).length !== 2) {
+    throw new Error("payments: expected two data-pay badges in index.html");
+  }
+  const methods = (content.homeCopy?.payMethods ?? [])
+    .map((m) => String(m).trim().toLowerCase()).filter(Boolean);
+  for (const key of ["tabby", "tamara"]) {
+    homeHtml = homeHtml.replace(
+      new RegExp(`<img([^>]*data-pay="${key}"[^>]*?) */>`),
+      (_, attrs) =>
+        `<img${attrs.replace(/\s*\bhidden\b/, "")}${methods.includes(key) ? "" : " hidden"} />`
+    );
+  }
+  homeHtml = homeHtml.replace('<div class="hm-pay hm-reveal">',
+    `<div class="hm-pay hm-reveal"${methods.length ? "" : " hidden"}>`);
 }
 
 /* The stats band, from the same counts this build just rendered. Counted, not

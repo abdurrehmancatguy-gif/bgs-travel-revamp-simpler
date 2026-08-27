@@ -1,7 +1,7 @@
-import { buildPrimaryNav, buildDrawerMenus } from "./nav-model.js?v=188";
-import { subscribe } from "./store.js?v=188";
-import { contactStripMarkup } from "./info-modal.js?v=188";
-import { icon } from "../data/icons.js?v=188";
+import { buildPrimaryNav, buildDrawerMenus } from "./nav-model.js?v=190";
+import { subscribe } from "./store.js?v=190";
+import { contactStripMarkup } from "./info-modal.js?v=190";
+import { icon } from "../data/icons.js?v=190";
 
 /**
  * Header dropdowns and the mobile drawer.
@@ -38,8 +38,12 @@ export function createNavigation({ nav, drawer, drawerBody, toggle, onAction }) 
   const esc = (value) =>
     String(value ?? "").replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 
+  /* These are disclosure panels of plain links/buttons, not ARIA menus:
+     role="menu"/"menuitem" would promise arrow-key navigation this pattern
+     does not (and should not) implement. Tab + Escape + aria-expanded is the
+     complete disclosure-navigation contract. */
   const linkMarkup = (item, id) =>
-    `<li><button class="nav-panel-link" type="button" data-action-id="${id}" role="menuitem">` +
+    `<li><button class="nav-panel-link" type="button" data-action-id="${id}">` +
     (item.icon ? `<span class="nav-panel-icon" aria-hidden="true">${icon(item.icon)}</span>` : "") +
     `<span>${esc(item.label)}</span></button></li>`;
 
@@ -91,23 +95,23 @@ export function createNavigation({ nav, drawer, drawerBody, toggle, onAction }) 
         return `
         <li class="nav-item" data-menu="${menu.id}">
           <button class="nav-trigger" type="button"
-                  id="nav-trigger-${menu.id}" aria-haspopup="true"
+                  id="nav-trigger-${menu.id}"
                   aria-expanded="false" aria-controls="nav-panel-${menu.id}"
                   ${menu.page ? `data-nav-page="${menu.page}"` : ""}>
             <span>${esc(menu.label)}</span>
             <span class="nav-trigger-caret" aria-hidden="true"></span>
           </button>
           <div class="nav-panel${menu.kind === "groups" ? " nav-panel-wide" : ""}"
-               id="nav-panel-${menu.id}" role="menu"
+               id="nav-panel-${menu.id}"
                aria-labelledby="nav-trigger-${menu.id}">${panelMarkup(menu)}</div>
         </li>`;
       })
       .join("");
-    nav.innerHTML = `<ul class="site-nav-list">${html}</ul>`;
+    return html;
   }
 
   function buildDrawer() {
-    drawerBody.innerHTML = buildDrawerMenus().map((menu) => {
+    return buildDrawerMenus().map((menu) => {
       // Same as the header: nothing to expand, so it is a single button.
       if (menu.kind === "action") {
         return `
@@ -299,15 +303,25 @@ export function createNavigation({ nav, drawer, drawerBody, toggle, onAction }) 
    * to be cleared or they accumulate stale entries across rebuilds. wireActions
    * is delegated on nav and drawerBody, which survive, so it is wired once.
    */
+  let lastNavMarkup = "";
+
   function rebuild() {
+    // Ids restart from zero so identical content produces identical markup —
+    // the map is re-registered either way, but the DOM is only replaced when
+    // something actually changed. A Firestore snapshot that changed nothing
+    // must not wipe the header out from under keyboard focus.
     actions.clear();
+    actionSeq = 0;
+    const desktopHtml = buildDesktop();
+    const drawerHtml = buildDrawer() +
+      '<div class="drawer-contact">' + contactStripMarkup() + "</div>";
+    if (desktopHtml + drawerHtml === lastNavMarkup) return;
+    lastNavMarkup = desktopHtml + drawerHtml;
     menus.length = 0;
     openMenu = null;
-    buildDesktop();
-    buildDrawer();
+    nav.innerHTML = `<ul class="site-nav-list">${desktopHtml}</ul>`;
+    drawerBody.innerHTML = drawerHtml;
     wireDesktop();
-    drawerBody.insertAdjacentHTML("beforeend",
-      '<div class="drawer-contact">' + contactStripMarkup() + "</div>");
     wireDrawerGroups();
   }
 

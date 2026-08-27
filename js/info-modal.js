@@ -1,5 +1,5 @@
-import { LEGAL_DOCS, LEGAL_LINKS, CONTACT_CHANNELS } from "../data/legal.js?v=188";
-import { icon } from "../data/icons.js?v=188";
+import { LEGAL_DOCS, LEGAL_LINKS, CONTACT_CHANNELS } from "../data/legal.js?v=190";
+import { icon } from "../data/icons.js?v=190";
 
 /**
  * The Contacts and legal panels. One <dialog> is built lazily and reused for
@@ -123,7 +123,7 @@ export function openInfo(key) {
           ${icon("close")}
         </button>
       </header>
-      <div class="info-dialog-body">
+      <div class="info-dialog-body" role="region" aria-labelledby="info-dialog-title" tabindex="0">
         ${doc.kind === "contact" ? contactMarkup(doc) : documentMarkup(doc)}
       </div>
       ${doc.kind === "contact" ? "" : `
@@ -135,7 +135,10 @@ export function openInfo(key) {
     </article>`;
 
   el.querySelector("[data-info-close]").addEventListener("click", () => el.close());
-  el.showModal();
+  // Swapping documents while open re-enters here: showModal() would throw on
+  // an open dialog, and innerHTML just destroyed the button holding focus.
+  if (!el.open) el.showModal();
+  el.querySelector("[data-info-close]").focus();
   // Long documents open scrolled to wherever the last one was left otherwise.
   el.querySelector(".info-dialog-body").scrollTop = 0;
 }

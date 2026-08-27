@@ -1,6 +1,6 @@
-import { icon } from "../data/icons.js?v=188";
-import { priceLabel, priceFacts } from "../data/packages.js?v=188";
-import { openWhatsApp, buildWhatsAppItemUrl } from "../utils/whatsapp.js?v=188";
+import { icon } from "../data/icons.js?v=190";
+import { priceLabel, priceFacts } from "../data/packages.js?v=190";
+import { openWhatsApp, buildWhatsAppItemUrl } from "../utils/whatsapp.js?v=190";
 
 /**
  * The detail panel a card opens. One dialog, reused for every card on every
@@ -116,6 +116,10 @@ export function openItem(item, collection) {
   const title = shape.title(item) ?? "";
   const kicker = shape.kicker(item) ?? "";
   const image = typeof item.image === "string" ? item.image : item.image?.src;
+  // Curated description when the record has one; otherwise empty — the h2
+  // beside the photo already carries the title, repeating it as alt reads
+  // "Desert Safari. Image, Desert Safari. Heading, Desert Safari."
+  const imageAlt = (typeof item.image === "object" && item.image?.alt) || "";
   const body = item.fullDescription || item.blurb || item.shortDescription || "";
   const facts = shape.facts(item).filter(([, value]) => value);
   const tags = Array.isArray(item.tags) ? item.tags : [];
@@ -127,10 +131,10 @@ export function openItem(item, collection) {
       </button>
 
       ${image ? `<div class="item-dialog-media">
-        <img src="${esc(image)}" alt="${esc(title)}" />
+        <img src="${esc(image)}" alt="${esc(imageAlt)}" />
       </div>` : ""}
 
-      <div class="item-dialog-body">
+      <div class="item-dialog-body" role="region" aria-labelledby="item-dialog-title" tabindex="0">
         <header class="item-dialog-head">
           ${kicker ? `<p class="item-dialog-kicker">
             ${item.icon ? `<span class="item-dialog-icon" aria-hidden="true">${icon(item.icon)}</span>` : ""}

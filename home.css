@@ -38,6 +38,48 @@ body.home {
 
 /* ----------------------------------------------------------------- ticker */
 
+.hm-ticker-row {
+  position: relative;
+}
+
+/* One pause for everything that moves on its own: the ticker, the marquee and
+   the pulse dot. The tracks animate via inline shorthand set by loopTrack, so
+   pausing needs !important to outrank the inline style. */
+.motion-paused .hm-ticker-track,
+.motion-paused .hm-marquee-track,
+.motion-paused .hm-dot { animation-play-state: paused !important; }
+
+.hm-motion-toggle {
+  position: absolute;
+  top: 50%;
+  right: clamp(10px, 3vw, 26px);
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  transform: translateY(-50%);
+  border: 1px solid rgba(13, 27, 42, 0.55);
+  border-radius: 50%;
+  color: var(--navy);
+  background: #fff;
+  cursor: pointer;
+}
+
+.hm-motion-toggle svg { width: 15px; height: 15px; }
+.hm-motion-toggle .hm-motion-play { display: none; }
+.hm-motion-toggle[aria-pressed="true"] .hm-motion-pause { display: none; }
+.hm-motion-toggle[aria-pressed="true"] .hm-motion-play { display: block; }
+
+/* Small, muted, and honest: the field must say it is required, not just
+   refuse silently on submit. */
+.hm-req {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: rgba(13, 27, 42, 0.55);
+}
+
 .hm-ticker {
   margin-top: clamp(8px, 2vh, 20px);
   padding: 14px 0 4px;
@@ -230,8 +272,9 @@ body.home .hero-pill:focus-visible {
 
 .hm-arch-sky {
   /* One slow settle-in, not a loop: a single drift reads as a curtain
-     lifting, a perpetual zoom reads as a screen saver. */
-  animation: hm-sky 14s ease-out forwards;
+     lifting, a perpetual zoom reads as a screen saver. Five seconds, not
+     longer — auto-started motion past 5s needs its own stop control. */
+  animation: hm-sky 5s ease-out forwards;
   transform-origin: 50% 30%;
 }
 
@@ -324,9 +367,9 @@ body.home .hero-pill:focus-visible {
 .hm-field input::placeholder { color: rgba(13, 27, 42, 0.35); }
 
 .hm-field input:focus-visible {
-  outline: 2px solid var(--gold);
+  /* Dark gold: brand gold is 2.42:1 on the white card, below the 3:1 floor. */
+  outline: 2px solid var(--gold-ink);
   outline-offset: 1px;
-  border-color: transparent;
 }
 
 /* An empty required field is announced by the note turning firm — see
@@ -812,9 +855,8 @@ body.home .hero-pill:focus-visible {
 .hm-cform textarea::placeholder { color: rgba(13, 27, 42, 0.35); }
 
 .hm-cform textarea:focus-visible {
-  outline: 2px solid var(--gold);
+  outline: 2px solid var(--gold-ink);
   outline-offset: 1px;
-  border-color: transparent;
 }
 
 .hm-cform textarea[aria-invalid="true"] { border-color: #b3261e; }

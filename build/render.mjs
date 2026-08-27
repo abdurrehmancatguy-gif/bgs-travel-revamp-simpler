@@ -98,15 +98,18 @@ export function cardHtml(item, collection) {
   const s = SHAPE[collection];
   const title = s.title(item);
   const image = typeof item.image === "string" ? item.image : item.image?.src;
+  // Curated description when the record has one; empty otherwise — the h3
+  // link beside it already carries the title, so repeating it says nothing.
+  const imageAlt = (typeof item.image === "object" && item.image?.alt) || "";
   const facts = s.facts(item).filter(([, v]) => v);
   return `<li class="item-card" data-title="${esc(title)}">
-      ${image ? `<div class="item-card-media"><img src="${esc(image)}" alt="${esc(title)}" loading="lazy" /></div>` : ""}
+      ${image ? `<div class="item-card-media"><img src="${esc(image)}" alt="${esc(imageAlt)}" loading="lazy" /></div>` : ""}
       <div class="item-card-inner">
         ${s.kicker(item) ? `<p class="item-card-kicker">${esc(s.kicker(item))}</p>` : ""}
         <h3><a class="item-card-link" href="/${itemPath(item, collection)}">${esc(title)}</a></h3>
         <p>${esc(item.blurb || item.shortDescription || "")}</p>
         ${facts.length ? `<p class="item-card-meta">${
-          facts.map(([, v]) => `<span>${esc(v)}</span>`).join("")}</p>` : ""}
+          facts.map(([k, v]) => `<span><span class="visually-hidden">${esc(k)}: </span>${esc(v)}</span>`).join("")}</p>` : ""}
       </div>
     </li>`;
 }
