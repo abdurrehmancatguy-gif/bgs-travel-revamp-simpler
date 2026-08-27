@@ -1,11 +1,11 @@
 import {
   COLLECTIONS, getCollection, saveCollection, resetCollection, resetAll,
   exportAll, importAll, isCustomised, isCloudEnabled, subscribeSyncFailure,
-} from "./store.js?v=211";
-import { photoQuery } from "./photo-query.mjs?v=211";
-import { CARD_TITLE_KEY } from "../data/packages.js?v=211";
-import { resolvePill, HOME_COPY } from "../data/home.js?v=211";
-import { signIn, signOutAdmin, idToken } from "./cloud.js?v=211";
+} from "./store.js?v=212";
+import { photoQuery } from "./photo-query.mjs?v=212";
+import { CARD_TITLE_KEY } from "../data/packages.js?v=212";
+import { resolvePill, HOME_COPY } from "../data/home.js?v=212";
+import { signIn, signOutAdmin, idToken } from "./cloud.js?v=212";
 
 /**
  * The admin console.
@@ -256,7 +256,6 @@ let homeSection = "cards";
    Order here is display order. tickerPhrases is a list — one phrase per line
    in a textarea, because commas appear inside sentences. */
 const HOME_COPY_FIELDS = [
-  ["eyebrow", "Small line above the headline"],
   ["titleA", "Headline, first line"],
   ["titleB", "Headline, second line (italic gold)"],
   ["subtitle", "Paragraph under the headline", "textarea"],
@@ -932,7 +931,7 @@ async function backfillImages(records, collection, identity) {
 }
 
 async function applySheet(mode) {
-  const { applyMode } = await import("./sheet-import.mjs?v=211");
+  const { applyMode } = await import("./sheet-import.mjs?v=212");
   el("#sheet-dialog").close();
   sheetStatus("Applying…");
 
@@ -955,7 +954,7 @@ async function handleSheet(file) {
   if (!file) return;
   sheetStatus(`Reading ${file.name}…`);
   try {
-    const { parseWorkbook, reconcile } = await import("./sheet-import.mjs?v=211");
+    const { parseWorkbook, reconcile } = await import("./sheet-import.mjs?v=212");
     const { tabs, problems, ignoredCostColumns } = await parseWorkbook(file);
     if (!tabs.length) {
       sheetStatus(`Nothing to import. ${problems.join(" ")}`);
@@ -1005,7 +1004,7 @@ el("#sheet-apply-replace").addEventListener("click", () => applySheet("replace")
 el("#sheet-export").addEventListener("click", async () => {
   sheetStatus("Building workbook…");
   try {
-    const { exportWorkbook } = await import("./sheet-import.mjs?v=211");
+    const { exportWorkbook } = await import("./sheet-import.mjs?v=212");
     const blob = await exportWorkbook((name) => getCollection(name));
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -1029,7 +1028,7 @@ el("#sheet-export-csv").addEventListener("click", async () => {
   }
   sheetStatus("Building CSV…");
   try {
-    const { exportCsv } = await import("./sheet-import.mjs?v=211");
+    const { exportCsv } = await import("./sheet-import.mjs?v=212");
     const blob = await exportCsv(active, (name) => getCollection(name));
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -1047,7 +1046,7 @@ el("#sheet-export-csv").addEventListener("click", async () => {
 el("#sheet-template").addEventListener("click", async () => {
   sheetStatus("Building template…");
   try {
-    const { exportTemplate } = await import("./sheet-import.mjs?v=211");
+    const { exportTemplate } = await import("./sheet-import.mjs?v=212");
     const blob = await exportTemplate();
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");

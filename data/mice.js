@@ -1,4 +1,4 @@
-import { PHOTOS } from "./photos.js?v=211";
+import { PHOTOS } from "./photos.js?v=212";
 
 /**
  * MICE — Meetings, Incentives, Conferences and Exhibitions.

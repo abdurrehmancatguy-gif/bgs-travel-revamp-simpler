@@ -124,7 +124,6 @@ export const HOME_CARDS = [
  * cannot be typed, so they cannot go stale or be invented.
  */
 export const HOME_COPY = {
-  eyebrow: "Dubai, UAE — travel & tourism",
   titleA: "Consider your trip",
   titleB: "halfway planned.",
   subtitle: "Visas, flights, stays and journeys built around you — one team handles the paperwork and the planning, from the first idea to the trip home.",
