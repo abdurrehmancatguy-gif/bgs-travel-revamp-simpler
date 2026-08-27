@@ -1,17 +1,17 @@
-import { getCollection, subscribe } from "./store.js?v=212";
-import "./info-modal.js?v=212";
-import { contactStripMarkup, openInfo } from "./info-modal.js?v=212";
-import { createNavigation } from "./navigation.js?v=212";
-import { buildPrimaryNav } from "./nav-model.js?v=212";
-import { resolvePill, HOME_COPY } from "../data/home.js?v=212";
-import { resolveHomeCards, withSlugs, CARD_TITLE_KEY, priceFacts } from "../data/packages.js?v=212";
-import { icon } from "../data/icons.js?v=212";
-import { openItem } from "./item-dialog.js?v=212";
-import { openWhatsApp, buildCustomTripUrl, buildWhatsAppUrl, WHATSAPP_DISPLAY } from "../utils/whatsapp.js?v=212";
-import "./smooth-scroll.js?v=212";
-import { enableTilt } from "./tilt.js?v=212";
-import { cardSrc } from "../utils/images.js?v=212";
-import { enableCategoryRail } from "./category-rail.js?v=212";
+import { getCollection, subscribe } from "./store.js?v=213";
+import "./info-modal.js?v=213";
+import { contactStripMarkup, openInfo } from "./info-modal.js?v=213";
+import { createNavigation } from "./navigation.js?v=213";
+import { buildPrimaryNav } from "./nav-model.js?v=213";
+import { resolvePill, HOME_COPY } from "../data/home.js?v=213";
+import { resolveHomeCards, withSlugs, CARD_TITLE_KEY, priceFacts } from "../data/packages.js?v=213";
+import { icon } from "../data/icons.js?v=213";
+import { openItem } from "./item-dialog.js?v=213";
+import { openWhatsApp, buildCustomTripUrl, buildWhatsAppUrl, WHATSAPP_DISPLAY } from "../utils/whatsapp.js?v=213";
+import "./smooth-scroll.js?v=213";
+import { enableTilt } from "./tilt.js?v=213";
+import { cardSrc } from "../utils/images.js?v=213";
+import { enableCategoryRail } from "./category-rail.js?v=213";
 
 /**
  * The homepage. Everything on it renders from the store, so an edit made in
@@ -261,9 +261,9 @@ enableTilt(document.querySelector("#hm-services"), ".hm-service");
 
 /* -------------------------------------------------------------- services */
 
-/** Where a service tile leads: its own category page when it has one,
- *  the services page otherwise. Mirrors SERVICE_PAGE on the services page. */
-const SERVICE_TILE_PAGE = { visa: "visa", activities: "activities", flights: "destinations" };
+/* Each tile opens that service's master page — see servicePath in
+   js/category-page.js for why all six go to the same kind of place. */
+const servicePath = (key) => `/services/${key}/`;
 
 function renderServices() {
   const list = document.querySelector("#hm-services");
@@ -271,7 +271,7 @@ function renderServices() {
   const changed = setIfChanged(list, getCollection("services").map((service, i) => `
     <li class="hm-service hm-reveal" style="--d:${Math.min(i * 70, 420)}ms">
       <a class="hm-service-cover"
-         href="${SERVICE_TILE_PAGE[service.key] ?? "services"}.html"
+         href="${service.key ? servicePath(service.key) : "/services.html"}"
          aria-label="${esc(service.label)}"></a>
       <span class="hm-service-icon" aria-hidden="true">${icon(service.icon)}</span>
       <h3>${esc(service.label)}</h3>

@@ -1,9 +1,10 @@
-import { ACTIVITIES, PACKAGES } from "../data/packages.js?v=212";
-import { DESTINATIONS, VISA_TYPES, PAGE_COPY } from "../data/content.js?v=212";
-import { MICE_SECTIONS } from "../data/mice.js?v=212";
-import { SERVICES } from "../data/navigation.js?v=212";
-import { HOME_PILLS, HOME_CARDS, HOME_COPY } from "../data/home.js?v=212";
-import { cloudEnabled, watchContent, pushCollection, removeCollection } from "./cloud.js?v=212";
+import { ACTIVITIES, PACKAGES } from "../data/packages.js?v=213";
+import { DESTINATIONS, VISA_TYPES, PAGE_COPY } from "../data/content.js?v=213";
+import { MICE_SECTIONS } from "../data/mice.js?v=213";
+import { SERVICES } from "../data/navigation.js?v=213";
+import { HOME_PILLS, HOME_CARDS, HOME_COPY } from "../data/home.js?v=213";
+import { SERVICE_PAGES } from "../data/service-pages.js?v=213";
+import { cloudEnabled, watchContent, pushCollection, removeCollection } from "./cloud.js?v=213";
 
 /**
  * The single door between the site's content and where that content lives.
@@ -32,6 +33,7 @@ const DEFAULTS = {
   packages: PACKAGES,
   destinations: DESTINATIONS,
   services: SERVICES,
+  servicePages: SERVICE_PAGES,
   visa: VISA_TYPES,
   mice: MICE_SECTIONS,
   homePills: HOME_PILLS,

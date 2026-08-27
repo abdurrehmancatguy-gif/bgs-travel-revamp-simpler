@@ -1,20 +1,20 @@
-import { getCollection, subscribe, isCloudEnabled, cloudHas } from "./store.js?v=212";
-import "./info-modal.js?v=212";
-import { createNavigation } from "./navigation.js?v=212";
-import { icon } from "../data/icons.js?v=212";
-import { priceLabel } from "../data/packages.js?v=212";
-import { openWhatsApp, buildWhatsAppUrl } from "../utils/whatsapp.js?v=212";
-import { MICE_SERVICES } from "../data/mice.js?v=212";
-import { openItem, itemTitle } from "./item-dialog.js?v=212";
+import { getCollection, subscribe, isCloudEnabled, cloudHas } from "./store.js?v=213";
+import "./info-modal.js?v=213";
+import { createNavigation } from "./navigation.js?v=213";
+import { icon } from "../data/icons.js?v=213";
+import { priceLabel } from "../data/packages.js?v=213";
+import { openWhatsApp, buildWhatsAppUrl } from "../utils/whatsapp.js?v=213";
+import { MICE_SERVICES } from "../data/mice.js?v=213";
+import { openItem, itemTitle } from "./item-dialog.js?v=213";
 // The same wheel glide the homepage has — the card lists are the longest
 // scrolls on the site, so they benefit most.
-import "./smooth-scroll.js?v=212";
-import { enableTilt } from "./tilt.js?v=212";
-import { buildPrimaryNav } from "./nav-model.js?v=212";
-import { track } from "./analytics.js?v=212";
-import { contactStripMarkup, openInfo } from "./info-modal.js?v=212";
-import { cardSrc } from "../utils/images.js?v=212";
-import { enableCategoryRail } from "./category-rail.js?v=212";
+import "./smooth-scroll.js?v=213";
+import { enableTilt } from "./tilt.js?v=213";
+import { buildPrimaryNav } from "./nav-model.js?v=213";
+import { track } from "./analytics.js?v=213";
+import { contactStripMarkup, openInfo } from "./info-modal.js?v=213";
+import { cardSrc } from "../utils/images.js?v=213";
+import { enableCategoryRail } from "./category-rail.js?v=213";
 
 /**
  * Every category page runs this one module. The page declares which collection
@@ -72,7 +72,12 @@ const esc = (s) =>
  * services without a page of their own (flights, hotels, concierge…) keep
  * their detail panel.
  */
-const SERVICE_PAGE = { visa: "visa", activities: "activities", flights: "destinations" };
+/* Every service now has a master page of its own at /services/<key>/, built
+   by build/build.mjs: what the service is, what we do under it, and a preview
+   of the catalogue it sells with a link into the full list. That page is a
+   better answer than either the small dialog this used to open or a jump
+   straight into a catalogue, and it is the same answer for all six. */
+const servicePath = (key) => `/services/${key}/`;
 
 const SHAPES = {
   activities: {
@@ -108,7 +113,7 @@ const SHAPES = {
     card: (i) => cardMarkup({
       image: i.image, alt: i.label, iconName: i.icon, kicker: "Service",
       title: i.label,
-      itemHref: SERVICE_PAGE[i.key] ? `${SERVICE_PAGE[i.key]}.html` : hrefFor(i.label),
+      itemHref: i.key ? servicePath(i.key) : hrefFor(i.label),
       body: i.blurb, meta: [],
     }),
   },
@@ -522,8 +527,8 @@ grid.addEventListener("click", (event) => {
     return;
   }
   track("item_opened", { collection: page, item: itemTitle(item, page) });
-  if (page === "services" && SERVICE_PAGE[item.key]) {
-    location.href = `${SERVICE_PAGE[item.key]}.html`;
+  if (page === "services" && item.key) {
+    location.href = servicePath(item.key);
     return;
   }
   openItem(item, page);

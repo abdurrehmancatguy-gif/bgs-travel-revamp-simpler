@@ -16,7 +16,7 @@ import { loadContent } from "./content.mjs";
 import { cardHtml, itemPath, itemJsonLd, describe, esc, SHAPE, slug } from "./render.mjs";
 // The same builder the live card panel uses, so the pre-rendered page and the
 // panel cannot open WhatsApp with two different messages.
-import { buildWhatsAppItemUrl } from "../utils/whatsapp.js";
+import { buildWhatsAppItemUrl, buildWhatsAppUrl } from "../utils/whatsapp.js";
 import { fullSrc } from "../utils/images.js";
 import { resolvePill, HOME_COPY } from "../data/home.js";
 
@@ -195,16 +195,16 @@ function itemPage(item, collection) {
   <link rel="preload" as="font" type="font/woff2" href="https://dcym8fthxf5uu.cloudfront.net/fonts/247a073c-29f5-4a89-aa3a-741020f346fc/OggText-Medium.woff2" crossorigin />${imageOrigin(image)}
   <title>${esc(title)} — BGS Travel &amp; Tourism</title>
   <meta name="description" content="${esc(description)}" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=212" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=213" />
   <!-- Versioned like everywhere else. These used to be bare, which was
        survivable under the old four-hour revalidate — but the stylesheets are
        now cached immutable for a year, so an unversioned link would wear this
        redesign's CSS forever, through every future one. -->
-  <link rel="stylesheet" href="/styles.css?v=212" />
-  <link rel="stylesheet" href="/pages.css?v=212" />
+  <link rel="stylesheet" href="/styles.css?v=213" />
+  <link rel="stylesheet" href="/pages.css?v=213" />
   <!-- The one script these pages carry: the same wheel glide as the rest of
        the site. Everything else stays static on purpose. -->
-  <script type="module" src="/js/smooth-scroll.js?v=212"></script>${headExtras({
+  <script type="module" src="/js/smooth-scroll.js?v=213"></script>${headExtras({
     url, title: `${title} — BGS Travel & Tourism`, description, image,
     jsonLd: [orgJsonLd(), ...itemJsonLd(item, collection, url, `${SITE}/`), {
       "@type": "BreadcrumbList",
@@ -220,7 +220,7 @@ function itemPage(item, collection) {
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="item-page-bar">
     <a class="site-logo" href="/">
-      <img class="site-logo-mark" src="/assets/monogram-96.webp?v=212" alt="" width="40" height="40" />
+      <img class="site-logo-mark" src="/assets/monogram-96.webp?v=213" alt="" width="40" height="40" />
       <span class="site-logo-text">
         <span class="site-logo-name">BGS Travel &amp; Tourism</span>
         <span class="site-logo-place">Dubai, UAE</span>
@@ -276,7 +276,7 @@ fs.rmSync(DIST, { recursive: true, force: true });
 copyTree(ROOT, DIST);
 
 const urls = [{ loc: `${SITE}/`, pri: "1.0" }];
-let cardCount = 0, pageCount = 0;
+let cardCount = 0, pageCount = 0, servicePageCount = 0;
 
 for (const [collection, file] of Object.entries(PAGES)) {
   const items = Array.isArray(content[collection]) ? content[collection] : [];
@@ -346,8 +346,11 @@ for (const [collection, file] of Object.entries(PAGES)) {
   // and reports the full count. Fail loudly instead: a collision means two
   // records have effectively the same name, which is a content problem the
   // owner needs to see rather than a page that quietly does not exist.
+  // Services are the exception: /services/<key>/ is written further down as a
+  // master page, which carries the offerings and the catalogue an item page
+  // has no notion of. Generating both would put two pages at one URL.
   const written = new Set();
-  for (const item of items) {
+  for (const item of collection === "services" ? [] : items) {
     const rel = itemPath(item, collection);
     if (written.has(rel)) {
       throw new Error(
@@ -363,6 +366,160 @@ for (const [collection, file] of Object.entries(PAGES)) {
     urls.push({ loc: `${SITE}/${rel}`, pri: "0.7" });
     pageCount++;
   }
+}
+
+/* The six service master pages. Keyed off servicePages, with SERVICES
+   supplying the label and photograph, so the two stay in step: a service the
+   owner removes from SERVICES stops being linked, and one with no page entry
+   simply does not get a page rather than getting an empty one. */
+{
+  const byKey = new Map((content.services ?? []).map((s) => [s.key, s]));
+  for (const page of content.servicePages ?? []) {
+    if (!page?.key) continue;
+    const dir = path.join(DIST, "services", page.key);
+    fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(
+      path.join(dir, "index.html"),
+      servicePage(byKey.get(page.key), page, content)
+    );
+    urls.push({ loc: `${SITE}/services/${page.key}/`, pri: "0.8" });
+    pageCount++;
+    servicePageCount++;
+  }
+}
+
+
+/**
+ * A service master page: what the service is, what we do under it, and the
+ * catalogue that belongs to it.
+ *
+ * Static like the item pages, and built from the same content the browser
+ * would render, so a crawler and an answer engine see the whole thing without
+ * running any script.
+ */
+function servicePage(service, page, content) {
+  const label = page.label || service?.label || page.key;
+  const url = `${SITE}/services/${page.key}/`;
+  const image = fullSrc(typeof service?.image === "string" ? service.image : service?.image?.src);
+  const intro = page.intro || service?.blurb || "";
+  const description = intro.slice(0, 300);
+
+  // "Name | Detail" per line, the same shape the FAQ uses, so the admin edits
+  // one textarea rather than a nested form.
+  const offerings = (page.offerings ?? [])
+    .map((line) => {
+      const [name, ...rest] = String(line).split("|");
+      return [name.trim(), rest.join("|").trim()];
+    })
+    .filter(([name]) => name);
+
+  // A preview of the catalogue this service sells, not the whole thing — the
+  // full list is one click away and already has its own page.
+  const collection = page.catalogue && content[page.catalogue] ? page.catalogue : "";
+  const picks = collection ? (content[collection] ?? []).slice(0, 6) : [];
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <link rel="preconnect" href="https://dcym8fthxf5uu.cloudfront.net" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="https://dcym8fthxf5uu.cloudfront.net/fonts/247a073c-29f5-4a89-aa3a-741020f346fc/OggText-Medium.woff2" crossorigin />${imageOrigin(image)}
+  <title>${esc(label)} — BGS Travel &amp; Tourism</title>
+  <meta name="description" content="${esc(description)}" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=213" />
+  <link rel="stylesheet" href="/styles.css?v=213" />
+  <link rel="stylesheet" href="/pages.css?v=213" />
+  <script type="module" src="/js/smooth-scroll.js?v=213"></script>${headExtras({
+    url, title: `${label} — BGS Travel & Tourism`, description, image,
+    jsonLd: [orgJsonLd(), {
+      "@type": "Service",
+      "@id": `${url}#service`,
+      name: label,
+      description: intro,
+      provider: { "@id": `${SITE}/#org` },
+      areaServed: "Dubai, United Arab Emirates",
+      ...(offerings.length ? {
+        hasOfferCatalog: {
+          "@type": "OfferCatalog",
+          name: label,
+          itemListElement: offerings.map(([name, detail]) => ({
+            "@type": "Offer", name, ...(detail ? { description: detail } : {}),
+          })),
+        },
+      } : {}),
+    }, {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: `${SITE}/` },
+        { "@type": "ListItem", position: 2, name: "Services", item: `${SITE}/services.html` },
+        { "@type": "ListItem", position: 3, name: label, item: url },
+      ],
+    }],
+  })}
+</head>
+<body class="page service-page">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="item-page-bar">
+    <a class="site-logo" href="/">
+      <img class="site-logo-mark" src="/assets/monogram-96.webp?v=213" alt="" width="40" height="40" />
+      <span class="site-logo-text">
+        <span class="site-logo-name">BGS Travel &amp; Tourism</span>
+        <span class="site-logo-place">Dubai, UAE</span>
+      </span>
+    </a>
+  </header>
+  <main id="main" class="service-page-main" tabindex="-1">
+    <nav class="item-page-crumbs" aria-label="Breadcrumb">
+      <a href="/">Home</a> <span aria-hidden="true">&rsaquo;</span>
+      <a href="/services.html">Services</a> <span aria-hidden="true">&rsaquo;</span>
+      <span aria-current="page">${esc(label)}</span>
+    </nav>
+
+    <p class="item-page-kicker">Service</p>
+    <h1>${esc(label)}</h1>
+    <p class="item-page-lede">${esc(intro)}</p>
+    ${image ? `<img class="item-page-media" src="${esc(image)}" alt="" fetchpriority="high" decoding="async" />` : ""}
+
+    ${offerings.length ? `<section class="service-block" aria-labelledby="service-offerings">
+      <h2 id="service-offerings">What we offer</h2>
+      <ul class="service-offerings">
+        ${offerings.map(([name, detail]) => `<li>
+          <h3>${esc(name)}</h3>
+          ${detail ? `<p>${esc(detail)}</p>` : ""}
+        </li>`).join("")}
+      </ul>
+    </section>` : ""}
+
+    ${picks.length ? `<section class="service-block" aria-labelledby="service-catalogue">
+      <h2 id="service-catalogue">${esc(page.catalogueHeading || "What we book")}</h2>
+      <ul class="card-grid">${picks.map((item, i) => cardHtml(item, collection, i)).join("")}</ul>
+      <p class="item-page-back">
+        <a href="/${PAGES[collection]}">${esc(page.catalogueMore || "See the full list")}</a>
+      </p>
+    </section>` : ""}
+
+    <p class="item-page-cta">
+      <a class="item-page-button" href="${esc(buildWhatsAppUrl(
+        `Hi BGS Travel & Tourism, I'd like help with ${label}.`))}"
+         target="_blank" rel="noopener">Ask about ${esc(label)} on WhatsApp</a>
+    </p>
+    <p class="item-page-back"><a href="/services.html">All services</a></p>
+  </main>
+
+  <section class="page-notfound" aria-label="Contact us">
+    <p class="page-notfound-line">${esc(
+      content.copy?.services?.notFound ?? "Couldn\u2019t find your desired service?")}</p>
+    <a class="page-notfound-btn" href="${esc(buildWhatsAppUrl(
+      `Hi BGS Travel & Tourism, I'd like to ask about ${label}.`))}"
+       target="_blank" rel="noopener"><span>Ask us on WhatsApp</span></a>
+  </section>
+
+  <footer class="page-footer">
+    <p>BGS Travel &amp; Tourism &mdash; Dubai, UAE</p>
+  </footer>
+</body>
+</html>`;
 }
 
 /**
@@ -603,7 +760,7 @@ ${Object.entries(PAGES).flatMap(([c]) => (content[c] ?? []).map((i) =>
   `- [${SHAPE[c].title(i)}](${SITE}/${itemPath(i, c)})`)).join("\n")}
 `);
 
-console.log(`  cards pre-rendered: ${cardCount}   item pages: ${pageCount}`);
+console.log(`  cards pre-rendered: ${cardCount}   item pages: ${pageCount}   service pages: ${servicePageCount}`);
 console.log(`  sitemap entries:    ${urls.length}`);
 console.log(`  hero pills in HTML:   ${pills.painted}`);
 const min = await minifyDist();

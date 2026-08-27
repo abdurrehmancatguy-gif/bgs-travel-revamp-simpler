@@ -106,7 +106,13 @@ const LISTS = [["items", "What this covers"], ["highlights", "Highlights"],
                ["included", "What's included"], ["requirements", "What you'll need"]];
 
 export const itemPath = (item, collection) =>
-  `${SHAPE[collection].dir}/${slug(SHAPE[collection].title(item))}/`;
+  /* A service is addressed by its key, because its page is the master page
+     built by build.mjs — not a generated item page — and the key is what the
+     rest of the site routes on. Renaming "Hotels & Stays" therefore does not
+     move its URL. */
+  collection === "services" && item?.key
+    ? `services/${item.key}/`
+    : `${SHAPE[collection].dir}/${slug(SHAPE[collection].title(item))}/`;
 
 export const describe = (item) =>
   item.fullDescription || item.blurb || item.shortDescription || "";
