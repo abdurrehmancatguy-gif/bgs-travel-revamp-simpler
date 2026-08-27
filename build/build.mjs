@@ -178,7 +178,7 @@ function itemPage(item, collection) {
   // A sentence stating the answer plainly, because that is the form an engine
   // quotes. A table cell is not quotable; "X costs AED n and takes t" is.
   const lede = [
-    `${title}${s.kicker(item) ? ` — ${s.kicker(item)}` : ""}.`,
+    `${title}${s.kicker(item) ? `, ${s.kicker(item)}` : ""}.`,
     item.price ? `Priced from ${item.currency ?? "AED"} ${Number(item.price).toLocaleString("en-US")} ${item.priceUnit ?? ""}`.trim() + "." : "",
     item.processing ? `Processing time: ${item.processing}.` : "",
     item.validity ? `Valid ${item.validity}.` : "",
@@ -193,19 +193,19 @@ function itemPage(item, collection) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <link rel="preconnect" href="https://dcym8fthxf5uu.cloudfront.net" crossorigin />
   <link rel="preload" as="font" type="font/woff2" href="https://dcym8fthxf5uu.cloudfront.net/fonts/247a073c-29f5-4a89-aa3a-741020f346fc/OggText-Medium.woff2" crossorigin />${imageOrigin(image)}
-  <title>${esc(title)} — BGS Travel &amp; Tourism</title>
+  <title>${esc(title)} | BGS Travel &amp; Tourism</title>
   <meta name="description" content="${esc(description)}" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=215" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=217" />
   <!-- Versioned like everywhere else. These used to be bare, which was
-       survivable under the old four-hour revalidate — but the stylesheets are
+       survivable under the old four-hour revalidate, but the stylesheets are
        now cached immutable for a year, so an unversioned link would wear this
        redesign's CSS forever, through every future one. -->
-  <link rel="stylesheet" href="/styles.css?v=215" />
-  <link rel="stylesheet" href="/pages.css?v=215" />
+  <link rel="stylesheet" href="/styles.css?v=217" />
+  <link rel="stylesheet" href="/pages.css?v=217" />
   <!-- The one script these pages carry: the same wheel glide as the rest of
        the site. Everything else stays static on purpose. -->
-  <script type="module" src="/js/smooth-scroll.js?v=215"></script>${headExtras({
-    url, title: `${title} — BGS Travel & Tourism`, description, image,
+  <script type="module" src="/js/smooth-scroll.js?v=217"></script>${headExtras({
+    url, title: `${title} | BGS Travel & Tourism`, description, image,
     jsonLd: [orgJsonLd(), ...itemJsonLd(item, collection, url, `${SITE}/`), {
       "@type": "BreadcrumbList",
       itemListElement: [
@@ -220,7 +220,7 @@ function itemPage(item, collection) {
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="item-page-bar">
     <a class="site-logo" href="/">
-      <img class="site-logo-mark" src="/assets/monogram-96.webp?v=215" alt="" width="40" height="40" />
+      <img class="site-logo-mark" src="/assets/monogram-96.webp?v=217" alt="" width="40" height="40" />
       <span class="site-logo-text">
         <span class="site-logo-name">BGS Travel &amp; Tourism</span>
         <span class="site-logo-place">Dubai, UAE</span>
@@ -250,13 +250,13 @@ function itemPage(item, collection) {
   <section class="page-notfound" aria-label="Contact us">
     <p class="page-notfound-line">${esc(content.copy?.[collection]?.notFound ?? `Couldn\u2019t find your desired ${NOT_FOUND_NOUN[collection] ?? "trip"}?`)}</p>
     <a class="page-notfound-btn" href="https://wa.me/971555809388?text=${
-      encodeURIComponent(`Hi BGS Travel & Tourism, I couldn't find the ${NOT_FOUND_NOUN[collection] ?? "trip"} I'm looking for on the site — can you help?`)}"
-       target="_blank" rel="noopener">Contact us on WhatsApp — we\u2019ll check for you</a>
+      encodeURIComponent(`Hi BGS Travel & Tourism, I couldn't find the ${NOT_FOUND_NOUN[collection] ?? "trip"} I'm looking for on the site. Can you help?`)}"
+       target="_blank" rel="noopener">Contact us on WhatsApp, we\u2019ll check for you</a>
   </section>
   <footer class="page-footer">
     <p><a href="tel:+971555809388">055 580 9388</a> ·
        <a href="mailto:info@bgstravelandtourism.com">info@bgstravelandtourism.com</a></p>
-    <p>BGS Travel &amp; Tourism — Dubai, UAE</p>
+    <p>BGS Travel &amp; Tourism · Dubai, UAE</p>
   </footer>
 </body>
 </html>`;
@@ -285,7 +285,7 @@ for (const [collection, file] of Object.entries(PAGES)) {
 
   let html = fs.readFileSync(target, "utf8");
   const copy = content.copy?.[collection] ?? {};
-  const title = `${copy.title ?? SHAPE[collection].label} — BGS Travel & Tourism`;
+  const title = `${copy.title ?? SHAPE[collection].label} | BGS Travel & Tourism`;
   const pageUrl = `${SITE}/${file}`;
 
   /*
@@ -425,13 +425,13 @@ function servicePage(service, page, content) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <link rel="preconnect" href="https://dcym8fthxf5uu.cloudfront.net" crossorigin />
   <link rel="preload" as="font" type="font/woff2" href="https://dcym8fthxf5uu.cloudfront.net/fonts/247a073c-29f5-4a89-aa3a-741020f346fc/OggText-Medium.woff2" crossorigin />${imageOrigin(image)}
-  <title>${esc(label)} — BGS Travel &amp; Tourism</title>
+  <title>${esc(label)} | BGS Travel &amp; Tourism</title>
   <meta name="description" content="${esc(description)}" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=215" />
-  <link rel="stylesheet" href="/styles.css?v=215" />
-  <link rel="stylesheet" href="/pages.css?v=215" />
-  <script type="module" src="/js/smooth-scroll.js?v=215"></script>${headExtras({
-    url, title: `${label} — BGS Travel & Tourism`, description, image,
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=217" />
+  <link rel="stylesheet" href="/styles.css?v=217" />
+  <link rel="stylesheet" href="/pages.css?v=217" />
+  <script type="module" src="/js/smooth-scroll.js?v=217"></script>${headExtras({
+    url, title: `${label} | BGS Travel & Tourism`, description, image,
     jsonLd: [orgJsonLd(), {
       "@type": "Service",
       "@id": `${url}#service`,
@@ -462,7 +462,7 @@ function servicePage(service, page, content) {
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="item-page-bar">
     <a class="site-logo" href="/">
-      <img class="site-logo-mark" src="/assets/monogram-96.webp?v=215" alt="" width="40" height="40" />
+      <img class="site-logo-mark" src="/assets/monogram-96.webp?v=217" alt="" width="40" height="40" />
       <span class="site-logo-text">
         <span class="site-logo-name">BGS Travel &amp; Tourism</span>
         <span class="site-logo-place">Dubai, UAE</span>
@@ -516,7 +516,7 @@ function servicePage(service, page, content) {
   </section>
 
   <footer class="page-footer">
-    <p>BGS Travel &amp; Tourism &mdash; Dubai, UAE</p>
+    <p>BGS Travel &amp; Tourism · Dubai, UAE</p>
   </footer>
 </body>
 </html>`;
@@ -544,8 +544,8 @@ function paintPillsIntoHtml(html, pills) {
     // Same MICE expansion js/home.js renders — trade jargon explained
     // where a visitor first meets it, visible label kept first in the name.
     const mice = /\bMICE\b/.test(t.label)
-      ? ` title="MICE — Meetings, Incentives, Conferences and Exhibitions"` +
-        ` aria-label="${esc(t.label)} — Meetings, Incentives, Conferences and Exhibitions"`
+      ? ` title="MICE: Meetings, Incentives, Conferences and Exhibitions"` +
+        ` aria-label="${esc(t.label)}: Meetings, Incentives, Conferences and Exhibitions"`
       : "";
     return `<button class="hero-pill" type="button" data-page="${esc(t.page)}" ` +
            `data-query="${esc(t.query)}" data-open="${t.open ? "1" : ""}"${mice}>` +
@@ -695,7 +695,7 @@ for (const [key, value] of Object.entries(content.homeCopy ?? {})) {
    crawler was the one visitor who would never see the client-side correction. */
 homeHtml = homeHtml.replace("</head>", () => `${headExtras({
   url: `${SITE}/`,
-  title: "BGS Travel & Tourism — Dubai escapes and journeys worldwide",
+  title: "BGS Travel & Tourism | Dubai escapes and journeys worldwide",
   description: "Visas, flights, hotels, transfers and tailor-made journeys from Dubai, arranged end to end by one team.",
   image: `${SITE}/assets/icon-512.png`,
   jsonLd: [orgJsonLd(), {
@@ -750,7 +750,7 @@ Contact: 055 580 9388 · info@bgstravelandtourism.com · Dubai, UAE
 
 ## What is on this site
 ${Object.entries(PAGES).map(([c, f]) =>
-  `- [${SHAPE[c].label}](${SITE}/${f}) — ${(content[c] ?? []).length} entries, each with its own page`).join("\n")}
+  `- [${SHAPE[c].label}](${SITE}/${f}): ${(content[c] ?? []).length} entries, each with its own page`).join("\n")}
 
 Every entry carries its price in AED, processing or duration, and the documents
 required. Prices are the published selling price.

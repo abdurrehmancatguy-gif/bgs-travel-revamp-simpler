@@ -1,4 +1,4 @@
-import { PHOTOS } from "./photos.js?v=215";
+import { PHOTOS } from "./photos.js?v=217";
 /**
  * Content for the category pages that is not a package or an activity.
  *
@@ -24,7 +24,7 @@ export const DESTINATIONS = [
     name: "UAE & Dubai",
     region: "UAE",
     blurb:
-      "Desert, skyline and old trading creek in one city — the easiest place in the world to combine a beach week with a proper adventure.",
+      "Desert, skyline and old trading creek in one city, the easiest place in the world to combine a beach week with a proper adventure.",
     bestTime: "November to March",
     image: PHOTOS.uaeDubai,
   },
@@ -33,7 +33,7 @@ export const DESTINATIONS = [
     name: "Tanzania",
     region: "Africa",
     blurb:
-      "The Serengeti migration, Ngorongoro Crater and the spice islands of Zanzibar — Africa's most complete safari-and-beach pairing.",
+      "The Serengeti migration, Ngorongoro Crater and the spice islands of Zanzibar: Africa's most complete safari-and-beach pairing.",
     bestTime: "June to October",
     image: PHOTOS.tanzania,
   },
@@ -168,7 +168,7 @@ export const VISA_TYPES = [
     processing: "3 to 5 working days",
     validity: "60 days from issue",
     blurb:
-      "Tourist and visit visas for the UAE, prepared, submitted and tracked for you — including the paperwork most applications get rejected for.",
+      "Tourist and visit visas for the UAE, prepared, submitted and tracked for you, including the paperwork most applications get rejected for.",
     requirements: [
       "Passport valid at least 6 months",
       "Passport-size photograph, white background",
@@ -203,7 +203,7 @@ export const PAGE_COPY = {
   activities: {
     title: "Activities & Experiences",
     intro:
-      "Desert, water, culture and sky — single experiences you can book on their own or fold into a longer trip.",
+      "Desert, water, culture and sky: single experiences you can book on their own or fold into a longer trip.",
     notFound: "Couldn\u2019t find your desired activity?",
   },
   packages: {
@@ -221,13 +221,13 @@ export const PAGE_COPY = {
   services: {
     title: "Services",
     intro:
-      "Flights, stays, transfers and a team on call — the parts of a journey that hold everything else together.",
+      "Flights, stays, transfers and a team on call: the parts of a journey that hold everything else together.",
     notFound: "Couldn\u2019t find your desired service?",
   },
   mice: {
     title: "MICE & Corporate Travel",
     intro:
-      "Meetings, incentives, conferences and exhibitions — planned, booked and run by one team, from the first flight to the closing dinner.",
+      "Meetings, incentives, conferences and exhibitions, planned, booked and run by one team, from the first flight to the closing dinner.",
     notFound: "Couldn\u2019t find your desired MICE service?",
   },
   visa: {

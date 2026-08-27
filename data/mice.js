@@ -1,4 +1,4 @@
-import { PHOTOS } from "./photos.js?v=215";
+import { PHOTOS } from "./photos.js?v=217";
 
 /**
  * MICE — Meetings, Incentives, Conferences and Exhibitions.
@@ -32,7 +32,7 @@ export const MICE_SECTIONS = [
     icon: "incentive",
     name: "Incentive Travel",
     blurb:
-      "The trip people actually want to win — planned end to end, with the logistics invisible to everyone but you.",
+      "The trip people actually want to win, planned end to end, with the logistics invisible to everyone but you.",
     items: [
       "Corporate Incentive Trips",
       "Employee Reward Trips",
@@ -74,7 +74,7 @@ export const MICE_SECTIONS = [
     icon: "corporateEvent",
     name: "Corporate Events",
     blurb:
-      "The evenings that get remembered — staged, catered and run, from a product launch to an awards night.",
+      "The evenings that get remembered, staged, catered and run, from a product launch to an awards night.",
     items: [
       "Product Launches",
       "Gala Dinners",

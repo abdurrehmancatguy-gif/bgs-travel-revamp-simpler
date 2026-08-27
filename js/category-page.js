@@ -1,20 +1,20 @@
-import { getCollection, subscribe, isCloudEnabled, cloudHas } from "./store.js?v=215";
-import "./info-modal.js?v=215";
-import { createNavigation } from "./navigation.js?v=215";
-import { icon } from "../data/icons.js?v=215";
-import { priceLabel } from "../data/packages.js?v=215";
-import { openWhatsApp, buildWhatsAppUrl } from "../utils/whatsapp.js?v=215";
-import { MICE_SERVICES } from "../data/mice.js?v=215";
-import { openItem, itemTitle } from "./item-dialog.js?v=215";
+import { getCollection, subscribe, isCloudEnabled, cloudHas } from "./store.js?v=217";
+import "./info-modal.js?v=217";
+import { createNavigation } from "./navigation.js?v=217";
+import { icon } from "../data/icons.js?v=217";
+import { priceLabel } from "../data/packages.js?v=217";
+import { openWhatsApp, buildWhatsAppUrl } from "../utils/whatsapp.js?v=217";
+import { MICE_SERVICES } from "../data/mice.js?v=217";
+import { openItem, itemTitle } from "./item-dialog.js?v=217";
 // The same wheel glide the homepage has — the card lists are the longest
 // scrolls on the site, so they benefit most.
-import "./smooth-scroll.js?v=215";
-import { enableTilt } from "./tilt.js?v=215";
-import { buildPrimaryNav } from "./nav-model.js?v=215";
-import { track } from "./analytics.js?v=215";
-import { contactStripMarkup, openInfo } from "./info-modal.js?v=215";
-import { cardSrc } from "../utils/images.js?v=215";
-import { enableCategoryRail } from "./category-rail.js?v=215";
+import "./smooth-scroll.js?v=217";
+import { enableTilt } from "./tilt.js?v=217";
+import { buildPrimaryNav } from "./nav-model.js?v=217";
+import { track } from "./analytics.js?v=217";
+import { contactStripMarkup, openInfo } from "./info-modal.js?v=217";
+import { cardSrc } from "../utils/images.js?v=217";
+import { enableCategoryRail } from "./category-rail.js?v=217";
 
 /**
  * Every category page runs this one module. The page declares which collection
@@ -408,11 +408,11 @@ const NOT_FOUND_NOUN = {
   block.setAttribute("aria-label", "Contact us");
   block.innerHTML = `
     <p class="page-notfound-line">${esc(line)}</p>
-    <button class="page-notfound-btn" type="button">Contact us on WhatsApp — we\u2019ll check for you</button>`;
+    <button class="page-notfound-btn" type="button">Contact us on WhatsApp, we\u2019ll check for you</button>`;
   block.querySelector("button").addEventListener("click", () => {
     track("not_found_contact", { collection: page });
     openWhatsApp(buildWhatsAppUrl(
-      `Hi BGS Travel & Tourism, I couldn't find the ${noun} I'm looking for on the site — can you help?`
+      `Hi BGS Travel & Tourism, I couldn't find the ${noun} I'm looking for on the site. Can you help?`
     ));
   });
   footer.before(block);

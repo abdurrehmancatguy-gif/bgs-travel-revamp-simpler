@@ -1,10 +1,11 @@
-import { ACTIVITIES, PACKAGES } from "../data/packages.js?v=215";
-import { DESTINATIONS, VISA_TYPES, PAGE_COPY } from "../data/content.js?v=215";
-import { MICE_SECTIONS } from "../data/mice.js?v=215";
-import { SERVICES } from "../data/navigation.js?v=215";
-import { HOME_PILLS, HOME_CARDS, HOME_COPY } from "../data/home.js?v=215";
-import { SERVICE_PAGES } from "../data/service-pages.js?v=215";
-import { cloudEnabled, watchContent, pushCollection, removeCollection } from "./cloud.js?v=215";
+import { ACTIVITIES, PACKAGES } from "../data/packages.js?v=217";
+import { DESTINATIONS, VISA_TYPES, PAGE_COPY } from "../data/content.js?v=217";
+import { MICE_SECTIONS } from "../data/mice.js?v=217";
+import { SERVICES } from "../data/navigation.js?v=217";
+import { HOME_PILLS, HOME_CARDS, HOME_COPY } from "../data/home.js?v=217";
+import { SERVICE_PAGES } from "../data/service-pages.js?v=217";
+import { dedashDeep } from "../utils/text.js?v=217";
+import { cloudEnabled, watchContent, pushCollection, removeCollection } from "./cloud.js?v=217";
 
 /**
  * The single door between the site's content and where that content lives.
@@ -129,7 +130,10 @@ const clone = (value) => JSON.parse(JSON.stringify(value));
 export function getCollection(name) {
   if (!Object.hasOwn(DEFAULTS, name)) throw new Error(`store: unknown collection "${name}"`);
   const overlay = readOverlay();
-  return clone(overlay[name] ?? DEFAULTS[name]);
+  /* Records saved before the site dropped the em dash still carry them, and
+     the cloud copy is what the live pages render — so the rule is applied on
+     the way out rather than left waiting for someone to re-save 21 strings. */
+  return dedashDeep(clone(overlay[name] ?? DEFAULTS[name]));
 }
 
 export function isCustomised(name) {

@@ -8,6 +8,7 @@
  * page with no content is worse than a page with slightly stale content.
  */
 import { FIREBASE_CONFIG, CONTENT_COLLECTION } from "../js/firebase-config.js";
+import { dedashDeep } from "../utils/text.js";
 
 const REST = (project, collection) =>
   `https://firestore.googleapis.com/v1/projects/${project}/databases/(default)/documents/${collection}`;
@@ -72,9 +73,9 @@ export async function loadContent() {
     // homeCopy is an object of named fields: a store saved before a field
     // existed must not blank it, so the defaults sit underneath.
     if (remote.homeCopy) merged.homeCopy = { ...local.homeCopy, ...remote.homeCopy };
-    return merged;
+    return dedashDeep(merged);
   } catch (error) {
-    console.warn(`  content: falling back to data files — ${error.message}`);
-    return fromFiles();
+    console.warn(`  content: falling back to data files - ${error.message}`);
+    return dedashDeep(await fromFiles());
   }
 }

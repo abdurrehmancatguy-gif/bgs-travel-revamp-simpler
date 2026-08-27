@@ -1,6 +1,6 @@
 import {
   WHATSAPP_DISPLAY, CONTACT_EMAIL, LOCATION, buildWhatsAppUrl,
-} from "../utils/whatsapp.js?v=215";
+} from "../utils/whatsapp.js?v=217";
 
 /**
  * Contact details and the legal notices, as data rather than markup, so the
@@ -54,7 +54,7 @@ export const LEGAL_DOCS = {
     title: "Contact BGS Travel & Tourism",
     kind: "contact",
     intro:
-      "One team handles the whole journey — planning, booking and everything in between.",
+      "One team handles the whole journey: planning, booking and everything in between.",
   },
 
   privacy: {

@@ -1,4 +1,4 @@
-import { PACKAGE_IMAGES } from "./images.js?v=215";
+import { PACKAGE_IMAGES } from "./images.js?v=217";
 
 /**
  * The single source of truth for package content. Frontend-only: nothing here
@@ -99,7 +99,7 @@ const CATALOGUE = [
     shortDescription:
       "A private tour of Dubai's most iconic landmarks followed by a helicopter flight over Palm Jumeirah and Dubai Marina.",
     fullDescription:
-      "A full day with a private vehicle, a private guide and no fixed queue to stand in. You'll cover the landmarks that define the city at ground level first, then take the whole thing from the air — the Palm laid out beneath you, the Marina towers, and the coastline running away in both directions.",
+      "A full day with a private vehicle, a private guide and no fixed queue to stand in. You'll cover the landmarks that define the city at ground level first, then take the whole thing from the air: the Palm laid out beneath you, the Marina towers, and the coastline running away in both directions.",
     highlights: [
       "Private vehicle",
       "Dubai landmarks",
@@ -129,7 +129,7 @@ const CATALOGUE = [
     shortDescription:
       "Walk the glass bridge at Dubai Frame, then explore the Gold and Spice Souks of old Deira with a local guide.",
     fullDescription:
-      "Old Dubai on one side of the glass, new Dubai on the other — the Frame is built to make that contrast unmissable, and the glass floor is worth the nerve. Afterwards you cross into Deira with a guide who knows the lanes, for the Gold Souk, the Spice Souk and the trading city the towers grew out of.",
+      "Old Dubai on one side of the glass, new Dubai on the other: the Frame is built to make that contrast unmissable, and the glass floor is worth the nerve. Afterwards you cross into Deira with a guide who knows the lanes, for the Gold Souk, the Spice Souk and the trading city the towers grew out of.",
     highlights: [
       "Dubai Frame",
       "Glass bridge",
@@ -342,7 +342,7 @@ const CATALOGUE = [
     shortDescription:
       "Discover ancient temples, sunrise rice terraces, traditional ceremonies and Bali's celebrated beaches.",
     fullDescription:
-      "Bali rewards an early alarm — the rice terraces around Ubud are at their best just after sunrise, before the day warms up. This week balances the island's temples and ceremonies, which are living practice rather than exhibits, with enough unstructured beach time that you come home actually rested.",
+      "Bali rewards an early alarm: the rice terraces around Ubud are at their best just after sunrise, before the day warms up. This week balances the island's temples and ceremonies, which are living practice rather than exhibits, with enough unstructured beach time that you come home actually rested.",
     highlights: [
       "Balinese temples",
       "Rice terraces",

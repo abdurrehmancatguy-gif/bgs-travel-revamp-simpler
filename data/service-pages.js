@@ -27,7 +27,7 @@ export const SERVICE_PAGES = [
       "Tourist visas | Short-stay entry for a holiday, prepared and tracked to the decision.",
       "Transit visas | For a layover long enough to leave the airport, timed around your flights.",
       "Visit visas | Longer stays with family or friends, including the sponsor paperwork.",
-      "Prepared and tracked | We fill the forms, submit them and follow the file — you are told what is needed and when it moves.",
+      "Prepared and tracked | We fill the forms, submit them and follow the file, so you are told what is needed and when it moves.",
     ],
     catalogue: "visa",
     catalogueHeading: "Visas we file",
@@ -37,7 +37,7 @@ export const SERVICE_PAGES = [
     key: "flights",
     label: "Flights",
     intro:
-      "Fares held, routings compared and every connection checked before you book — so the ticket fits the trip rather than the trip bending around the ticket.",
+      "Fares held, routings compared and every connection checked before you book, so the ticket fits the trip rather than the trip bending around the ticket.",
     offerings: [
       "Fares held | A seat kept while the rest of the trip is decided.",
       "Routings compared | More than one way to reach the same place, priced side by side.",
@@ -66,7 +66,7 @@ export const SERVICE_PAGES = [
     key: "transport",
     label: "Transport & Fleet",
     intro:
-      "Airport transfers, private drivers and a fleet sized to your group, anywhere in the UAE — booked to the flight, not to the clock.",
+      "Airport transfers, private drivers and a fleet sized to your group, anywhere in the UAE, booked to the flight rather than to the clock.",
     offerings: [
       "Airport transfers | Met on arrival, tracked against the flight so a delay is not your problem.",
       "Private drivers | For a day, an evening or the length of the trip.",
@@ -80,7 +80,7 @@ export const SERVICE_PAGES = [
     key: "concierge",
     label: "Concierge",
     intro:
-      "One team on call through the whole trip, from the first idea to the journey home — the same people who planned it are the people who answer while you are away.",
+      "One team on call through the whole trip, from the first idea to the journey home. The same people who planned it are the people who answer while you are away.",
     offerings: [
       "Planning | The itinerary built around what you actually want out of the trip.",
       "Bookings | Visas, flights, stays and transfers arranged together rather than piece by piece.",

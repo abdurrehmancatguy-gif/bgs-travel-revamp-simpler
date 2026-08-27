@@ -1,17 +1,17 @@
-import { getCollection, subscribe } from "./store.js?v=215";
-import "./info-modal.js?v=215";
-import { contactStripMarkup, openInfo } from "./info-modal.js?v=215";
-import { createNavigation } from "./navigation.js?v=215";
-import { buildPrimaryNav } from "./nav-model.js?v=215";
-import { resolvePill, HOME_COPY } from "../data/home.js?v=215";
-import { resolveHomeCards, withSlugs, CARD_TITLE_KEY, priceFacts } from "../data/packages.js?v=215";
-import { icon } from "../data/icons.js?v=215";
-import { openItem } from "./item-dialog.js?v=215";
-import { openWhatsApp, buildCustomTripUrl, buildWhatsAppUrl, WHATSAPP_DISPLAY } from "../utils/whatsapp.js?v=215";
-import "./smooth-scroll.js?v=215";
-import { enableTilt } from "./tilt.js?v=215";
-import { cardSrc } from "../utils/images.js?v=215";
-import { enableCategoryRail } from "./category-rail.js?v=215";
+import { getCollection, subscribe } from "./store.js?v=217";
+import "./info-modal.js?v=217";
+import { contactStripMarkup, openInfo } from "./info-modal.js?v=217";
+import { createNavigation } from "./navigation.js?v=217";
+import { buildPrimaryNav } from "./nav-model.js?v=217";
+import { resolvePill, HOME_COPY } from "../data/home.js?v=217";
+import { resolveHomeCards, withSlugs, CARD_TITLE_KEY, priceFacts } from "../data/packages.js?v=217";
+import { icon } from "../data/icons.js?v=217";
+import { openItem } from "./item-dialog.js?v=217";
+import { openWhatsApp, buildCustomTripUrl, buildWhatsAppUrl, WHATSAPP_DISPLAY } from "../utils/whatsapp.js?v=217";
+import "./smooth-scroll.js?v=217";
+import { enableTilt } from "./tilt.js?v=217";
+import { cardSrc } from "../utils/images.js?v=217";
+import { enableCategoryRail } from "./category-rail.js?v=217";
 
 /**
  * The homepage. Everything on it renders from the store, so an edit made in
@@ -106,8 +106,8 @@ function renderHeroPills() {
     // "MICE" is trade jargon; the pill is where most visitors first meet it,
     // so the pill itself carries the expansion (visible label kept first).
     const mice = /\bMICE\b/.test(t.label)
-      ? ` title="MICE — Meetings, Incentives, Conferences and Exhibitions"
-          aria-label="${esc(t.label)} — Meetings, Incentives, Conferences and Exhibitions"`
+      ? ` title="MICE: Meetings, Incentives, Conferences and Exhibitions"
+          aria-label="${esc(t.label)}: Meetings, Incentives, Conferences and Exhibitions"`
       : "";
     return `<button class="hero-pill" type="button"
             data-page="${esc(t.page)}" data-query="${esc(t.query)}"
@@ -159,7 +159,7 @@ function renderCards() {
     return `
       <button class="hm-card hm-reveal" type="button" data-idx="${i}"
               style="--d:${Math.min(i * 80, 480)}ms"
-              aria-label="${esc(title)} — open details">
+              aria-label="${esc(title)}, open details">
         ${image ? `<span class="hm-card-media"><img src="${esc(cardSrc(image))}" alt=""
             loading="${i < 2 ? "eager" : "lazy"}" decoding="async" /></span>` : ""}
         <span class="hm-card-body">
@@ -293,7 +293,7 @@ document.querySelector("#hm-cform")?.addEventListener("submit", (event) => {
   missing.forEach((el) => el.setAttribute("aria-invalid", "true"));
   [name, msg].filter((el) => el.value.trim()).forEach((el) => el.removeAttribute("aria-invalid"));
   if (missing.length) {
-    note.textContent = "Your name and a line about what you need — that's all.";
+    note.textContent = "Your name and a line about what you need. That's all.";
     note.dataset.error = "true";
     missing[0].focus();
     return;
@@ -520,7 +520,7 @@ document.querySelector("#hm-form")?.addEventListener("submit", (event) => {
   [name, dest].filter((el) => el.value.trim())
     .forEach((el) => el.removeAttribute("aria-invalid"));
   if (missing.length) {
-    note.textContent = "Both fields, and we can start — name and destination.";
+    note.textContent = "Both fields, and we can start: name and destination.";
     note.dataset.error = "true";
     missing[0].focus();
     return;
@@ -529,7 +529,7 @@ document.querySelector("#hm-form")?.addEventListener("submit", (event) => {
   delete note.dataset.error;
   openWhatsApp(buildWhatsAppUrl(
     `Hi BGS Travel & Tourism, I'm ${name.value.trim()}. ` +
-    `I'd like to plan a trip to ${dest.value.trim()} — please tell me what you need from me.`
+    `I'd like to plan a trip to ${dest.value.trim()}. Please tell me what you need from me.`
   ), "hero_form");
 });
 

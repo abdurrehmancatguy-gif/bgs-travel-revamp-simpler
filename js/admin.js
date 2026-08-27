@@ -1,11 +1,11 @@
 import {
   COLLECTIONS, getCollection, saveCollection, resetCollection, resetAll,
   exportAll, importAll, isCustomised, isCloudEnabled, subscribeSyncFailure,
-} from "./store.js?v=215";
-import { photoQuery } from "./photo-query.mjs?v=215";
-import { CARD_TITLE_KEY } from "../data/packages.js?v=215";
-import { resolvePill, HOME_COPY } from "../data/home.js?v=215";
-import { signIn, signOutAdmin, idToken } from "./cloud.js?v=215";
+} from "./store.js?v=217";
+import { photoQuery } from "./photo-query.mjs?v=217";
+import { CARD_TITLE_KEY } from "../data/packages.js?v=217";
+import { resolvePill, HOME_COPY } from "../data/home.js?v=217";
+import { signIn, signOutAdmin, idToken } from "./cloud.js?v=217";
 
 /**
  * The admin console.
@@ -122,7 +122,7 @@ const FIELDS = {
   servicePages: [
     ["label", "Service"],
     ["intro", "Opening paragraph", "textarea"],
-    ["offerings", "What we offer — one per line as: Name | Detail", "lines"],
+    ["offerings", "What we offer: one per line as: Name | Detail", "lines"],
     ["catalogueHeading", "Heading above the catalogue strip"],
     ["catalogueMore", "Text of the link to the full list"],
   ],
@@ -154,7 +154,7 @@ const FIELDS = {
     // two turnarounds, and the panel shows "Normal" and "Express" side by side.
     // Leave it empty and the visa keeps a single unlabelled "Price" row.
     ["price", "Normal selling price (AED)", "number"],
-    ["expressPrice", "Express selling price (AED) — optional", "number"],
+    ["expressPrice", "Express selling price (AED): optional", "number"],
     ["currency", "Currency", "text"], ["priceUnit", "Price unit", "text"],
     ["blurb", "Description", "textarea"],
     ["requirements", "What you'll need (comma separated)", "list"],
@@ -240,7 +240,7 @@ function renderList() {
         <button class="admin-btn" type="button" data-edit="${i}">Edit</button>
         <button class="admin-btn admin-btn-danger" type="button" data-remove="${i}">Remove</button>
       </li>`)
-    .join("") || `<li class="admin-empty">Nothing here yet — add the first one.</li>`;
+    .join("") || `<li class="admin-empty">Nothing here yet. Add the first one.</li>`;
   el("#admin-count").textContent = `${items.length} item${items.length === 1 ? "" : "s"}`;
 }
 
@@ -270,38 +270,38 @@ const HOME_COPY_FIELDS = [
   ["subtitle", "Paragraph under the headline", "textarea"],
   ["chatLabel", "WhatsApp button"],
   ["browseLabel", "Second hero button"],
-  ["marqueeNames", "Scrolling place names — leave empty to show the Destinations catalogue, or one name per line to override", "lines"],
+  ["marqueeNames", "Scrolling place names: leave empty to show the Destinations catalogue, or one name per line to override", "lines"],
   ["marqueeNote", "Line under the scrolling names"],
-  ["tickerPhrases", "Moving badges — one per line. Write {visas} or {destinations} where a live count should appear; numbers are always counted, never typed", "lines"],
+  ["tickerPhrases", "Moving badges: one per line. Write {visas} or {destinations} where a live count should appear; numbers are always counted, never typed", "lines"],
   ["formTitle", "Form card title"],
   ["formSub", "Form card sub-line", "textarea"],
   ["formButton", "Form send button"],
   ["formNote", "Small print under the form"],
-  ["bandA", "Statement band — first half"],
-  ["bandB", "Statement band — second half (italic gold)"],
-  ["payLabel", "Payments strip — lead-in (We accept…)"],
-  ["payNote", "Payments strip — note after the logos"],
-  ["payMethods", "Payments strip — badges, one per line (tamara, tabby)", "lines"],
-  ["journeysEyebrow", "Journeys — small line"],
-  ["journeysHeading", "Journeys — heading"],
-  ["journeysMore", "Journeys — corner link"],
-  ["journeysEndLabel", "Journeys — last tile in the row (opens Destinations)"],
-  ["servicesEyebrow", "Services — small line"],
-  ["servicesHeading", "Services — heading"],
-  ["servicesMore", "Services — corner link"],
-  ["faqEyebrow", "FAQ — small line"],
-  ["faqHeading", "FAQ — heading"],
-  ["faq", "FAQ — one per line as: Question | Answer", "lines"],
-  ["cformEyebrow", "Bottom form — small line"],
-  ["cformTitle", "Bottom form — heading"],
-  ["cformSub", "Bottom form — sub-line"],
-  ["cformButton", "Bottom form — send button"],
-  ["cformNote", "Bottom form — small print"],
-  ["ctaEyebrow", "Closing panel — small line"],
-  ["ctaA", "Closing panel — first line"],
-  ["ctaB", "Closing panel — second line (italic)"],
-  ["planLabel", "Closing panel — WhatsApp button"],
-  ["ctaBrowseLabel", "Closing panel — second button"],
+  ["bandA", "Statement band: first half"],
+  ["bandB", "Statement band: second half (italic gold)"],
+  ["payLabel", "Payments strip: lead-in (We accept…)"],
+  ["payNote", "Payments strip: note after the logos"],
+  ["payMethods", "Payments strip: badges, one per line (tamara, tabby)", "lines"],
+  ["journeysEyebrow", "Journeys: small line"],
+  ["journeysHeading", "Journeys: heading"],
+  ["journeysMore", "Journeys: corner link"],
+  ["journeysEndLabel", "Journeys: last tile in the row (opens Destinations)"],
+  ["servicesEyebrow", "Services: small line"],
+  ["servicesHeading", "Services: heading"],
+  ["servicesMore", "Services: corner link"],
+  ["faqEyebrow", "FAQ: small line"],
+  ["faqHeading", "FAQ: heading"],
+  ["faq", "FAQ: one per line as: Question | Answer", "lines"],
+  ["cformEyebrow", "Bottom form: small line"],
+  ["cformTitle", "Bottom form: heading"],
+  ["cformSub", "Bottom form: sub-line"],
+  ["cformButton", "Bottom form: send button"],
+  ["cformNote", "Bottom form: small print"],
+  ["ctaEyebrow", "Closing panel: small line"],
+  ["ctaA", "Closing panel: first line"],
+  ["ctaB", "Closing panel: second line (italic)"],
+  ["planLabel", "Closing panel: WhatsApp button"],
+  ["ctaBrowseLabel", "Closing panel: second button"],
 ];
 
 /** Every record that could go on the homepage, grouped, minus what is already
@@ -354,7 +354,7 @@ function renderHomepageEditor() {
       <p>${isText
         ? "Every line the homepage speaks. Edits save as you leave a field and appear on the site immediately."
         : isCards
-        ? "The carousel across the homepage, in this order. Pick from what the catalogue already holds — a card shows whatever its record says, so editing the visa or package updates the card too."
+        ? "The carousel across the homepage, in this order. Pick from what the catalogue already holds: a card shows whatever its record says, so editing the visa or package updates the card too."
         : "The buttons under the headline. Each one opens the record it names; a whole section is an option too, which is what MICE is."}</p>
     </li>`;
 
@@ -381,7 +381,7 @@ function renderHomepageEditor() {
       : resolvePill(entry, (c) => getCollection(c));
     const where = entry.collection
       ? (TAB_LABEL[entry.collection] ?? entry.collection)
-      : `${TAB_LABEL[entry.page] ?? entry.page} — whole section`;
+      : `${TAB_LABEL[entry.page] ?? entry.page}: whole section`;
     return `
       <li class="admin-row admin-row-pick">
         <span class="admin-card-order">${i + 1}</span>
@@ -393,7 +393,7 @@ function renderHomepageEditor() {
         ${orderControls(i, chosen.length, homeSection)}
       </li>`;
   }).join("") || `<li class="admin-empty">${isCards
-      ? "No cards chosen — the homepage falls back to its packages."
+      ? "No cards chosen: the homepage falls back to its packages."
       : "No buttons yet."}</li>`;
 
   const matches = isCards
@@ -405,7 +405,7 @@ function renderHomepageEditor() {
       ["visa", "packages", "activities", "destinations", "services", "mice"]
         .filter((page) => !pills.some((c) => !c.collection && c.page === page))
         .map((page) =>
-          `<option value="__page__::${esc(page)}">${esc(TAB_LABEL[page] ?? page)} — whole section</option>`)
+          `<option value="__page__::${esc(page)}">${esc(TAB_LABEL[page] ?? page)}: whole section</option>`)
         .join("")}</optgroup>`;
 
   el("#admin-list").innerHTML = `
@@ -421,8 +421,8 @@ function renderHomepageEditor() {
     </li>
     ${isCards ? "" : `
     <li class="admin-section-head admin-section-note">
-      <p>A button shows the record’s own name. To shorten it — “Saudi Multiple
-         Visa” for a visa the catalogue calls “Saudi Multiple Entry Visa” — set
+      <p>A button shows the record’s own name. To shorten it, say “Saudi Multiple
+         Visa” for a visa the catalogue calls “Saudi Multiple Entry Visa”, set
          a label below.</p>
     </li>
     ${pills.map((pill, i) => `
@@ -533,11 +533,11 @@ async function findPhotos(scope) {
       // somebody hunting for a better search term for a problem that is not
       // theirs to solve.
       status.textContent = reason
-        ? `No photos — ${reason}`
+        ? `No photos: ${reason}`
         : `No photos found for "${query}". Try a place name.`;
       return;
     }
-    status.textContent = `${options.length} found — click one to use it.`;
+    status.textContent = `${options.length} found. Click one to use it.`;
     results.innerHTML = options.map((o) => `
       <button class="photo-option" type="button" data-photo-pick="${esc(o.url)}"
               title="${esc(o.alt || o.photographer)}">
@@ -643,7 +643,7 @@ subscribeSyncFailure((name, error) => {
   const why = /permission|insufficient|unauthenticated/i.test(error?.message ?? "")
     ? "your sign-in has expired"
     : error?.message ?? "the connection failed";
-  toast(`Not saved — ${why}. Sign in again and retry.`, true);
+  toast(`Not saved: ${why}. Sign in again and retry.`, true);
 });
 
 function toast(message, isError = false) {
@@ -947,7 +947,7 @@ async function backfillImages(records, collection, identity) {
 }
 
 async function applySheet(mode) {
-  const { applyMode } = await import("./sheet-import.mjs?v=215");
+  const { applyMode } = await import("./sheet-import.mjs?v=217");
   el("#sheet-dialog").close();
   sheetStatus("Applying…");
 
@@ -970,7 +970,7 @@ async function handleSheet(file) {
   if (!file) return;
   sheetStatus(`Reading ${file.name}…`);
   try {
-    const { parseWorkbook, reconcile } = await import("./sheet-import.mjs?v=215");
+    const { parseWorkbook, reconcile } = await import("./sheet-import.mjs?v=217");
     const { tabs, problems, ignoredCostColumns } = await parseWorkbook(file);
     if (!tabs.length) {
       sheetStatus(`Nothing to import. ${problems.join(" ")}`);
@@ -978,7 +978,7 @@ async function handleSheet(file) {
     }
     sheetPlans = reconcile(tabs, (name) => getCollection(name));
     renderSheetPreview(sheetPlans, problems, ignoredCostColumns);
-    sheetStatus(`${file.name} read — review the changes.`);
+    sheetStatus(`${file.name} read. Review the changes.`);
   } catch (error) {
     sheetStatus(`Could not read that file: ${error.message}`);
   }
@@ -1009,7 +1009,7 @@ el("#sheet-dialog").addEventListener("click", (event) => {
   if (event.target.closest("[data-sheet-cancel]") || event.target === el("#sheet-dialog")) {
     el("#sheet-dialog").close();
     sheetPlans = null;
-    sheetStatus("Cancelled — nothing was changed.");
+    sheetStatus("Cancelled: nothing was changed.");
   }
 });
 el("#sheet-apply-merge").addEventListener("click", () => applySheet("merge"));
@@ -1020,7 +1020,7 @@ el("#sheet-apply-replace").addEventListener("click", () => applySheet("replace")
 el("#sheet-export").addEventListener("click", async () => {
   sheetStatus("Building workbook…");
   try {
-    const { exportWorkbook } = await import("./sheet-import.mjs?v=215");
+    const { exportWorkbook } = await import("./sheet-import.mjs?v=217");
     const blob = await exportWorkbook((name) => getCollection(name));
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -1039,12 +1039,12 @@ el("#sheet-export").addEventListener("click", async () => {
    the UI can already answer without asking. */
 el("#sheet-export-csv").addEventListener("click", async () => {
   if (active === "copy") {
-    sheetStatus("Page copy has no spreadsheet form — pick a content tab.");
+    sheetStatus("Page copy has no spreadsheet form: pick a content tab.");
     return;
   }
   sheetStatus("Building CSV…");
   try {
-    const { exportCsv } = await import("./sheet-import.mjs?v=215");
+    const { exportCsv } = await import("./sheet-import.mjs?v=217");
     const blob = await exportCsv(active, (name) => getCollection(name));
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -1062,7 +1062,7 @@ el("#sheet-export-csv").addEventListener("click", async () => {
 el("#sheet-template").addEventListener("click", async () => {
   sheetStatus("Building template…");
   try {
-    const { exportTemplate } = await import("./sheet-import.mjs?v=215");
+    const { exportTemplate } = await import("./sheet-import.mjs?v=217");
     const blob = await exportTemplate();
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
