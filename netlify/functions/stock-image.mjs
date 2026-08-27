@@ -44,6 +44,10 @@ const MAX_OPTIONS = 8;
  * (it authorises nothing on its own), so importing it here is correct and
  * saves the owner from having to set another environment variable.
  */
+/** Thrown when the site has no owner list configured, so the caller can say
+ *  WHY the picker is refusing instead of showing an unexplained empty grid. */
+class AdminUidsMissing extends Error {}
+
 async function isAdmin(request) {
   const header = request.headers.get("authorization") ?? "";
   const token = header.startsWith("Bearer ") ? header.slice(7).trim() : "";
@@ -63,8 +67,18 @@ async function isAdmin(request) {
     );
     if (!res.ok) return false;
     const { users = [] } = await res.json();
-    return users.length > 0;
-  } catch {
+    const uid = users[0]?.localId;
+    if (!uid) return false;
+    /* "Signed in" is not "the owner". Anyone who can reach the project's
+       public sign-up endpoint holds a valid token, so the token has to be
+       matched against the owner's own uid — the same identity check
+       firestore.rules makes — or this function is an open Pexels proxy. */
+    const allowed = (process.env.ADMIN_UIDS ?? "")
+      .split(",").map((value) => value.trim()).filter(Boolean);
+    if (!allowed.length) throw new AdminUidsMissing();
+    return allowed.includes(uid);
+  } catch (error) {
+    if (error instanceof AdminUidsMissing) throw error;
     return false;
   }
 }
@@ -89,7 +103,21 @@ export default async (request) => {
 
   /* Answer strangers before spending anything: no upstream call, and a
      private cache directive so no shared cache ever stores this reply. */
-  if (!(await isAdmin(request))) {
+  /* A missing owner list is a deployment mistake, not a rejected visitor:
+     say so, or the picker just goes quietly empty and nobody knows why. */
+  let allowed = false;
+  try {
+    allowed = await isAdmin(request);
+  } catch {
+    return new Response(
+      JSON.stringify({
+        url: "", options: [],
+        reason: "ADMIN_UIDS is not set on this site — add it in Netlify → Environment variables",
+      }),
+      { status: 503, headers: { "content-type": "application/json", "cache-control": "no-store" } }
+    );
+  }
+  if (!allowed) {
     return new Response(
       JSON.stringify({ url: "", options: [], reason: "admin sign-in required" }),
       { status: 401, headers: { "content-type": "application/json", "cache-control": "no-store" } }

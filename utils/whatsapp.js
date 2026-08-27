@@ -78,14 +78,14 @@ export function buildPlanTripUrl() {
  * first 120 characters to PostHog as `intent`. On the two homepage forms that
  * message is composed from what the visitor typed, so their real name and the
  * opening of their enquiry left the site — under a note beneath the very same
- * button promising "nothing is stored on this site". The conversion is still
+ * button promising the form "sends nothing to a server". The conversion is still
  * counted; only a fixed source label goes with it, so the number is just as
  * useful and no one's words travel with it.
  */
 export function openWhatsApp(url, from = "") {
   // The site's only conversion — there is no cart and no checkout — and every
   // WhatsApp link goes through here, so this is the one place worth counting.
-  import("../js/analytics.js?v=210")
+  import("../js/analytics.js?v=211")
     .then(({ track }) => track("enquiry_started", {
       ...(from ? { from } : {}),
       page: location.pathname,

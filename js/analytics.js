@@ -1,4 +1,4 @@
-import { POSTHOG_KEY, POSTHOG_HOST, isConfigured } from "./analytics-config.js?v=210";
+import { POSTHOG_KEY, POSTHOG_HOST, isConfigured } from "./analytics-config.js?v=211";
 
 /**
  * Product analytics, and the only file that knows PostHog exists.
@@ -39,6 +39,13 @@ function connect() {
         capture_pageleave: true,
         // A visitor who has asked not to be tracked has asked not to be tracked.
         respect_dnt: true,
+        /* The category pages put the search box's contents in the address bar
+           as ?q=, which PostHog would otherwise capture verbatim inside
+           $current_url — so "dubai visa for my wife" would leave the site as
+           an analytics property. Masking rewrites q to <masked> in the URL
+           properties without touching utm_* attribution. */
+        mask_personal_data_properties: true,
+        custom_personal_data_properties: ["q"],
         // PostHog's remote config pulls a surveys bundle by default, and a
         // survey launched from the dashboard would render its own popup over
         // the site. Nobody here wants a questionnaire appearing mid-booking,

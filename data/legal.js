@@ -1,6 +1,6 @@
 import {
   WHATSAPP_DISPLAY, CONTACT_EMAIL, LOCATION, buildWhatsAppUrl,
-} from "../utils/whatsapp.js?v=210";
+} from "../utils/whatsapp.js?v=211";
 
 /**
  * Contact details and the legal notices, as data rather than markup, so the
@@ -148,6 +148,7 @@ export const LEGAL_DOCS = {
         heading: "8. Cookies and tracking technologies",
         body: [
           "We use cookies and similar technologies to improve website functionality, analyse traffic, and personalise content. You can manage or disable cookies through your browser settings. However, disabling cookies may affect the functionality of our website.",
+          "Website analytics are provided by PostHog, which sets a first-party cookie holding a random device identifier so repeat visits can be counted as one visitor. It records the pages opened and the buttons pressed; it does not receive what you type into the enquiry forms. If your browser sends a Do Not Track signal, no analytics are collected at all.",
         ],
       },
       {

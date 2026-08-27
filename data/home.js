@@ -133,7 +133,7 @@ export const HOME_COPY = {
   formTitle: "Where do you want to go?",
   formSub: "Tell us the two things that matter — we take it from there on WhatsApp.",
   formButton: "Start on WhatsApp",
-  formNote: "Opens a WhatsApp chat with our team — nothing is stored on this site.",
+  formNote: "Opens a WhatsApp chat with our team — this form sends nothing to a server.",
   journeysEyebrow: "01 — Begin somewhere",
   journeysHeading: "Chosen journeys",
   journeysMore: "View all packages",
@@ -176,7 +176,7 @@ export const HOME_COPY = {
   cformTitle: "Tell us what you need",
   cformSub: "One message \u2014 a person replies on WhatsApp.",
   cformButton: "Send on WhatsApp",
-  cformNote: "Opens a WhatsApp chat with our team \u2014 nothing is stored on this site.",
+  cformNote: "Opens a WhatsApp chat with our team \u2014 this form sends nothing to a server.",
   tickerPhrases: [
     "{visas} visa services",
     "{destinations} destinations",

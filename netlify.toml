@@ -34,7 +34,6 @@
 # bug into a non-event: injected markup can no longer bring its own code.
 #
 # Origins, and why each is here:
-#   www.bgscorner.com   the BGS One rewards badge, on every public page
 #   cdn.jsdelivr.net    PostHog analytics (js/analytics.js)
 #   www.gstatic.com     the Firebase SDK (js/cloud.js)
 #   cdn.sheetjs.com     the admin's spreadsheet importer (js/sheet-import.mjs)
@@ -64,7 +63,7 @@
     Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
     # The site asks for none of these; say so, so injected code cannot either.
     Permissions-Policy = "geolocation=(), camera=(), microphone=(), payment=(), usb=(), interest-cohort=()"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' https://www.bgscorner.com https://cdn.jsdelivr.net https://www.gstatic.com https://cdn.sheetjs.com https://*.i.posthog.com; style-src 'self' 'unsafe-inline'; font-src 'self' https://dcym8fthxf5uu.cloudfront.net; img-src 'self' data: https:; connect-src 'self' https://*.googleapis.com https://*.i.posthog.com https://cdn.jsdelivr.net https://cdn.sheetjs.com wss://*.firebaseio.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://www.gstatic.com https://cdn.sheetjs.com https://*.i.posthog.com; style-src 'self' 'unsafe-inline'; font-src 'self' https://dcym8fthxf5uu.cloudfront.net; img-src 'self' data: https:; connect-src 'self' https://*.googleapis.com https://*.i.posthog.com https://cdn.jsdelivr.net https://cdn.sheetjs.com wss://*.firebaseio.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"
 
 # Hashed-by-version assets can be cached hard; HTML must not be, or an edit
 # takes a day to show up.

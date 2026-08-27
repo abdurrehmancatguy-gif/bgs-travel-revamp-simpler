@@ -1,9 +1,9 @@
-import { ACTIVITIES, PACKAGES } from "../data/packages.js?v=210";
-import { DESTINATIONS, VISA_TYPES, PAGE_COPY } from "../data/content.js?v=210";
-import { MICE_SECTIONS } from "../data/mice.js?v=210";
-import { SERVICES } from "../data/navigation.js?v=210";
-import { HOME_PILLS, HOME_CARDS, HOME_COPY } from "../data/home.js?v=210";
-import { cloudEnabled, watchContent, pushCollection, removeCollection } from "./cloud.js?v=210";
+import { ACTIVITIES, PACKAGES } from "../data/packages.js?v=211";
+import { DESTINATIONS, VISA_TYPES, PAGE_COPY } from "../data/content.js?v=211";
+import { MICE_SECTIONS } from "../data/mice.js?v=211";
+import { SERVICES } from "../data/navigation.js?v=211";
+import { HOME_PILLS, HOME_CARDS, HOME_COPY } from "../data/home.js?v=211";
+import { cloudEnabled, watchContent, pushCollection, removeCollection } from "./cloud.js?v=211";
 
 /**
  * The single door between the site's content and where that content lives.
@@ -96,7 +96,7 @@ const remoteSeen = new Set();
 export const cloudHas = (name) => remoteSeen.has(name);
 
 function applyRemote(name, data) {
-  if (!(name in DEFAULTS)) return;
+  if (!Object.hasOwn(DEFAULTS, name)) return;
   remoteSeen.add(name);
   const overlay = readOverlay();
   const incoming = data === null ? undefined : data;
@@ -125,7 +125,7 @@ const clone = (value) => JSON.parse(JSON.stringify(value));
 /* ------------------------------------------------------------------ reads */
 
 export function getCollection(name) {
-  if (!(name in DEFAULTS)) throw new Error(`store: unknown collection "${name}"`);
+  if (!Object.hasOwn(DEFAULTS, name)) throw new Error(`store: unknown collection "${name}"`);
   const overlay = readOverlay();
   return clone(overlay[name] ?? DEFAULTS[name]);
 }
@@ -152,7 +152,7 @@ export function subscribe(fn) {
 /* ----------------------------------------------------------------- writes */
 
 export function saveCollection(name, items) {
-  if (!(name in DEFAULTS)) throw new Error(`store: unknown collection "${name}"`);
+  if (!Object.hasOwn(DEFAULTS, name)) throw new Error(`store: unknown collection "${name}"`);
   const overlay = readOverlay();
   overlay[name] = items;
   writeOverlay(overlay);
@@ -202,7 +202,7 @@ export function exportAll() {
 
 export function importAll(json) {
   const parsed = JSON.parse(json);
-  const unknown = Object.keys(parsed).filter((k) => !(k in DEFAULTS));
+  const unknown = Object.keys(parsed).filter((k) => !Object.hasOwn(DEFAULTS, k));
   if (unknown.length) throw new Error(`unknown collections: ${unknown.join(", ")}`);
   writeOverlay(parsed);
   if (cloudEnabled()) {

@@ -1,20 +1,20 @@
-import { getCollection, subscribe, isCloudEnabled, cloudHas } from "./store.js?v=210";
-import "./info-modal.js?v=210";
-import { createNavigation } from "./navigation.js?v=210";
-import { icon } from "../data/icons.js?v=210";
-import { priceLabel } from "../data/packages.js?v=210";
-import { openWhatsApp, buildWhatsAppUrl } from "../utils/whatsapp.js?v=210";
-import { MICE_SERVICES } from "../data/mice.js?v=210";
-import { openItem, itemTitle } from "./item-dialog.js?v=210";
+import { getCollection, subscribe, isCloudEnabled, cloudHas } from "./store.js?v=211";
+import "./info-modal.js?v=211";
+import { createNavigation } from "./navigation.js?v=211";
+import { icon } from "../data/icons.js?v=211";
+import { priceLabel } from "../data/packages.js?v=211";
+import { openWhatsApp, buildWhatsAppUrl } from "../utils/whatsapp.js?v=211";
+import { MICE_SERVICES } from "../data/mice.js?v=211";
+import { openItem, itemTitle } from "./item-dialog.js?v=211";
 // The same wheel glide the homepage has — the card lists are the longest
 // scrolls on the site, so they benefit most.
-import "./smooth-scroll.js?v=210";
-import { enableTilt } from "./tilt.js?v=210";
-import { buildPrimaryNav } from "./nav-model.js?v=210";
-import { track } from "./analytics.js?v=210";
-import { contactStripMarkup, openInfo } from "./info-modal.js?v=210";
-import { cardSrc } from "../utils/images.js?v=210";
-import { enableCategoryRail } from "./category-rail.js?v=210";
+import "./smooth-scroll.js?v=211";
+import { enableTilt } from "./tilt.js?v=211";
+import { buildPrimaryNav } from "./nav-model.js?v=211";
+import { track } from "./analytics.js?v=211";
+import { contactStripMarkup, openInfo } from "./info-modal.js?v=211";
+import { cardSrc } from "../utils/images.js?v=211";
+import { enableCategoryRail } from "./category-rail.js?v=211";
 
 /**
  * Every category page runs this one module. The page declares which collection
@@ -486,6 +486,12 @@ input.addEventListener("input", () => {
     }
   }, 900);
 });
+/* The empty state's own clear button. It used to be an inline onclick, which
+   the site's CSP blocks outright — the button was simply dead in production. */
+document.querySelector("#page-empty-clear")?.addEventListener("click", () => {
+  clearBtn.click();
+});
+
 clearBtn.addEventListener("click", () => { setQuery(""); input.focus(); });
 
 chipRow.addEventListener("click", (event) => {
@@ -558,8 +564,8 @@ function renderPageCategories() {
       // category should be is harder to read than a highlighted one, and it
       // keeps the strip the same width on every page.
       const here = menu.page === page;
-      return `<a class="page-category" href="${menu.page}.html"${
-        here ? ' data-here="true" aria-current="page"' : ""}>${menu.label}</a>`;
+      return `<a class="page-category" href="${esc(menu.page)}.html"${
+        here ? ' data-here="true" aria-current="page"' : ""}>${esc(menu.label)}</a>`;
     })
     .join("");
 }
