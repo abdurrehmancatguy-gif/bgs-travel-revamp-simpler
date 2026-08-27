@@ -1,0 +1,62 @@
+rules_version = '2';
+
+/*
+ * Firestore security rules — the ONLY thing standing between the public and
+ * the site's content.
+ *
+ * These rules are enforced by Google's servers, not by this repo: editing this
+ * file changes nothing until it is published in the Firebase console
+ * (Firestore Database → Rules → paste → Publish). The file lives here so the
+ * rule that is supposed to be live is written down, reviewable, and diffable —
+ * a rule nobody can see is a rule nobody notices going wrong.
+ *
+ * WHY THE UID ALLOWLIST, AND NOT `request.auth != null`
+ * -----------------------------------------------------
+ * `request.auth != null` means "any signed-in identity in this project", which
+ * sounds like "the admin" and is not. The Firebase web API key is public by
+ * design — it ships in js/firebase-config.js and in every page's source — and
+ * with the Email/Password provider enabled, that key is enough for a stranger
+ * to call the public sign-up endpoint and mint themselves an account in this
+ * project. They would then satisfy `request.auth != null` and could rewrite
+ * every price, description and link on the site. The account costs nothing to
+ * create and needs no approval.
+ *
+ * Naming the owner's UID closes that: an identity that is not on the list is
+ * refused whether or not it is signed in. Adding a colleague later means
+ * adding their UID here and publishing again — deliberately, one line, in a
+ * file with history.
+ *
+ * Belt and braces, both worth doing in the console:
+ *   1. Authentication → Settings → User actions: turn OFF
+ *      "Enable create (sign-up)" so the sign-up endpoint stops answering.
+ *   2. Keep this allowlist anyway, so a re-enabled provider is not a breach.
+ */
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // The owner's Firebase UID. Find it in the console under
+    // Authentication → Users → the "User UID" column, and paste it here.
+    // Publishing this file WITHOUT replacing the placeholder locks the admin
+    // out of saving — which is the correct way for it to fail.
+    function isAdmin() {
+      return request.auth != null
+          && request.auth.uid in [
+               "PASTE-THE-OWNER-UID-HERE"
+             ];
+    }
+
+    // The site content: one document per collection. The world reads it — it
+    // is a public website, and the build fetches it over the public REST
+    // endpoint with no credentials. Only the owner writes it.
+    match /content/{document} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Nothing else in this project is reachable from a browser.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -17,7 +17,7 @@ import { cardHtml, itemPath, itemJsonLd, describe, esc, SHAPE, slug } from "./re
 // The same builder the live card panel uses, so the pre-rendered page and the
 // panel cannot open WhatsApp with two different messages.
 import { buildWhatsAppItemUrl } from "../utils/whatsapp.js";
-import { resolvePill } from "../data/home.js";
+import { resolvePill, HOME_COPY } from "../data/home.js";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
 const DIST = path.join(ROOT, "dist");
@@ -84,6 +84,28 @@ const orgJsonLd = () => ({
   logo: `${SITE}/assets/monogram-96.png`,
 });
 
+/**
+ * JSON-LD is a SCRIPT context, and the HTML tokenizer does not care that the
+ * bytes are JSON: it ends the block at the first literal `</script`, wherever
+ * that appears — including inside a JSON string. JSON.stringify escapes JSON
+ * metacharacters but leaves `<`, `>` and `&` alone, so a catalogue title
+ * containing `</script><img src=x onerror=...>` would close this tag and run
+ * as markup on our own origin.
+ *
+ * Escaping those three as \u-sequences is the standard remedy: JSON parsers
+ * decode them back to the same characters, so the structured data a crawler
+ * reads is byte-for-byte equivalent, while the HTML tokenizer never sees a
+ * tag boundary. U+2028/U+2029 go too — legal in JSON, fatal to a JS parser.
+ */
+function jsonLdScript(value) {
+  return JSON.stringify(value)
+    .replace(/</g, "\\u003c")
+    .replace(/>/g, "\\u003e")
+    .replace(/&/g, "\\u0026")
+    .replace(/\u2028/g, "\\u2028")
+    .replace(/\u2029/g, "\\u2029");
+}
+
 const headExtras = ({ url, title, description, image, jsonLd }) => `
   <link rel="canonical" href="${esc(url)}" />
   <meta property="og:type" content="website" />
@@ -96,11 +118,29 @@ const headExtras = ({ url, title, description, image, jsonLd }) => `
   <meta name="twitter:title" content="${esc(title)}" />
   <meta name="twitter:description" content="${esc(description)}" />
   ${image ? `<meta name="twitter:image" content="${esc(image)}" />` : ""}
-  <script type="application/ld+json">${JSON.stringify(
+  <script type="application/ld+json">${jsonLdScript(
     { "@context": "https://schema.org", "@graph": jsonLd }
   )}</script>`;
 
 /* ------------------------------------------------------------- item pages -- */
+
+/**
+ * A preconnect for the item photo's own host, or nothing.
+ *
+ * This used to be a bare `new URL(image).origin`. Any value that is not an
+ * absolute URL throws — and the admin's own photo field says "Paste a URL, or
+ * search below", so a relative path is a thing a careful owner types by
+ * accident. One malformed field killed every future deploy: verified, the
+ * build threw ERR_INVALID_URL and exited before sitemap.xml was written. A
+ * speed hint is worth nothing next to that, so it fails soft.
+ */
+function imageOrigin(image) {
+  try {
+    return `\n  <link rel="preconnect" href="${esc(new URL(image).origin)}" />`;
+  } catch {
+    return "";
+  }
+}
 
 function itemPage(item, collection) {
   const s = SHAPE[collection];
@@ -137,20 +177,19 @@ function itemPage(item, collection) {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <link rel="preconnect" href="https://dcym8fthxf5uu.cloudfront.net" crossorigin />
-  <link rel="preload" as="font" type="font/woff2" href="https://dcym8fthxf5uu.cloudfront.net/fonts/247a073c-29f5-4a89-aa3a-741020f346fc/OggText-Medium.woff2" crossorigin />${
-    image ? `\n  <link rel="preconnect" href="${esc(new URL(image).origin)}" />` : ""}
+  <link rel="preload" as="font" type="font/woff2" href="https://dcym8fthxf5uu.cloudfront.net/fonts/247a073c-29f5-4a89-aa3a-741020f346fc/OggText-Medium.woff2" crossorigin />${imageOrigin(image)}
   <title>${esc(title)} — BGS Travel &amp; Tourism</title>
   <meta name="description" content="${esc(description)}" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=202" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=205" />
   <!-- Versioned like everywhere else. These used to be bare, which was
        survivable under the old four-hour revalidate — but the stylesheets are
        now cached immutable for a year, so an unversioned link would wear this
        redesign's CSS forever, through every future one. -->
-  <link rel="stylesheet" href="/styles.css?v=202" />
-  <link rel="stylesheet" href="/pages.css?v=202" />
+  <link rel="stylesheet" href="/styles.css?v=205" />
+  <link rel="stylesheet" href="/pages.css?v=205" />
   <!-- The one script these pages carry: the same wheel glide as the rest of
        the site. Everything else stays static on purpose. -->
-  <script type="module" src="/js/smooth-scroll.js?v=202"></script>${headExtras({
+  <script type="module" src="/js/smooth-scroll.js?v=205"></script>${headExtras({
     url, title: `${title} — BGS Travel & Tourism`, description, image,
     jsonLd: [orgJsonLd(), ...itemJsonLd(item, collection, url, `${SITE}/`), {
       "@type": "BreadcrumbList",
@@ -166,7 +205,7 @@ function itemPage(item, collection) {
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="item-page-bar">
     <a class="site-logo" href="/">
-      <img class="site-logo-mark" src="/assets/monogram-96.webp?v=202" alt="" width="40" height="40" />
+      <img class="site-logo-mark" src="/assets/monogram-96.webp?v=205" alt="" width="40" height="40" />
       <span class="site-logo-text">
         <span class="site-logo-name">BGS Travel &amp; Tourism</span>
         <span class="site-logo-place">Dubai, UAE</span>
@@ -234,10 +273,22 @@ for (const [collection, file] of Object.entries(PAGES)) {
   const title = `${copy.title ?? SHAPE[collection].label} — BGS Travel & Tourism`;
   const pageUrl = `${SITE}/${file}`;
 
+  /*
+   * Every replacement below passes a FUNCTION, never a string.
+   *
+   * String.prototype.replace treats `$&`, `$\``, `$'` and `$1` inside a string
+   * replacement as substitution tokens, and esc() does not escape `$` (it must
+   * not — prices are full of it). So a catalogue title or a line of copy
+   * containing `$\`` would expand at build time into a copy of everything
+   * before the match: verified, a two-character `intro` value turned a 7KB
+   * page into 2.6MB of duplicated document, and the build still exited 0.
+   * A function replacer disables that expansion entirely.
+   */
+
   // 1. the grid, filled
   html = html.replace(
     '<ul class="card-grid" id="card-grid"></ul>',
-    `<ul class="card-grid" id="card-grid">${items.map((i, n) => cardHtml(i, collection, n)).join("")}</ul>`
+    () => `<ul class="card-grid" id="card-grid">${items.map((i, n) => cardHtml(i, collection, n)).join("")}</ul>`
   );
   cardCount += items.length;
 
@@ -250,11 +301,11 @@ for (const [collection, file] of Object.entries(PAGES)) {
     if (chips.length && !html.includes(chipAnchor)) {
       throw new Error(`chips: no empty #page-chips container in ${PAGES[collection]}`);
     }
-    html = html.replace(chipAnchor, `<div class="page-chips" id="page-chips">${chipHtml}</div>`);
+    html = html.replace(chipAnchor, () => `<div class="page-chips" id="page-chips">${chipHtml}</div>`);
   }
 
   // 2. head: canonical, social, and a list of what the page holds
-  html = html.replace("</head>", `${headExtras({
+  html = html.replace("</head>", () => `${headExtras({
     url: pageUrl, title,
     description: copy.intro ?? "",
     image: items[0] && (typeof items[0].image === "string" ? items[0].image : items[0].image?.src),
@@ -273,11 +324,27 @@ for (const [collection, file] of Object.entries(PAGES)) {
   urls.push({ loc: pageUrl, pri: "0.8" });
 
   // 3. a page per record
+  //
+  // Two records that slug to the same path used to overwrite each other in
+  // silence — same file written twice, both URLs in the sitemap, build exits 0
+  // and reports the full count. Fail loudly instead: a collision means two
+  // records have effectively the same name, which is a content problem the
+  // owner needs to see rather than a page that quietly does not exist.
+  const written = new Set();
   for (const item of items) {
-    const dir = path.join(DIST, itemPath(item, collection));
+    const rel = itemPath(item, collection);
+    if (written.has(rel)) {
+      throw new Error(
+        `two ${collection} records both resolve to /${rel} — ` +
+        `"${SHAPE[collection].title(item)}" collides with an earlier record. ` +
+        `Give one of them a distinct name.`
+      );
+    }
+    written.add(rel);
+    const dir = path.join(DIST, rel);
     fs.mkdirSync(dir, { recursive: true });
     fs.writeFileSync(path.join(dir, "index.html"), itemPage(item, collection));
-    urls.push({ loc: `${SITE}/${itemPath(item, collection)}`, pri: "0.7" });
+    urls.push({ loc: `${SITE}/${rel}`, pri: "0.7" });
     pageCount++;
   }
 }
@@ -317,7 +384,10 @@ function paintPillsIntoHtml(html, pills) {
   const wrap = /(<div class="hero-pills[^"]*"[^>]*>)([\s\S]*?)(<\/div>)/;
   if (!wrap.test(html)) throw new Error("pills: no .hero-pills container in index.html");
   return {
-    html: html.replace(wrap, `$1\n            ${buttons}\n          $3`),
+    // Function replacer: $1/$3 become real arguments, and any `$` inside the
+    // painted buttons stays literal.
+    html: html.replace(wrap, (_m, open, _inner, close) =>
+      `${open}\n            ${buttons}\n          ${close}`),
     painted: pills.length,
   };
 }
@@ -396,7 +466,7 @@ const faqPairs = (content.homeCopy?.faq ?? [])
   .filter(Boolean);
 homeHtml = homeHtml.replace(
   '<div class="hm-faq" id="hm-faq"></div>',
-  `<div class="hm-faq" id="hm-faq">${faqPairs.map(([q, a]) => `
+  () => `<div class="hm-faq" id="hm-faq">${faqPairs.map(([q, a]) => `
         <details class="hm-faq-item"><summary>${esc(q)}<span class="hm-faq-mark" aria-hidden="true"></span></summary><p>${esc(a)}</p></details>`).join("")}
       </div>`
 );
@@ -404,8 +474,22 @@ homeHtml = homeHtml.replace(
 /* The editable homepage text, painted into the markup so a crawler reads what
    the admin wrote rather than the shipped defaults. Same hooks js/home.js
    re-applies live; tickerPhrases is client-side decoration and skipped. */
+/*
+ * The KEY here is a Firestore field name, and it used to be compiled straight
+ * into a RegExp. Two ways that bites: a key of `(` throws "Unterminated group"
+ * and every deploy from then on fails with a stack trace pointing at a regex
+ * the admin UI cannot even display; and a key like `eyebrow"[^>]*>)([\s\S]*)(`
+ * compiles fine and swallows 12KB of the document. Both verified against this
+ * build.
+ *
+ * The markup carries a fixed set of data-hc hooks, so a key that is not a
+ * known HOME_COPY field can never legitimately match anything — ignoring it is
+ * both the safe answer and the correct one.
+ */
+const HOME_COPY_KEYS = new Set(Object.keys(HOME_COPY));
 for (const [key, value] of Object.entries(content.homeCopy ?? {})) {
   if (typeof value !== "string" || !value.trim()) continue;
+  if (!HOME_COPY_KEYS.has(key)) continue;
   homeHtml = homeHtml.replace(
     new RegExp(`(<[^>]*data-hc="${key}"[^>]*>)([^<]*)`),
     (_, open) => `${open}${esc(value)}`
@@ -430,13 +514,13 @@ for (const [key, value] of Object.entries(content.homeCopy ?? {})) {
     );
   }
   homeHtml = homeHtml.replace('<div class="hm-pay hm-reveal">',
-    `<div class="hm-pay hm-reveal"${methods.length ? "" : " hidden"}>`);
+    () => `<div class="hm-pay hm-reveal"${methods.length ? "" : " hidden"}>`);
 }
 
 /* The stats band, from the same counts this build just rendered. Counted, not
    typed: the old band claimed traveller totals nobody had measured, and a
    crawler was the one visitor who would never see the client-side correction. */
-homeHtml = homeHtml.replace("</head>", `${headExtras({
+homeHtml = homeHtml.replace("</head>", () => `${headExtras({
   url: `${SITE}/`,
   title: "BGS Travel & Tourism — Dubai escapes and journeys worldwide",
   description: "Visas, flights, hotels, transfers and tailor-made journeys from Dubai, arranged end to end by one team.",

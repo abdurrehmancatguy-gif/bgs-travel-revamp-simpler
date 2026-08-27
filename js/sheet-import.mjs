@@ -1,5 +1,5 @@
 import { SHEETS, PRESERVED, COST_HEADER, collectionForTab, fieldForHeader, inferCollection }
-  from "./sheet-schema.mjs?v=202";
+  from "./sheet-schema.mjs?v=205";
 
 /**
  * Reads a workbook and works out what it would change — without changing
@@ -11,6 +11,19 @@ import { SHEETS, PRESERVED, COST_HEADER, collectionForTab, fieldForHeader, infer
  * drops a file, and only on the admin page.
  */
 
+/*
+ * Pinned to an exact, immutable version URL — never a range. This is the only
+ * third-party code that runs inside the admin origin, where a live Firebase
+ * session sits, so what it can do if it turned hostile is rewrite the whole
+ * catalogue.
+ *
+ * No Subresource Integrity, deliberately: a dynamic import() cannot carry an
+ * integrity attribute, and the workaround (fetch the megabyte, hash it, import
+ * it from a blob: URL) would force `blob:` into the CSP's script-src — and a
+ * blob: source is itself a well-known way to turn an injection into script
+ * execution. Trading a site-wide CSP weakening for one CDN's integrity check
+ * is a bad deal. The pin plus the CSP host allowlist is where this rests.
+ */
 const SHEETJS = "https://cdn.sheetjs.com/xlsx-0.20.3/package/xlsx.mjs";
 
 let xlsxPromise = null;

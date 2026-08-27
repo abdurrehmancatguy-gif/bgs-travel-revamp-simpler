@@ -20,11 +20,51 @@
 [build.environment]
   NODE_VERSION = "20"
 
+# Security headers.
+#
+# The site has no server of its own, no visitor accounts and no cookies-based
+# session, so the classic session-stealing attacks have nothing to steal. What
+# these do protect is the ADMIN page — which does hold a live Firebase session —
+# and the integrity of the third-party code every page executes.
+#
+# The CSP is an allowlist of the exact origins this site loads from, and it is
+# strict where it counts: script-src carries no 'unsafe-inline' and no
+# 'unsafe-eval', because the site has neither an inline <script> nor an inline
+# event handler anywhere. That is the directive that turns a content-injection
+# bug into a non-event: injected markup can no longer bring its own code.
+#
+# Origins, and why each is here:
+#   www.bgscorner.com   the BGS One rewards badge, on every public page
+#   cdn.jsdelivr.net    PostHog analytics (js/analytics.js)
+#   www.gstatic.com     the Firebase SDK (js/cloud.js)
+#   cdn.sheetjs.com     the admin's spreadsheet importer (js/sheet-import.mjs)
+#   *.googleapis.com    Firestore reads and the ID-token check
+#   *.i.posthog.com     where analytics events go — and, note, also a SCRIPT
+#                       origin: PostHog fetches its remote config as a script
+#                       from eu-assets.i.posthog.com, so it needs script-src as
+#                       well as connect-src. Testing the policy against the
+#                       real page is what surfaced that; the docs do not say it.
+#   the cloudfront host the Ogg typeface (styles.css)
+#
+# style-src keeps 'unsafe-inline' on purpose: the card renderers set a
+# style="--d:..ms" stagger attribute, and blocking that buys nothing — style
+# injection cannot execute script, and script-src is where the real defence is.
+#
+# img-src stays wide (https:) because the admin picks photographs from stock
+# libraries by URL; narrowing it would break the catalogue the first time a new
+# host is used, for no security gain on a site that renders no user images.
 [[headers]]
   for = "/*"
   [headers.values]
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+    # Nobody frames this site. Kills clickjacking of the admin outright.
+    X-Frame-Options = "DENY"
+    # Two years, on the apex and every subdomain, and eligible for preload.
+    Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
+    # The site asks for none of these; say so, so injected code cannot either.
+    Permissions-Policy = "geolocation=(), camera=(), microphone=(), payment=(), usb=(), interest-cohort=()"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' https://www.bgscorner.com https://cdn.jsdelivr.net https://www.gstatic.com https://cdn.sheetjs.com https://*.i.posthog.com; style-src 'self' 'unsafe-inline'; font-src 'self' https://dcym8fthxf5uu.cloudfront.net; img-src 'self' data: https:; connect-src 'self' https://*.googleapis.com https://*.i.posthog.com https://cdn.jsdelivr.net https://cdn.sheetjs.com wss://*.firebaseio.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"
 
 # Hashed-by-version assets can be cached hard; HTML must not be, or an edit
 # takes a day to show up.

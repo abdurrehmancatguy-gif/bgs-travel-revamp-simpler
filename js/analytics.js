@@ -1,4 +1,4 @@
-import { POSTHOG_KEY, POSTHOG_HOST, isConfigured } from "./analytics-config.js?v=202";
+import { POSTHOG_KEY, POSTHOG_HOST, isConfigured } from "./analytics-config.js?v=205";
 
 /**
  * Product analytics, and the only file that knows PostHog exists.
@@ -13,7 +13,14 @@ import { POSTHOG_KEY, POSTHOG_HOST, isConfigured } from "./analytics-config.js?v
  * one is the site's only conversion — there is no cart and no checkout.
  */
 
-const CDN = "https://cdn.jsdelivr.net/npm/posthog-js@1/+esm";
+/* Pinned to an exact version, not the "@1" range it used to carry. A range is
+   resolved by the CDN at request time, so every future 1.x publish would be
+   executed here the moment it appeared — a compromised release, or simply a
+   breaking one, would reach visitors with no change on our side and no way to
+   roll back except editing this line under pressure. Bump it deliberately.
+   Firebase (js/firebase-config.js) and SheetJS (js/sheet-import.mjs) are
+   pinned the same way. */
+const CDN = "https://cdn.jsdelivr.net/npm/posthog-js@1.421.2/+esm";
 
 let ready = null;
 

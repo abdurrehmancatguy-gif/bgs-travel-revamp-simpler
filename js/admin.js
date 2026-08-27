@@ -1,11 +1,11 @@
 import {
   COLLECTIONS, getCollection, saveCollection, resetCollection, resetAll,
   exportAll, importAll, isCustomised, isCloudEnabled, subscribeSyncFailure,
-} from "./store.js?v=202";
-import { photoQuery } from "./photo-query.mjs?v=202";
-import { CARD_TITLE_KEY } from "../data/packages.js?v=202";
-import { resolvePill, HOME_COPY } from "../data/home.js?v=202";
-import { signIn } from "./cloud.js?v=202";
+} from "./store.js?v=205";
+import { photoQuery } from "./photo-query.mjs?v=205";
+import { CARD_TITLE_KEY } from "../data/packages.js?v=205";
+import { resolvePill, HOME_COPY } from "../data/home.js?v=205";
+import { signIn, signOutAdmin, idToken } from "./cloud.js?v=205";
 
 /**
  * The admin console.
@@ -180,6 +180,14 @@ let draft = null;
 const el = (id) => document.querySelector(id);
 const norm = (v) => String(v ?? "").trim().toLowerCase();
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+
+/* Proof for our own /api/stock-image function that the caller is the signed-in
+   admin. Without it the endpoint is an open proxy that spends the site's Pexels
+   quota for anyone who finds the path. */
+const authHeader = async () => {
+  const token = await idToken().catch(() => "");
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
 
 /* -------------------------------------------------------------- rendering */
 
@@ -501,7 +509,8 @@ async function findPhotos(scope) {
   results.innerHTML = "";
   try {
     const res = await fetch(
-      `/api/stock-image?q=${encodeURIComponent(query)}&count=6`
+      `/api/stock-image?q=${encodeURIComponent(query)}&count=6`,
+      { headers: await authHeader() }
     );
     if (!res.ok) throw new Error(`search returned ${res.status}`);
     const { options = [], reason } = await res.json();
@@ -841,7 +850,22 @@ el("#password-form").addEventListener("submit", async (event) => {
   el("#default-password-warning").hidden = true;
 });
 
-el("#admin-logout").addEventListener("click", () => location.reload());
+/* Lock really locks. This used to be a bare location.reload(), which only
+   repainted the login form over the top — Firebase Auth defaults to
+   browserLocalPersistence, so the refresh token survived the reload, survived
+   closing the tab, and survived closing the browser. The next person at the
+   machine pressed reload and was still signed in with write access. Sign out
+   first, then reload; the reload still happens if the network call fails, so
+   the button never appears to do nothing. */
+el("#admin-logout").addEventListener("click", async () => {
+  try {
+    await signOutAdmin();
+  } catch (error) {
+    console.warn("admin: sign-out failed —", error?.message ?? error);
+  } finally {
+    location.reload();
+  }
+});
 
 /* ===========================================================================
    Update from a spreadsheet
@@ -897,7 +921,8 @@ async function backfillImages(records, collection, identity) {
   for (const record of needing) {
     try {
       const query = `${record[identity]} ${collection === "visa" ? "landmark" : ""}`.trim();
-      const res = await fetch(`/api/stock-image?q=${encodeURIComponent(query)}`);
+      const res = await fetch(`/api/stock-image?q=${encodeURIComponent(query)}`,
+        { headers: await authHeader() });
       if (!res.ok) continue;
       const { url } = await res.json();
       if (url) { record.image = url; filled++; }
@@ -907,7 +932,7 @@ async function backfillImages(records, collection, identity) {
 }
 
 async function applySheet(mode) {
-  const { applyMode } = await import("./sheet-import.mjs?v=202");
+  const { applyMode } = await import("./sheet-import.mjs?v=205");
   el("#sheet-dialog").close();
   sheetStatus("Applying…");
 
@@ -930,7 +955,7 @@ async function handleSheet(file) {
   if (!file) return;
   sheetStatus(`Reading ${file.name}…`);
   try {
-    const { parseWorkbook, reconcile } = await import("./sheet-import.mjs?v=202");
+    const { parseWorkbook, reconcile } = await import("./sheet-import.mjs?v=205");
     const { tabs, problems, ignoredCostColumns } = await parseWorkbook(file);
     if (!tabs.length) {
       sheetStatus(`Nothing to import. ${problems.join(" ")}`);
@@ -980,7 +1005,7 @@ el("#sheet-apply-replace").addEventListener("click", () => applySheet("replace")
 el("#sheet-export").addEventListener("click", async () => {
   sheetStatus("Building workbook…");
   try {
-    const { exportWorkbook } = await import("./sheet-import.mjs?v=202");
+    const { exportWorkbook } = await import("./sheet-import.mjs?v=205");
     const blob = await exportWorkbook((name) => getCollection(name));
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -1004,7 +1029,7 @@ el("#sheet-export-csv").addEventListener("click", async () => {
   }
   sheetStatus("Building CSV…");
   try {
-    const { exportCsv } = await import("./sheet-import.mjs?v=202");
+    const { exportCsv } = await import("./sheet-import.mjs?v=205");
     const blob = await exportCsv(active, (name) => getCollection(name));
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -1022,7 +1047,7 @@ el("#sheet-export-csv").addEventListener("click", async () => {
 el("#sheet-template").addEventListener("click", async () => {
   sheetStatus("Building template…");
   try {
-    const { exportTemplate } = await import("./sheet-import.mjs?v=202");
+    const { exportTemplate } = await import("./sheet-import.mjs?v=205");
     const blob = await exportTemplate();
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");

@@ -1,18 +1,18 @@
-import { getCollection, subscribe, isCloudEnabled, cloudHas } from "./store.js?v=202";
-import "./info-modal.js?v=202";
-import { createNavigation } from "./navigation.js?v=202";
-import { icon } from "../data/icons.js?v=202";
-import { priceLabel } from "../data/packages.js?v=202";
-import { openWhatsApp, buildWhatsAppUrl } from "../utils/whatsapp.js?v=202";
-import { MICE_SERVICES } from "../data/mice.js?v=202";
-import { openItem, itemTitle } from "./item-dialog.js?v=202";
+import { getCollection, subscribe, isCloudEnabled, cloudHas } from "./store.js?v=205";
+import "./info-modal.js?v=205";
+import { createNavigation } from "./navigation.js?v=205";
+import { icon } from "../data/icons.js?v=205";
+import { priceLabel } from "../data/packages.js?v=205";
+import { openWhatsApp, buildWhatsAppUrl } from "../utils/whatsapp.js?v=205";
+import { MICE_SERVICES } from "../data/mice.js?v=205";
+import { openItem, itemTitle } from "./item-dialog.js?v=205";
 // The same wheel glide the homepage has — the card lists are the longest
 // scrolls on the site, so they benefit most.
-import "./smooth-scroll.js?v=202";
-import { enableTilt } from "./tilt.js?v=202";
-import { buildPrimaryNav } from "./nav-model.js?v=202";
-import { track } from "./analytics.js?v=202";
-import { contactStripMarkup, openInfo } from "./info-modal.js?v=202";
+import "./smooth-scroll.js?v=205";
+import { enableTilt } from "./tilt.js?v=205";
+import { buildPrimaryNav } from "./nav-model.js?v=205";
+import { track } from "./analytics.js?v=205";
+import { contactStripMarkup, openInfo } from "./info-modal.js?v=205";
 
 /**
  * Every category page runs this one module. The page declares which collection
@@ -39,9 +39,18 @@ const countEl = document.querySelector("#page-count");
  * pre-rendered card and this one point at the same URL, or the crawler and the
  * visitor disagree about where a thing is.
  */
-const slugify = (value) =>
-  String(value).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+const slugify = (value) => {
+  const text = String(value ?? "");
+  const out = text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  if (out) return out;
+  // Must match slug() in build/render.mjs exactly: the card links here and the
+  // directories the build writes have to agree on where a record lives, and a
+  // title with no ASCII letters (e.g. "日本ビザ") has no natural slug.
+  let h = 0;
+  for (let i = 0; i < text.length; i += 1) h = (h * 31 + text.charCodeAt(i)) >>> 0;
+  return `item-${h.toString(36)}`;
+};
 
 const hrefFor = (title) => `/${page}/${slugify(title)}/`;
 
@@ -478,7 +487,15 @@ input.addEventListener("input", () => {
   searchTimer = window.setTimeout(() => {
     const term = input.value.trim();
     if (term.length > 2) {
-      track("search", { collection: page, term, results: visibleItems.length });
+      /* The term itself stays on this machine. A search box is free text and
+         people type things about themselves into it; what is actually useful
+         to know is that a search happened and whether it found anything. */
+      track("search", {
+        collection: page,
+        length: term.length,
+        results: visibleItems.length,
+        found: visibleItems.length > 0,
+      });
     }
   }, 900);
 });

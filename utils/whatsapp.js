@@ -68,13 +68,26 @@ export function buildPlanTripUrl() {
   );
 }
 
-/** Opens a WhatsApp conversation in a new tab without leaking the opener. */
-export function openWhatsApp(url) {
+/**
+ * Opens a WhatsApp conversation in a new tab without leaking the opener.
+ *
+ * @param {string} url    a wa.me URL from one of the builders above
+ * @param {string} [from] which control started it — a fixed label, never text
+ *
+ * On counting: this used to read the message back out of the URL and send the
+ * first 120 characters to PostHog as `intent`. On the two homepage forms that
+ * message is composed from what the visitor typed, so their real name and the
+ * opening of their enquiry left the site — under a note beneath the very same
+ * button promising "nothing is stored on this site". The conversion is still
+ * counted; only a fixed source label goes with it, so the number is just as
+ * useful and no one's words travel with it.
+ */
+export function openWhatsApp(url, from = "") {
   // The site's only conversion — there is no cart and no checkout — and every
   // WhatsApp link goes through here, so this is the one place worth counting.
-  import("../js/analytics.js?v=202")
+  import("../js/analytics.js?v=205")
     .then(({ track }) => track("enquiry_started", {
-      intent: decodeURIComponent((url.split("text=")[1] ?? "").slice(0, 120)),
+      ...(from ? { from } : {}),
       page: location.pathname,
     }))
     .catch(() => {});

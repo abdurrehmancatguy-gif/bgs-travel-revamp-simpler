@@ -1,15 +1,15 @@
-import { getCollection, subscribe } from "./store.js?v=202";
-import "./info-modal.js?v=202";
-import { contactStripMarkup, openInfo } from "./info-modal.js?v=202";
-import { createNavigation } from "./navigation.js?v=202";
-import { buildPrimaryNav } from "./nav-model.js?v=202";
-import { resolvePill, HOME_COPY } from "../data/home.js?v=202";
-import { resolveHomeCards, withSlugs, CARD_TITLE_KEY, priceFacts } from "../data/packages.js?v=202";
-import { icon } from "../data/icons.js?v=202";
-import { openItem } from "./item-dialog.js?v=202";
-import { openWhatsApp, buildCustomTripUrl, buildWhatsAppUrl, WHATSAPP_DISPLAY } from "../utils/whatsapp.js?v=202";
-import "./smooth-scroll.js?v=202";
-import { enableTilt } from "./tilt.js?v=202";
+import { getCollection, subscribe } from "./store.js?v=205";
+import "./info-modal.js?v=205";
+import { contactStripMarkup, openInfo } from "./info-modal.js?v=205";
+import { createNavigation } from "./navigation.js?v=205";
+import { buildPrimaryNav } from "./nav-model.js?v=205";
+import { resolvePill, HOME_COPY } from "../data/home.js?v=205";
+import { resolveHomeCards, withSlugs, CARD_TITLE_KEY, priceFacts } from "../data/packages.js?v=205";
+import { icon } from "../data/icons.js?v=205";
+import { openItem } from "./item-dialog.js?v=205";
+import { openWhatsApp, buildCustomTripUrl, buildWhatsAppUrl, WHATSAPP_DISPLAY } from "../utils/whatsapp.js?v=205";
+import "./smooth-scroll.js?v=205";
+import { enableTilt } from "./tilt.js?v=205";
 
 /**
  * The homepage. Everything on it renders from the store, so an edit made in
@@ -304,7 +304,7 @@ document.querySelector("#hm-cform")?.addEventListener("submit", (event) => {
   delete note.dataset.error;
   openWhatsApp(buildWhatsAppUrl(
     `Hi BGS Travel & Tourism, I'm ${name.value.trim()}. ${msg.value.trim()}`
-  ));
+  ), "ask_form");
 });
 
 /* --------------------------------------------------------------- marquee */
@@ -532,7 +532,7 @@ document.querySelector("#hm-form")?.addEventListener("submit", (event) => {
   openWhatsApp(buildWhatsAppUrl(
     `Hi BGS Travel & Tourism, I'm ${name.value.trim()}. ` +
     `I'd like to plan a trip to ${dest.value.trim()} — please tell me what you need from me.`
-  ));
+  ), "hero_form");
 });
 
 /* ------------------------------------------------------------- cta list */

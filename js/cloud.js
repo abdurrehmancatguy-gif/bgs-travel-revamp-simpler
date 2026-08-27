@@ -1,6 +1,6 @@
 import {
   FIREBASE_CONFIG, CONTENT_COLLECTION, SDK_VERSION, isConfigured,
-} from "./firebase-config.js?v=202";
+} from "./firebase-config.js?v=205";
 
 /**
  * Everything that talks to Firebase. The rest of the site never imports the
@@ -147,6 +147,20 @@ export async function signOutAdmin() {
   const fb = await connectAuth();
   if (!fb) return;
   await fb.authMod.signOut(fb.auth);
+}
+
+/**
+ * The signed-in admin's Firebase ID token, or "" when nobody is signed in.
+ *
+ * Used to prove to our own /api/stock-image function that the caller is the
+ * admin. The token is short-lived and verified against Google's public keys
+ * server-side, so a copied one is useless within the hour and a forged one
+ * never verifies.
+ */
+export async function idToken() {
+  const fb = await connectAuth();
+  const user = fb?.auth?.currentUser;
+  return user ? user.getIdToken() : "";
 }
 
 /** Calls back with the user (or null) now and on every change. */

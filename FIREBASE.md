@@ -50,28 +50,33 @@ the "change password" box disappears because it no longer does anything.
 
 ## 5. Set the security rules
 
-**Firestore Database → Rules**, replace everything with this, then **Publish**:
+The rules live in [`firestore.rules`](firestore.rules) in this repo. Open that
+file, replace `PASTE-THE-OWNER-UID-HERE` with your own Firebase UID, then copy
+the whole file into **Firestore Database → Rules** and press **Publish**.
 
-```
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    // The site content. Anyone may read it — it is a public website. Only a
-    // signed-in admin may change it.
-    match /content/{document} {
-      allow read: if true;
-      allow write: if request.auth != null;
-    }
-    // Nothing else in this project is reachable from the browser.
-    match /{document=**} {
-      allow read, write: if false;
-    }
-  }
-}
-```
+Your UID is in the console under **Authentication → Users**, in the "User UID"
+column of your own row.
 
 Do not skip this. With write left open, anyone who views the page source can
 find your project id and rewrite every price on the site.
+
+### Why the rule names your UID
+
+An earlier version of this guide used `allow write: if request.auth != null`,
+which reads like "only the admin" and is not. It means *any signed-in identity
+in this project*, and the Firebase web API key is public by design — it ships
+in `js/firebase-config.js` and in the source of every page. With the
+Email/Password provider enabled, that key is all a stranger needs to call the
+public sign-up endpoint, create themselves an account in your project, and
+satisfy that rule. They could then rewrite every price, description and link on
+the site. Naming your UID means an identity that is not you is refused whether
+or not it is signed in.
+
+While you are in the console, also turn off self-service sign-up:
+**Authentication → Settings → User actions → uncheck "Enable create (sign-up)"**.
+That closes the endpoint; the UID allowlist then means re-enabling it later is
+not a breach. Adding a colleague is a deliberate edit to `firestore.rules` —
+one more UID in the list, published again.
 
 ## 6. Paste the config
 

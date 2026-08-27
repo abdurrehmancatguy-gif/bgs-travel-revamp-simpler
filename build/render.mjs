@@ -9,9 +9,25 @@ export const esc = (s) =>
   String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;")
     .replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 
-export const slug = (s) =>
-  String(s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "")
+/**
+ * A title as a URL segment.
+ *
+ * The fallback matters: a title with no ASCII alphanumerics at all — "日本ビザ",
+ * "★", "— —" — used to slug to the empty string, and an empty segment collapses
+ * `visa/<slug>/` down to `visa/` itself. Verified: two such records both wrote
+ * to dist/visa/index.html, the second silently overwriting the first, and the
+ * sitemap gained two identical bogus URLs while the build reported success.
+ * Hashing the original keeps such a record addressable and unique instead.
+ */
+export const slug = (s) => {
+  const text = String(s ?? "");
+  const out = text.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "")
     .replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  if (out) return out;
+  let h = 0;
+  for (let i = 0; i < text.length; i += 1) h = (h * 31 + text.charCodeAt(i)) >>> 0;
+  return `item-${h.toString(36)}`;
+};
 
 const money = (i) =>
   i?.price ? `${i.currency ?? "AED"} ${Number(i.price).toLocaleString("en-US")}` : "";
