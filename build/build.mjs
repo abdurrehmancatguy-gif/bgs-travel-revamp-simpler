@@ -126,16 +126,16 @@ function itemPage(item, collection) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>${esc(title)} — BGS Travel &amp; Tourism</title>
   <meta name="description" content="${esc(description)}" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=190" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=193" />
   <!-- Versioned like everywhere else. These used to be bare, which was
        survivable under the old four-hour revalidate — but the stylesheets are
        now cached immutable for a year, so an unversioned link would wear this
        redesign's CSS forever, through every future one. -->
-  <link rel="stylesheet" href="/styles.css?v=190" />
-  <link rel="stylesheet" href="/pages.css?v=190" />
+  <link rel="stylesheet" href="/styles.css?v=193" />
+  <link rel="stylesheet" href="/pages.css?v=193" />
   <!-- The one script these pages carry: the same wheel glide as the rest of
        the site. Everything else stays static on purpose. -->
-  <script type="module" src="/js/smooth-scroll.js?v=190"></script>${headExtras({
+  <script type="module" src="/js/smooth-scroll.js?v=193"></script>${headExtras({
     url, title: `${title} — BGS Travel & Tourism`, description, image,
     jsonLd: [orgJsonLd(), ...itemJsonLd(item, collection, url, `${SITE}/`), {
       "@type": "BreadcrumbList",
@@ -151,7 +151,7 @@ function itemPage(item, collection) {
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="item-page-bar">
     <a class="site-logo" href="/">
-      <img class="site-logo-mark" src="/assets/monogram-96.webp?v=190" alt="" width="40" height="40" />
+      <img class="site-logo-mark" src="/assets/monogram-96.webp?v=193" alt="" width="40" height="40" />
       <span class="site-logo-text">
         <span class="site-logo-name">BGS Travel &amp; Tourism</span>
         <span class="site-logo-place">Dubai, UAE</span>

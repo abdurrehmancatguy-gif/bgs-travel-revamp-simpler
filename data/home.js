@@ -159,8 +159,8 @@ export const HOME_COPY = {
      show exactly those instead. */
   marqueeNames: [],
   marqueeNote: "See you in Arabian Travel Mart",
-  bandA: "From anywhere",
-  bandB: "to everywhere.",
+  bandA: "From paperwork",
+  bandB: "to boarding pass.",
   faqEyebrow: "04 \u2014 Questions",
   faqHeading: "Asked often",
   /* One per line as "Question | Answer" \u2014 the pipe splits them. Also fed to

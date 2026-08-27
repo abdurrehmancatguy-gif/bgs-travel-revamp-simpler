@@ -1,15 +1,15 @@
-import { getCollection, subscribe } from "./store.js?v=190";
-import "./info-modal.js?v=190";
-import { contactStripMarkup, openInfo } from "./info-modal.js?v=190";
-import { createNavigation } from "./navigation.js?v=190";
-import { buildPrimaryNav } from "./nav-model.js?v=190";
-import { resolvePill, HOME_COPY } from "../data/home.js?v=190";
-import { resolveHomeCards, withSlugs, CARD_TITLE_KEY, priceFacts } from "../data/packages.js?v=190";
-import { icon } from "../data/icons.js?v=190";
-import { openItem } from "./item-dialog.js?v=190";
-import { openWhatsApp, buildCustomTripUrl, buildWhatsAppUrl, WHATSAPP_DISPLAY } from "../utils/whatsapp.js?v=190";
-import "./smooth-scroll.js?v=190";
-import { enableTilt } from "./tilt.js?v=190";
+import { getCollection, subscribe } from "./store.js?v=193";
+import "./info-modal.js?v=193";
+import { contactStripMarkup, openInfo } from "./info-modal.js?v=193";
+import { createNavigation } from "./navigation.js?v=193";
+import { buildPrimaryNav } from "./nav-model.js?v=193";
+import { resolvePill, HOME_COPY } from "../data/home.js?v=193";
+import { resolveHomeCards, withSlugs, CARD_TITLE_KEY, priceFacts } from "../data/packages.js?v=193";
+import { icon } from "../data/icons.js?v=193";
+import { openItem } from "./item-dialog.js?v=193";
+import { openWhatsApp, buildCustomTripUrl, buildWhatsAppUrl, WHATSAPP_DISPLAY } from "../utils/whatsapp.js?v=193";
+import "./smooth-scroll.js?v=193";
+import { enableTilt } from "./tilt.js?v=193";
 
 /**
  * The homepage. Everything on it renders from the store, so an edit made in
@@ -554,21 +554,6 @@ function renderPayments() {
     img.toggleAttribute("hidden", !methods.includes(img.dataset.pay));
   });
 }
-
-/* ---------------------------------------------------------- motion pause */
-
-/* The one control that stops everything moving on its own — ticker, marquee,
-   pulse dot. The OS reduced-motion setting also stops them, but a page-level
-   pause must not require changing system settings. */
-const motionToggle = document.querySelector("#hm-motion-toggle");
-motionToggle?.addEventListener("click", () => {
-  const paused = document.documentElement.classList.toggle("motion-paused");
-  motionToggle.setAttribute("aria-pressed", String(paused));
-  const label = paused ? "Play moving content" : "Pause moving content";
-  motionToggle.title = label;
-  const hidden = motionToggle.querySelector(".visually-hidden");
-  if (hidden) hidden.textContent = label;
-});
 
 /* One delayed pass catches anything the first paint raced past. */
 setTimeout(checkReveals, 600);
