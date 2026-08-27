@@ -1,17 +1,17 @@
-import { getCollection, subscribe } from "./store.js?v=213";
-import "./info-modal.js?v=213";
-import { contactStripMarkup, openInfo } from "./info-modal.js?v=213";
-import { createNavigation } from "./navigation.js?v=213";
-import { buildPrimaryNav } from "./nav-model.js?v=213";
-import { resolvePill, HOME_COPY } from "../data/home.js?v=213";
-import { resolveHomeCards, withSlugs, CARD_TITLE_KEY, priceFacts } from "../data/packages.js?v=213";
-import { icon } from "../data/icons.js?v=213";
-import { openItem } from "./item-dialog.js?v=213";
-import { openWhatsApp, buildCustomTripUrl, buildWhatsAppUrl, WHATSAPP_DISPLAY } from "../utils/whatsapp.js?v=213";
-import "./smooth-scroll.js?v=213";
-import { enableTilt } from "./tilt.js?v=213";
-import { cardSrc } from "../utils/images.js?v=213";
-import { enableCategoryRail } from "./category-rail.js?v=213";
+import { getCollection, subscribe } from "./store.js?v=215";
+import "./info-modal.js?v=215";
+import { contactStripMarkup, openInfo } from "./info-modal.js?v=215";
+import { createNavigation } from "./navigation.js?v=215";
+import { buildPrimaryNav } from "./nav-model.js?v=215";
+import { resolvePill, HOME_COPY } from "../data/home.js?v=215";
+import { resolveHomeCards, withSlugs, CARD_TITLE_KEY, priceFacts } from "../data/packages.js?v=215";
+import { icon } from "../data/icons.js?v=215";
+import { openItem } from "./item-dialog.js?v=215";
+import { openWhatsApp, buildCustomTripUrl, buildWhatsAppUrl, WHATSAPP_DISPLAY } from "../utils/whatsapp.js?v=215";
+import "./smooth-scroll.js?v=215";
+import { enableTilt } from "./tilt.js?v=215";
+import { cardSrc } from "../utils/images.js?v=215";
+import { enableCategoryRail } from "./category-rail.js?v=215";
 
 /**
  * The homepage. Everything on it renders from the store, so an edit made in
@@ -150,13 +150,7 @@ function renderCards() {
   if (!rail) return;
   homeCards = withSlugs(resolveHomeCards(getCollection("homeCards"), (c) => getCollection(c)));
 
-  /* The rail is a loop: three copies of the set, the viewer parked in the
-     middle one, and a scroll listener that teleports back a set-width
-     whenever they drift into an outer copy — identical pixels, so the jump
-     is invisible. Clones are aria-hidden with no tab stops: a keyboard or
-     screen-reader user meets each journey once, not three times. */
-  const copies = homeCards.length >= 3 ? 3 : 1;
-  const oneSet = (clone) => homeCards.map((record, i) => {
+  const cards = homeCards.map((record, i) => {
     const kind = record.__collection ?? "packages";
     const title = record[CARD_TITLE_KEY[kind] ?? "title"] ?? "";
     const image = typeof record.image === "string" ? record.image : record.image?.src;
@@ -164,11 +158,10 @@ function renderCards() {
     const meta = cardMeta(record, kind);
     return `
       <button class="hm-card hm-reveal" type="button" data-idx="${i}"
-              style="--d:${Math.min(i * 80, 480)}ms"${clone ? `
-              aria-hidden="true" tabindex="-1"` : `
-              aria-label="${esc(title)} — open details"`}>
+              style="--d:${Math.min(i * 80, 480)}ms"
+              aria-label="${esc(title)} — open details">
         ${image ? `<span class="hm-card-media"><img src="${esc(cardSrc(image))}" alt=""
-            loading="${!clone && i < 2 ? "eager" : "lazy"}" decoding="async" /></span>` : ""}
+            loading="${i < 2 ? "eager" : "lazy"}" decoding="async" /></span>` : ""}
         <span class="hm-card-body">
           ${kicker ? `<span class="hm-card-kicker">${esc(kicker)}</span>` : ""}
           <span class="hm-card-title">${esc(title)}</span>
@@ -177,13 +170,21 @@ function renderCards() {
       </button>`;
   }).join("");
 
-  const changed = setIfChanged(rail,
-    copies === 3 ? oneSet(false) + oneSet(true) + oneSet(true) : oneSet(false));
-  rail.dataset.loop = String(copies);
-  if (changed) {
-    observeReveals(rail);
-    if (copies === 3) rail.scrollLeft = rail.scrollWidth / 3;
-  }
+  /* The end of the rail is a door, not a wall: scrolling past the last
+     journey lands on somewhere to go rather than on empty track. */
+  const endLabel = homeCopy().journeysEndLabel || "View all";
+  const end = `
+    <a class="hm-card hm-card-all hm-reveal" href="destinations.html"
+       style="--d:${Math.min(homeCards.length * 80, 480)}ms">
+      <span class="hm-card-all-inner">
+        <span class="hm-card-all-label">${esc(endLabel)}</span>
+        <span class="hm-card-all-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false"><path d="M5 12h13M12.5 5.5 19 12l-6.5 6.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </span>
+    </a>`;
+
+  if (setIfChanged(rail, cards + end)) observeReveals(rail);
 }
 
 /* ------------------------------------------------- rail arrows and the loop */
@@ -197,54 +198,32 @@ function renderCards() {
     const card = rail.querySelector(".hm-card");
     return card ? card.getBoundingClientRect().width + 18 : 320;
   };
-  /* Put the viewer back on the middle copy. Instant, and exactly one set
-     wide, so the pixels under the pointer do not change. */
-  const recentre = () => {
-    if (rail.dataset.loop !== "3") return;
-    const setW = rail.scrollWidth / 3;
-    if (!setW) return;
-    if (rail.scrollLeft < setW * 0.5) rail.scrollLeft += setW;
-    else if (rail.scrollLeft > setW * 1.5) rail.scrollLeft -= setW;
-  };
-
-  /* A smooth scroll fixes its absolute destination the moment it is asked
-     for. Teleporting while one is in flight therefore achieved nothing — the
-     animation carried on to the old destination and undid the wrap — and
-     forwards that walked the rail into the true end of the track, where it
-     ran out of room and stopped. So: correct the position BEFORE asking for
-     the glide, and leave the wrap alone until the glide has landed. */
-  let animatingUntil = 0;
-  const nudge = (dir) => {
-    recentre();
-    const smooth = !reduceMotion.matches;
-    rail.scrollBy({ left: dir * step(), behavior: smooth ? "smooth" : "auto" });
-    if (!smooth) return;
-    animatingUntil = performance.now() + 700;
-    // A later click pushes animatingUntil out, so a stale timer stands down.
-    setTimeout(() => {
-      if (performance.now() >= animatingUntil) recentre();
-    }, 720);
-  };
-  document.querySelector("#hm-cards-prev")?.addEventListener("click", () => nudge(-1));
-  document.querySelector("#hm-cards-next")?.addEventListener("click", () => nudge(1));
-
-  /* Wheel and touch scrolling wrap from here. The wrap points sit half a set
-     away in either direction, far from where a one-card glide ever lands. */
-  let wrapQueued = false;
-  rail.addEventListener("scroll", () => {
-    if (rail.dataset.loop !== "3" || wrapQueued) return;
-    if (performance.now() < animatingUntil) return;
-    wrapQueued = true;
-    requestAnimationFrame(() => {
-      wrapQueued = false;
-      /* A keyboard user tabbing through cards scrolls them into view; a
-         teleport at that moment would yank the focused card away. Pointer
-         scrolling never matches :focus-visible, so the loop stays seamless
-         for everyone else. */
-      if (rail.querySelector(".hm-card:focus-visible")) return;
-      recentre();
+  const nudge = (dir) =>
+    rail.scrollBy({
+      left: dir * step(),
+      behavior: reduceMotion.matches ? "auto" : "smooth",
     });
-  }, { passive: true });
+  const prev = document.querySelector("#hm-cards-prev");
+  const next = document.querySelector("#hm-cards-next");
+  prev?.addEventListener("click", () => nudge(-1));
+  next?.addEventListener("click", () => nudge(1));
+
+  /* The rail runs out at both ends now, so an arrow that cannot move says
+     so — disabled rather than hidden, because a control that vanishes and
+     returns as you scroll is harder to aim at than one that greys out. */
+  const syncArrows = () => {
+    const room = rail.scrollWidth - rail.clientWidth;
+    /* Scroll snapping parks the rail a few pixels off a true zero, so "at the
+       start" needs a tolerance — well under a card width, which is the
+       smallest real move either arrow can make. */
+    const EDGE = 12;
+    if (prev) prev.disabled = room < EDGE || rail.scrollLeft <= EDGE;
+    if (next) next.disabled = room < EDGE || rail.scrollLeft >= room - EDGE;
+  };
+  rail.addEventListener("scroll", syncArrows, { passive: true });
+  window.addEventListener("resize", syncArrows);
+  new MutationObserver(syncArrows).observe(rail, { childList: true });
+  syncArrows();
 })();
 
 document.querySelector("#hm-cards")?.addEventListener("click", (event) => {

@@ -136,6 +136,7 @@ export const HOME_COPY = {
   journeysEyebrow: "01 — Begin somewhere",
   journeysHeading: "Chosen journeys",
   journeysMore: "View all packages",
+  journeysEndLabel: "View all",
   servicesEyebrow: "02 — Every detail",
   servicesHeading: "Handled by one team",
   servicesMore: "All services",
