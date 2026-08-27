@@ -876,3 +876,74 @@ body.item-page .site-logo-place { color: rgba(13, 27, 42, 0.6); }
     border-color: var(--navy, #0d1b2a);
   }
 }
+
+/* ---------------------------------------------- category strip arrows */
+
+/* The wrapper carries the sticky position when the script has built it; an
+   unwrapped strip keeps its own, above, so the strip still parks under the
+   header if the module never runs. */
+.page-cat-btn { display: none; }
+
+@media (max-width: 760px) {
+  .page-cat-rail {
+    position: sticky;
+    top: calc(var(--nav-inset) + var(--page-cat-top, 74px));
+    z-index: 59;            /* below the header's 60, above the page body */
+    margin: 10px auto 0;
+    width: min(1280px, calc(100% - clamp(16px, 3vw, 40px)));
+  }
+
+  .page-cat-rail > .page-categories {
+    position: static;
+    margin: 0;
+    width: 100%;
+  }
+
+  /* Chips slide under a soft edge rather than stopping dead at one, so the
+     row reads as continuing past the arrow. Painted only on the side that
+     still has categories behind it. */
+  .page-cat-rail::before,
+  .page-cat-rail::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 4px;
+    width: 46px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 180ms ease;
+    z-index: 1;
+  }
+  .page-cat-rail::before {
+    left: 0;
+    background: linear-gradient(90deg, var(--page-bg) 30%, rgba(246, 241, 231, 0));
+  }
+  .page-cat-rail::after {
+    right: 0;
+    background: linear-gradient(270deg, var(--page-bg) 30%, rgba(246, 241, 231, 0));
+  }
+  .page-cat-rail[data-more-start]::before,
+  .page-cat-rail[data-more-end]::after { opacity: 1; }
+
+  .page-cat-btn {
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    transform: translateY(-50%);
+    border: 1px solid rgba(13, 27, 42, 0.18);
+    border-radius: 50%;
+    color: var(--navy);
+    background: #fff;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(13, 27, 42, 0.12);
+  }
+  .page-cat-btn[data-end="start"] { left: -4px; }
+  .page-cat-btn[data-end="end"] { right: -4px; }
+  .page-cat-btn svg { width: 14px; height: 14px; }
+  .page-cat-btn[hidden] { display: none; }
+}

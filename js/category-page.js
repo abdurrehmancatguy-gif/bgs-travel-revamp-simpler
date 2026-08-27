@@ -1,19 +1,20 @@
-import { getCollection, subscribe, isCloudEnabled, cloudHas } from "./store.js?v=207";
-import "./info-modal.js?v=207";
-import { createNavigation } from "./navigation.js?v=207";
-import { icon } from "../data/icons.js?v=207";
-import { priceLabel } from "../data/packages.js?v=207";
-import { openWhatsApp, buildWhatsAppUrl } from "../utils/whatsapp.js?v=207";
-import { MICE_SERVICES } from "../data/mice.js?v=207";
-import { openItem, itemTitle } from "./item-dialog.js?v=207";
+import { getCollection, subscribe, isCloudEnabled, cloudHas } from "./store.js?v=208";
+import "./info-modal.js?v=208";
+import { createNavigation } from "./navigation.js?v=208";
+import { icon } from "../data/icons.js?v=208";
+import { priceLabel } from "../data/packages.js?v=208";
+import { openWhatsApp, buildWhatsAppUrl } from "../utils/whatsapp.js?v=208";
+import { MICE_SERVICES } from "../data/mice.js?v=208";
+import { openItem, itemTitle } from "./item-dialog.js?v=208";
 // The same wheel glide the homepage has — the card lists are the longest
 // scrolls on the site, so they benefit most.
-import "./smooth-scroll.js?v=207";
-import { enableTilt } from "./tilt.js?v=207";
-import { buildPrimaryNav } from "./nav-model.js?v=207";
-import { track } from "./analytics.js?v=207";
-import { contactStripMarkup, openInfo } from "./info-modal.js?v=207";
-import { cardSrc } from "../utils/images.js?v=207";
+import "./smooth-scroll.js?v=208";
+import { enableTilt } from "./tilt.js?v=208";
+import { buildPrimaryNav } from "./nav-model.js?v=208";
+import { track } from "./analytics.js?v=208";
+import { contactStripMarkup, openInfo } from "./info-modal.js?v=208";
+import { cardSrc } from "../utils/images.js?v=208";
+import { enableCategoryRail } from "./category-rail.js?v=208";
 
 /**
  * Every category page runs this one module. The page declares which collection
@@ -576,6 +577,7 @@ function placePageCategories() {
 }
 
 renderPageCategories();
+enableCategoryRail();
 placePageCategories();
 subscribe(renderPageCategories);
 window.addEventListener("resize", placePageCategories);
