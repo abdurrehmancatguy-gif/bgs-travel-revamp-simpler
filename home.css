@@ -566,14 +566,46 @@ body.home .hero-pill:focus-visible {
      through its reveal. The padding opens vertical headroom inside the clip
      window; the negative margins hand that space straight back to the layout,
      so the section's rhythm doesn't change. */
-  /* Sideways too: the clip window needs room for rounded corners and shadows
-     at both ends of the row, handed straight back by the inline margins so
-     the cards still align with the section's own edge. */
+  /* Sideways: the rail runs edge to edge across the SCREEN, not the section
+     — the inline margins pull it out of the 1180px column to the viewport
+     (100% here is the section's content width), and the inline padding puts
+     an 18px gutter at each screen edge so the row bleeds off both sides.
+     The vertical padding/negative-margin pair still opens tilt-and-shadow
+     headroom inside the clip window without changing the section's rhythm. */
   padding: 34px 18px 48px;
-  margin: -34px -18px -38px;
+  margin: -34px calc((100% - 100vw) / 2) -38px;
   scroll-snap-type: x proximity;
   scroll-padding-left: 18px;
   scrollbar-width: none;
+}
+
+/* The view-all link and the rail arrows share the head's right cell. */
+.hm-rail-tools {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.hm-rail-btn {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(13, 27, 42, 0.18);
+  border-radius: 50%;
+  color: var(--page-ink);
+  background: #fff;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(13, 27, 42, 0.06);
+  transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+
+.hm-rail-btn svg { width: 17px; height: 17px; }
+
+.hm-rail-btn:hover {
+  border-color: rgba(163, 92, 0, 0.55);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(13, 27, 42, 0.1);
 }
 
 .hm-cards::-webkit-scrollbar { display: none; }

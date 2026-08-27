@@ -1,15 +1,15 @@
-import { getCollection, subscribe } from "./store.js?v=200";
-import "./info-modal.js?v=200";
-import { contactStripMarkup, openInfo } from "./info-modal.js?v=200";
-import { createNavigation } from "./navigation.js?v=200";
-import { buildPrimaryNav } from "./nav-model.js?v=200";
-import { resolvePill, HOME_COPY } from "../data/home.js?v=200";
-import { resolveHomeCards, withSlugs, CARD_TITLE_KEY, priceFacts } from "../data/packages.js?v=200";
-import { icon } from "../data/icons.js?v=200";
-import { openItem } from "./item-dialog.js?v=200";
-import { openWhatsApp, buildCustomTripUrl, buildWhatsAppUrl, WHATSAPP_DISPLAY } from "../utils/whatsapp.js?v=200";
-import "./smooth-scroll.js?v=200";
-import { enableTilt } from "./tilt.js?v=200";
+import { getCollection, subscribe } from "./store.js?v=202";
+import "./info-modal.js?v=202";
+import { contactStripMarkup, openInfo } from "./info-modal.js?v=202";
+import { createNavigation } from "./navigation.js?v=202";
+import { buildPrimaryNav } from "./nav-model.js?v=202";
+import { resolvePill, HOME_COPY } from "../data/home.js?v=202";
+import { resolveHomeCards, withSlugs, CARD_TITLE_KEY, priceFacts } from "../data/packages.js?v=202";
+import { icon } from "../data/icons.js?v=202";
+import { openItem } from "./item-dialog.js?v=202";
+import { openWhatsApp, buildCustomTripUrl, buildWhatsAppUrl, WHATSAPP_DISPLAY } from "../utils/whatsapp.js?v=202";
+import "./smooth-scroll.js?v=202";
+import { enableTilt } from "./tilt.js?v=202";
 
 /**
  * The homepage. Everything on it renders from the store, so an edit made in
@@ -155,7 +155,13 @@ function renderCards() {
   if (!rail) return;
   homeCards = withSlugs(resolveHomeCards(getCollection("homeCards"), (c) => getCollection(c)));
 
-  const changed = setIfChanged(rail, homeCards.map((record, i) => {
+  /* The rail is a loop: three copies of the set, the viewer parked in the
+     middle one, and a scroll listener that teleports back a set-width
+     whenever they drift into an outer copy — identical pixels, so the jump
+     is invisible. Clones are aria-hidden with no tab stops: a keyboard or
+     screen-reader user meets each journey once, not three times. */
+  const copies = homeCards.length >= 3 ? 3 : 1;
+  const oneSet = (clone) => homeCards.map((record, i) => {
     const kind = record.__collection ?? "packages";
     const title = record[CARD_TITLE_KEY[kind] ?? "title"] ?? "";
     const image = typeof record.image === "string" ? record.image : record.image?.src;
@@ -163,19 +169,64 @@ function renderCards() {
     const meta = cardMeta(record, kind);
     return `
       <button class="hm-card hm-reveal" type="button" data-idx="${i}"
-              style="--d:${Math.min(i * 80, 480)}ms"
-              aria-label="${esc(title)} — open details">
+              style="--d:${Math.min(i * 80, 480)}ms"${clone ? `
+              aria-hidden="true" tabindex="-1"` : `
+              aria-label="${esc(title)} — open details"`}>
         ${image ? `<span class="hm-card-media"><img src="${esc(cardSized(image))}" alt=""
-            loading="${i < 2 ? "eager" : "lazy"}" decoding="async" /></span>` : ""}
+            loading="${!clone && i < 2 ? "eager" : "lazy"}" decoding="async" /></span>` : ""}
         <span class="hm-card-body">
           ${kicker ? `<span class="hm-card-kicker">${esc(kicker)}</span>` : ""}
           <span class="hm-card-title">${esc(title)}</span>
           ${meta ? `<span class="hm-card-meta">${esc(meta)}</span>` : ""}
         </span>
       </button>`;
-  }).join(""));
-  if (changed) observeReveals(rail);
+  }).join("");
+
+  const changed = setIfChanged(rail,
+    copies === 3 ? oneSet(false) + oneSet(true) + oneSet(true) : oneSet(false));
+  rail.dataset.loop = String(copies);
+  if (changed) {
+    observeReveals(rail);
+    if (copies === 3) rail.scrollLeft = rail.scrollWidth / 3;
+  }
 }
+
+/* ------------------------------------------------- rail arrows and the loop */
+
+(() => {
+  const rail = document.querySelector("#hm-cards");
+  if (!rail) return;
+
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const step = () => {
+    const card = rail.querySelector(".hm-card");
+    return card ? card.getBoundingClientRect().width + 18 : 320;
+  };
+  const nudge = (dir) =>
+    rail.scrollBy({ left: dir * step(), behavior: reduceMotion.matches ? "auto" : "smooth" });
+  document.querySelector("#hm-cards-prev")?.addEventListener("click", () => nudge(-1));
+  document.querySelector("#hm-cards-next")?.addEventListener("click", () => nudge(1));
+
+  /* Keep the viewer inside the middle copy. The wrap points sit half a set
+     away in either direction, far from where a one-card glide ever lands. */
+  let wrapQueued = false;
+  rail.addEventListener("scroll", () => {
+    if (rail.dataset.loop !== "3" || wrapQueued) return;
+    wrapQueued = true;
+    requestAnimationFrame(() => {
+      wrapQueued = false;
+      /* A keyboard user tabbing through cards scrolls them into view; a
+         teleport at that moment would yank the focused card away. Pointer
+         scrolling never matches :focus-visible, so the loop stays seamless
+         for everyone else. */
+      if (rail.querySelector(".hm-card:focus-visible")) return;
+      const setW = rail.scrollWidth / 3;
+      if (!setW) return;
+      if (rail.scrollLeft < setW * 0.5) rail.scrollLeft += setW;
+      else if (rail.scrollLeft > setW * 1.5) rail.scrollLeft -= setW;
+    });
+  }, { passive: true });
+})();
 
 document.querySelector("#hm-cards")?.addEventListener("click", (event) => {
   const card = event.target.closest(".hm-card");

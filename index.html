@@ -16,19 +16,19 @@
         imagesizes="(max-width: 1320px) 96vw, 1280px" />
   <title>BGS Travel &amp; Tourism — Dubai escapes and journeys worldwide</title>
   <meta name="description" content="BGS Travel &amp; Tourism plans Dubai escapes, African safaris and tailor-made journeys across Asia, Europe and beyond — flights, stays, visas and transfers handled by one team." />
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png?v=200" />
-  <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png?v=200" />
-  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=200" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png?v=202" />
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png?v=202" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=202" />
   <!-- The typeface host. font-display is swap, so a late arrival re-renders the
        headline in a different face; the preconnect buys the handshake back.
        crossorigin because fonts fetch in CORS mode — without it the connection
        opened here is the wrong kind and simply not reused. -->
   <link rel="preconnect" href="https://dcym8fthxf5uu.cloudfront.net" crossorigin />
-  <link rel="stylesheet" href="styles.css?v=200" />
-  <link rel="stylesheet" href="pages.css?v=200" />
-  <link rel="stylesheet" href="home.css?v=200" />
-  <script type="module" src="js/analytics.js?v=200"></script>
-  <script type="module" src="js/home.js?v=200"></script>
+  <link rel="stylesheet" href="styles.css?v=202" />
+  <link rel="stylesheet" href="pages.css?v=202" />
+  <link rel="stylesheet" href="home.css?v=202" />
+  <script type="module" src="js/analytics.js?v=202"></script>
+  <script type="module" src="js/home.js?v=202"></script>
   <!-- BGS One rewards badge, served by the hub at bgscorner.com. Renders
        nothing unless a [data-bgs-loyalty] element is present on the page. -->
   <script type="module" src="https://www.bgscorner.com/loyalty-widget.js?v=1"></script>
@@ -38,7 +38,7 @@
 
   <header class="site-header">
     <a class="site-logo" href="index.html">
-      <img class="site-logo-mark" src="assets/monogram-96.webp?v=200" alt="" width="40" height="40" />
+      <img class="site-logo-mark" src="assets/monogram-96.webp?v=202" alt="" width="40" height="40" />
       <span class="site-logo-text">
         <span class="site-logo-name">BGS Travel &amp; Tourism</span>
         <span class="site-logo-place">Dubai, UAE</span>
@@ -150,8 +150,8 @@
          accepts, named and shown. The label is editable (Homepage → Text). -->
     <div class="hm-pay hm-reveal">
       <span class="hm-pay-label" data-hc="payLabel">We accept</span>
-      <img src="assets/pay/tabby.svg?v=200" alt="Tabby" data-pay="tabby" width="128" height="44" loading="lazy" hidden />
-      <img src="assets/pay/tamara.svg?v=200" alt="Tamara" data-pay="tamara" width="138" height="44" loading="lazy" />
+      <img src="assets/pay/tabby.svg?v=202" alt="Tabby" data-pay="tabby" width="128" height="44" loading="lazy" hidden />
+      <img src="assets/pay/tamara.svg?v=202" alt="Tamara" data-pay="tamara" width="138" height="44" loading="lazy" />
       <span class="hm-pay-note" data-hc="payNote">as well</span>
     </div>
 
@@ -168,7 +168,15 @@
       <header class="hm-section-head hm-reveal">
         <p class="hm-eyebrow" data-hc="journeysEyebrow">01 — Begin somewhere</p>
         <h2 class="hm-h2" id="hm-journeys-title" data-hc="journeysHeading">Chosen journeys</h2>
-        <a class="hm-more" href="packages.html" data-hc="journeysMore">View all packages</a>
+        <div class="hm-rail-tools">
+          <a class="hm-more" href="packages.html" data-hc="journeysMore">View all packages</a>
+          <button class="hm-rail-btn" id="hm-cards-prev" type="button" aria-label="Scroll journeys backward">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14.5 5.5 8 12l6.5 6.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="hm-rail-btn" id="hm-cards-next" type="button" aria-label="Scroll journeys forward">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9.5 5.5 16 12l-6.5 6.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
       </header>
       <!-- The admin-picked row: visas and packages mixed, in the order set
            under Homepage in the admin. -->
