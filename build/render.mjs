@@ -5,6 +5,8 @@
  * rather than an empty <ul>.
  */
 
+import { cardSrc, fullSrc } from "../utils/images.js";
+
 export const esc = (s) =>
   String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;")
     .replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
@@ -109,13 +111,6 @@ export const itemPath = (item, collection) =>
 export const describe = (item) =>
   item.fullDescription || item.blurb || item.shortDescription || "";
 
-/** Cards render at ~380px; ask Pexels for card-sized renditions (800w covers
- *  2x DPR) instead of the stored 1200w. Mirrors cardSized in category-page.js. */
-const cardSized = (url) =>
-  typeof url === "string" && url.includes("images.pexels.com")
-    ? url.replace(/([?&])h=\d+/, "$1h=500").replace(/([?&])w=\d+/, "$1w=800")
-    : url;
-
 /** A card, with a real link so the item page is reachable by crawling.
  *  `index` decides loading: ONLY the first image is eager and high-priority —
  *  it is the page's largest paint, and every other eager image on a slow
@@ -131,7 +126,7 @@ export function cardHtml(item, collection, index = Infinity) {
   const imageAlt = (typeof item.image === "object" && item.image?.alt) || "";
   const facts = s.facts(item).filter(([, v]) => v);
   return `<li class="item-card" data-title="${esc(title)}">
-      ${image ? `<div class="item-card-media"><img src="${esc(cardSized(image))}" alt="${esc(imageAlt)}"${
+      ${image ? `<div class="item-card-media"><img src="${esc(cardSrc(image))}" alt="${esc(imageAlt)}"${
         index === 0 ? ` loading="eager" fetchpriority="high"` : ` loading="lazy"`} decoding="async" /></div>` : ""}
       <div class="item-card-inner">
         ${s.kicker(item) ? `<p class="item-card-kicker">${esc(s.kicker(item))}</p>` : ""}
@@ -153,7 +148,11 @@ export function itemJsonLd(item, collection, url, org) {
     "@id": `${url}#item`,
     name: title,
     description: describe(item) || item.blurb,
-    ...(item.image ? { image: typeof item.image === "string" ? item.image : item.image.src } : {}),
+    // Same bounded rendition the page and its social tags quote — a search
+    // engine reading this should not be handed a multi-megabyte original.
+    ...(item.image ? {
+      image: fullSrc(typeof item.image === "string" ? item.image : item.image.src),
+    } : {}),
     provider: { "@id": `${org}#org` },
     ...(item.price ? {
       offers: {

@@ -1,18 +1,19 @@
-import { getCollection, subscribe, isCloudEnabled, cloudHas } from "./store.js?v=205";
-import "./info-modal.js?v=205";
-import { createNavigation } from "./navigation.js?v=205";
-import { icon } from "../data/icons.js?v=205";
-import { priceLabel } from "../data/packages.js?v=205";
-import { openWhatsApp, buildWhatsAppUrl } from "../utils/whatsapp.js?v=205";
-import { MICE_SERVICES } from "../data/mice.js?v=205";
-import { openItem, itemTitle } from "./item-dialog.js?v=205";
+import { getCollection, subscribe, isCloudEnabled, cloudHas } from "./store.js?v=207";
+import "./info-modal.js?v=207";
+import { createNavigation } from "./navigation.js?v=207";
+import { icon } from "../data/icons.js?v=207";
+import { priceLabel } from "../data/packages.js?v=207";
+import { openWhatsApp, buildWhatsAppUrl } from "../utils/whatsapp.js?v=207";
+import { MICE_SERVICES } from "../data/mice.js?v=207";
+import { openItem, itemTitle } from "./item-dialog.js?v=207";
 // The same wheel glide the homepage has — the card lists are the longest
 // scrolls on the site, so they benefit most.
-import "./smooth-scroll.js?v=205";
-import { enableTilt } from "./tilt.js?v=205";
-import { buildPrimaryNav } from "./nav-model.js?v=205";
-import { track } from "./analytics.js?v=205";
-import { contactStripMarkup, openInfo } from "./info-modal.js?v=205";
+import "./smooth-scroll.js?v=207";
+import { enableTilt } from "./tilt.js?v=207";
+import { buildPrimaryNav } from "./nav-model.js?v=207";
+import { track } from "./analytics.js?v=207";
+import { contactStripMarkup, openInfo } from "./info-modal.js?v=207";
+import { cardSrc } from "../utils/images.js?v=207";
 
 /**
  * Every category page runs this one module. The page declares which collection
@@ -137,21 +138,6 @@ const SHAPES = {
   },
 };
 
-/**
- * Cards display at roughly 380px while these URLs are 2400-3840px renditions —
- * six times the pixels needed. Rewriting the width in the path does NOT work:
- * Wikimedia serves only the exact rendition its API generated, and 640, 800 and
- * 1024 all 404 for a file whose 3840 loads fine. The fix is to request the
- * smaller size at resolve time (iiurlwidth) and store both, which is a change to
- * data/photos.js rather than something this renderer can do.
- */
-/** Cards render at ~380px; Pexels serves whatever size the URL asks for, so
- *  ask for card-sized (800w covers 2x DPR) instead of the stored 1200w. */
-const cardSized = (url) =>
-  typeof url === "string" && url.includes("images.pexels.com")
-    ? url.replace(/([?&])h=\d+/, "$1h=500").replace(/([?&])w=\d+/, "$1w=800")
-    : url;
-
 function cardMarkup({ image, alt, iconName, kicker, title, body, meta = [], list = [], itemHref = "" }) {
   // Package photography is stored as { src, alt } while destination and visa
   // images are plain strings, so accept either rather than forcing one shape.
@@ -166,7 +152,7 @@ function cardMarkup({ image, alt, iconName, kicker, title, body, meta = [], list
   return `
     <li class="item-card reveal" data-title="${esc(title)}">
       ${image ? `<div class="item-card-media">
-        <img src="${esc(cardSized(image))}" alt="${esc(alt || title)}" loading="lazy" />
+        <img src="${esc(cardSrc(image))}" alt="${esc(alt || title)}" loading="lazy" decoding="async" />
         ${iconName ? `<span class="item-card-icon" aria-hidden="true">${icon(iconName)}</span>` : ""}
       </div>` : ""}
       <div class="item-card-inner">

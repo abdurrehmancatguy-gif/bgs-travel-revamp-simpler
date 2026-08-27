@@ -1,6 +1,7 @@
-import { icon } from "../data/icons.js?v=205";
-import { priceLabel, priceFacts } from "../data/packages.js?v=205";
-import { openWhatsApp, buildWhatsAppItemUrl } from "../utils/whatsapp.js?v=205";
+import { fullSrc } from "../utils/images.js?v=207";
+import { icon } from "../data/icons.js?v=207";
+import { priceLabel, priceFacts } from "../data/packages.js?v=207";
+import { openWhatsApp, buildWhatsAppItemUrl } from "../utils/whatsapp.js?v=207";
 
 /**
  * The detail panel a card opens. One dialog, reused for every card on every
@@ -131,7 +132,7 @@ export function openItem(item, collection) {
       </button>
 
       ${image ? `<div class="item-dialog-media">
-        <img src="${esc(image)}" alt="${esc(imageAlt)}" />
+        <img src="${esc(fullSrc(image))}" alt="${esc(imageAlt)}" decoding="async" />
       </div>` : ""}
 
       <div class="item-dialog-body" role="region" aria-labelledby="item-dialog-title" tabindex="0">

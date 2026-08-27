@@ -1,15 +1,16 @@
-import { getCollection, subscribe } from "./store.js?v=205";
-import "./info-modal.js?v=205";
-import { contactStripMarkup, openInfo } from "./info-modal.js?v=205";
-import { createNavigation } from "./navigation.js?v=205";
-import { buildPrimaryNav } from "./nav-model.js?v=205";
-import { resolvePill, HOME_COPY } from "../data/home.js?v=205";
-import { resolveHomeCards, withSlugs, CARD_TITLE_KEY, priceFacts } from "../data/packages.js?v=205";
-import { icon } from "../data/icons.js?v=205";
-import { openItem } from "./item-dialog.js?v=205";
-import { openWhatsApp, buildCustomTripUrl, buildWhatsAppUrl, WHATSAPP_DISPLAY } from "../utils/whatsapp.js?v=205";
-import "./smooth-scroll.js?v=205";
-import { enableTilt } from "./tilt.js?v=205";
+import { getCollection, subscribe } from "./store.js?v=207";
+import "./info-modal.js?v=207";
+import { contactStripMarkup, openInfo } from "./info-modal.js?v=207";
+import { createNavigation } from "./navigation.js?v=207";
+import { buildPrimaryNav } from "./nav-model.js?v=207";
+import { resolvePill, HOME_COPY } from "../data/home.js?v=207";
+import { resolveHomeCards, withSlugs, CARD_TITLE_KEY, priceFacts } from "../data/packages.js?v=207";
+import { icon } from "../data/icons.js?v=207";
+import { openItem } from "./item-dialog.js?v=207";
+import { openWhatsApp, buildCustomTripUrl, buildWhatsAppUrl, WHATSAPP_DISPLAY } from "../utils/whatsapp.js?v=207";
+import "./smooth-scroll.js?v=207";
+import { enableTilt } from "./tilt.js?v=207";
+import { cardSrc } from "../utils/images.js?v=207";
 
 /**
  * The homepage. Everything on it renders from the store, so an edit made in
@@ -143,13 +144,6 @@ function cardMeta(record, kind) {
 
 let homeCards = [];
 
-/** Rail cards render at ~320px; ask Pexels for card-sized renditions instead
- *  of the stored 1200w. Same rule as cardSized in category-page.js. */
-const cardSized = (url) =>
-  typeof url === "string" && url.includes("images.pexels.com")
-    ? url.replace(/([?&])h=\d+/, "$1h=500").replace(/([?&])w=\d+/, "$1w=800")
-    : url;
-
 function renderCards() {
   const rail = document.querySelector("#hm-cards");
   if (!rail) return;
@@ -172,7 +166,7 @@ function renderCards() {
               style="--d:${Math.min(i * 80, 480)}ms"${clone ? `
               aria-hidden="true" tabindex="-1"` : `
               aria-label="${esc(title)} — open details"`}>
-        ${image ? `<span class="hm-card-media"><img src="${esc(cardSized(image))}" alt=""
+        ${image ? `<span class="hm-card-media"><img src="${esc(cardSrc(image))}" alt=""
             loading="${!clone && i < 2 ? "eager" : "lazy"}" decoding="async" /></span>` : ""}
         <span class="hm-card-body">
           ${kicker ? `<span class="hm-card-kicker">${esc(kicker)}</span>` : ""}

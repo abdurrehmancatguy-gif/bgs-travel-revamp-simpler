@@ -17,6 +17,7 @@ import { cardHtml, itemPath, itemJsonLd, describe, esc, SHAPE, slug } from "./re
 // The same builder the live card panel uses, so the pre-rendered page and the
 // panel cannot open WhatsApp with two different messages.
 import { buildWhatsAppItemUrl } from "../utils/whatsapp.js";
+import { fullSrc } from "../utils/images.js";
 import { resolvePill, HOME_COPY } from "../data/home.js";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
@@ -146,7 +147,11 @@ function itemPage(item, collection) {
   const s = SHAPE[collection];
   const title = s.title(item);
   const url = `${SITE}/${itemPath(item, collection)}`;
-  const image = typeof item.image === "string" ? item.image : item.image?.src;
+  /* Sized once here so the <img>, og:image, twitter:image and the JSON-LD all
+     quote the same bounded rendition. Social scrapers fetch og:image to build
+     a preview, and these links are shared on WhatsApp constantly — a several
+     megabyte original makes the preview slow to appear, or skipped outright. */
+  const image = fullSrc(typeof item.image === "string" ? item.image : item.image?.src);
   // Curated description when the record has one; empty otherwise — the h1
   // directly beneath already carries the title.
   const imageAlt = (typeof item.image === "object" && item.image?.alt) || "";
@@ -180,16 +185,16 @@ function itemPage(item, collection) {
   <link rel="preload" as="font" type="font/woff2" href="https://dcym8fthxf5uu.cloudfront.net/fonts/247a073c-29f5-4a89-aa3a-741020f346fc/OggText-Medium.woff2" crossorigin />${imageOrigin(image)}
   <title>${esc(title)} — BGS Travel &amp; Tourism</title>
   <meta name="description" content="${esc(description)}" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=205" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=207" />
   <!-- Versioned like everywhere else. These used to be bare, which was
        survivable under the old four-hour revalidate — but the stylesheets are
        now cached immutable for a year, so an unversioned link would wear this
        redesign's CSS forever, through every future one. -->
-  <link rel="stylesheet" href="/styles.css?v=205" />
-  <link rel="stylesheet" href="/pages.css?v=205" />
+  <link rel="stylesheet" href="/styles.css?v=207" />
+  <link rel="stylesheet" href="/pages.css?v=207" />
   <!-- The one script these pages carry: the same wheel glide as the rest of
        the site. Everything else stays static on purpose. -->
-  <script type="module" src="/js/smooth-scroll.js?v=205"></script>${headExtras({
+  <script type="module" src="/js/smooth-scroll.js?v=207"></script>${headExtras({
     url, title: `${title} — BGS Travel & Tourism`, description, image,
     jsonLd: [orgJsonLd(), ...itemJsonLd(item, collection, url, `${SITE}/`), {
       "@type": "BreadcrumbList",
@@ -205,7 +210,7 @@ function itemPage(item, collection) {
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="item-page-bar">
     <a class="site-logo" href="/">
-      <img class="site-logo-mark" src="/assets/monogram-96.webp?v=205" alt="" width="40" height="40" />
+      <img class="site-logo-mark" src="/assets/monogram-96.webp?v=207" alt="" width="40" height="40" />
       <span class="site-logo-text">
         <span class="site-logo-name">BGS Travel &amp; Tourism</span>
         <span class="site-logo-place">Dubai, UAE</span>
@@ -218,7 +223,7 @@ function itemPage(item, collection) {
       <a href="/${PAGES[collection]}">${esc(s.label)}</a> <span aria-hidden="true">›</span>
       <span aria-current="page">${esc(title)}</span>
     </nav>
-    ${image ? `<img class="item-page-media" src="${esc(image)}" alt="${esc(imageAlt)}" fetchpriority="high" />` : ""}
+    ${image ? `<img class="item-page-media" src="${esc(image)}" alt="${esc(imageAlt)}" fetchpriority="high" decoding="async" />` : ""}
     ${s.kicker(item) ? `<p class="item-page-kicker">${esc(s.kicker(item))}</p>` : ""}
     <h1>${esc(title)}</h1>
     <p class="item-page-lede">${esc(lede)}</p>
@@ -308,7 +313,8 @@ for (const [collection, file] of Object.entries(PAGES)) {
   html = html.replace("</head>", () => `${headExtras({
     url: pageUrl, title,
     description: copy.intro ?? "",
-    image: items[0] && (typeof items[0].image === "string" ? items[0].image : items[0].image?.src),
+    image: items[0] && fullSrc(
+      typeof items[0].image === "string" ? items[0].image : items[0].image?.src),
     jsonLd: [orgJsonLd(), {
       "@type": "ItemList",
       name: SHAPE[collection].label,
