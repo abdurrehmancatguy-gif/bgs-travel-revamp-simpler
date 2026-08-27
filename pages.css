@@ -947,3 +947,65 @@ body.item-page .site-logo-place { color: rgba(13, 27, 42, 0.6); }
   .page-cat-btn svg { width: 14px; height: 14px; }
   .page-cat-btn[hidden] { display: none; }
 }
+
+/* ------------------------------------------------- service master pages */
+
+/* Built by build/build.mjs at /services/<key>/. It borrows the item page's
+   bar, crumbs, lede and media so the two read as the same kind of document,
+   and adds the two blocks an item page has no notion of: what we do under
+   this heading, and a look at the catalogue it sells. */
+.service-page-main {
+  width: min(920px, calc(100% - clamp(24px, 6vw, 64px)));
+  margin: 0 auto;
+  padding: clamp(18px, 4vh, 34px) 0 clamp(40px, 8vh, 80px);
+}
+
+.service-block {
+  margin-top: clamp(38px, 7vh, 68px);
+}
+
+.service-block h2 {
+  margin: 0 0 clamp(16px, 3vh, 26px);
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(24px, 3.4vw, 34px);
+  line-height: 1.1;
+  color: var(--page-ink);
+}
+
+.service-offerings {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.service-offerings li {
+  padding: clamp(18px, 2.6vw, 24px);
+  border: 1px solid var(--card-line);
+  border-radius: 18px;
+  background: var(--card-bg);
+  box-shadow: 0 14px 34px rgba(13, 27, 42, 0.06);
+}
+
+.service-offerings h3 {
+  margin: 0 0 8px;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 19px;
+  line-height: 1.2;
+  color: var(--card-ink);
+}
+
+.service-offerings p {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--card-muted);
+}
+
+/* The catalogue preview reuses the category grid, so a card here and a card
+   on the category page are the same object. */
+.service-block .card-grid { margin-top: 0; }

@@ -1,11 +1,11 @@
 import {
   COLLECTIONS, getCollection, saveCollection, resetCollection, resetAll,
   exportAll, importAll, isCustomised, isCloudEnabled, subscribeSyncFailure,
-} from "./store.js?v=212";
-import { photoQuery } from "./photo-query.mjs?v=212";
-import { CARD_TITLE_KEY } from "../data/packages.js?v=212";
-import { resolvePill, HOME_COPY } from "../data/home.js?v=212";
-import { signIn, signOutAdmin, idToken } from "./cloud.js?v=212";
+} from "./store.js?v=213";
+import { photoQuery } from "./photo-query.mjs?v=213";
+import { CARD_TITLE_KEY } from "../data/packages.js?v=213";
+import { resolvePill, HOME_COPY } from "../data/home.js?v=213";
+import { signIn, signOutAdmin, idToken } from "./cloud.js?v=213";
 
 /**
  * The admin console.
@@ -119,6 +119,13 @@ const FIELDS = {
     ["requirements", "What you'll need (comma separated)", "list"],
     ["image", "Image", "photo"],
   ],
+  servicePages: [
+    ["label", "Service"],
+    ["intro", "Opening paragraph", "textarea"],
+    ["offerings", "What we offer — one per line as: Name | Detail", "lines"],
+    ["catalogueHeading", "Heading above the catalogue strip"],
+    ["catalogueMore", "Text of the link to the full list"],
+  ],
   services: [
     ["label", "Name", "text"], ["key", "Key", "text"], ["icon", "Icon", "text"],
     ["blurb", "Description", "textarea"],
@@ -158,13 +165,14 @@ const FIELDS = {
 FIELDS.packages = FIELDS.activities;
 
 const TITLE_KEY = { activities: "title", packages: "title", destinations: "name",
-  services: "label", visa: "name", mice: "name", homePills: "label" };
+  services: "label", visa: "name", mice: "name", homePills: "label",
+  servicePages: "label" };
 
 /** A blank record with every field the collection expects. */
 function blankItem(collection) {
   const item = {};
   FIELDS[collection].forEach(([key, , type]) => {
-    item[key] = type === "number" ? 0 : type === "list" ? []
+    item[key] = type === "number" ? 0 : (type === "list" || type === "lines") ? []
       : type === "toggle" ? false : "";
   });
   if (collection === "activities") item.kind = "activity";
@@ -200,6 +208,7 @@ const TAB_LABEL = {
   activities: "Activities",
   destinations: "Destinations",
   services: "Services",
+  servicePages: "Service pages",
   mice: "MICE",
   homePills: "Homepage",
 };
@@ -451,7 +460,9 @@ function openEditor(index) {
 
   el("#editor-fields").innerHTML = FIELDS[active]
     .map(([key, label, type]) => {
-      const value = type === "list" ? (draft[key] || []).join(", ") : draft[key] ?? "";
+      const value = type === "list" ? (draft[key] || []).join(", ")
+        : type === "lines" ? (draft[key] || []).join("\n")
+        : draft[key] ?? "";
       if (type === "photo")
         // The query is a separate input on purpose, and editable. photoQuery
         // guesses the place from the product name and is usually right, but
@@ -477,9 +488,11 @@ function openEditor(index) {
         return `<label class="admin-field admin-field-toggle">
           <input data-field="${key}" type="checkbox"${draft[key] ? " checked" : ""} />
           <span>${esc(label)}</span></label>`;
-      if (type === "textarea")
+      if (type === "textarea" || type === "lines")
+        // "lines" rather than "list" because every entry here contains commas
+        // of its own, so a comma could not also be the separator.
         return `<label class="admin-field">${esc(label)}
-          <textarea data-field="${key}" rows="3">${esc(value)}</textarea></label>`;
+          <textarea data-field="${key}" rows="${type === "lines" ? 6 : 3}">${esc(value)}</textarea></label>`;
       return `<label class="admin-field">${esc(label)}
         <input data-field="${key}" type="${type === "number" ? "number" : "text"}"
                step="any" value="${esc(value)}" /></label>`;
@@ -599,6 +612,8 @@ function saveEditor() {
     if (type === "number") next[key] = Number(raw) || 0;
     else if (type === "list")
       next[key] = raw.split(",").map((s) => s.trim()).filter(Boolean);
+    else if (type === "lines")
+      next[key] = raw.split("\n").map((s) => s.trim()).filter(Boolean);
     else next[key] = type === "photo" ? raw : input.value;
   });
 
@@ -931,7 +946,7 @@ async function backfillImages(records, collection, identity) {
 }
 
 async function applySheet(mode) {
-  const { applyMode } = await import("./sheet-import.mjs?v=212");
+  const { applyMode } = await import("./sheet-import.mjs?v=213");
   el("#sheet-dialog").close();
   sheetStatus("Applying…");
 
@@ -954,7 +969,7 @@ async function handleSheet(file) {
   if (!file) return;
   sheetStatus(`Reading ${file.name}…`);
   try {
-    const { parseWorkbook, reconcile } = await import("./sheet-import.mjs?v=212");
+    const { parseWorkbook, reconcile } = await import("./sheet-import.mjs?v=213");
     const { tabs, problems, ignoredCostColumns } = await parseWorkbook(file);
     if (!tabs.length) {
       sheetStatus(`Nothing to import. ${problems.join(" ")}`);
@@ -1004,7 +1019,7 @@ el("#sheet-apply-replace").addEventListener("click", () => applySheet("replace")
 el("#sheet-export").addEventListener("click", async () => {
   sheetStatus("Building workbook…");
   try {
-    const { exportWorkbook } = await import("./sheet-import.mjs?v=212");
+    const { exportWorkbook } = await import("./sheet-import.mjs?v=213");
     const blob = await exportWorkbook((name) => getCollection(name));
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -1028,7 +1043,7 @@ el("#sheet-export-csv").addEventListener("click", async () => {
   }
   sheetStatus("Building CSV…");
   try {
-    const { exportCsv } = await import("./sheet-import.mjs?v=212");
+    const { exportCsv } = await import("./sheet-import.mjs?v=213");
     const blob = await exportCsv(active, (name) => getCollection(name));
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -1046,7 +1061,7 @@ el("#sheet-export-csv").addEventListener("click", async () => {
 el("#sheet-template").addEventListener("click", async () => {
   sheetStatus("Building template…");
   try {
-    const { exportTemplate } = await import("./sheet-import.mjs?v=212");
+    const { exportTemplate } = await import("./sheet-import.mjs?v=213");
     const blob = await exportTemplate();
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");

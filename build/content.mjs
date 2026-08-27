@@ -47,15 +47,17 @@ async function fromFirestore() {
 
 async function fromFiles() {
   const [{ ACTIVITIES, PACKAGES }, { DESTINATIONS, VISA_TYPES, PAGE_COPY },
-         { MICE_SECTIONS }, { SERVICES }, { HOME_PILLS, HOME_CARDS, HOME_COPY }] = await Promise.all([
+         { MICE_SECTIONS }, { SERVICES }, { HOME_PILLS, HOME_CARDS, HOME_COPY },
+         { SERVICE_PAGES }] = await Promise.all([
     import("../data/packages.js"), import("../data/content.js"),
     import("../data/mice.js"), import("../data/navigation.js"),
-    import("../data/home.js"),
+    import("../data/home.js"), import("../data/service-pages.js"),
   ]);
   return {
     activities: ACTIVITIES, packages: PACKAGES, destinations: DESTINATIONS,
     services: SERVICES, visa: VISA_TYPES, mice: MICE_SECTIONS,
     homePills: HOME_PILLS, homeCards: HOME_CARDS, homeCopy: HOME_COPY, copy: PAGE_COPY,
+    servicePages: SERVICE_PAGES,
   };
 }
 
