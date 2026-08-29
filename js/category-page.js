@@ -1,20 +1,20 @@
-import { getCollection, subscribe, isCloudEnabled, cloudHas } from "./store.js?v=218";
-import "./info-modal.js?v=218";
-import { createNavigation } from "./navigation.js?v=218";
-import { icon } from "../data/icons.js?v=218";
-import { priceLabel } from "../data/packages.js?v=218";
-import { openWhatsApp, buildWhatsAppUrl } from "../utils/whatsapp.js?v=218";
-import { MICE_SERVICES } from "../data/mice.js?v=218";
-import { openItem, itemTitle } from "./item-dialog.js?v=218";
+import { getCollection, subscribe, isCloudEnabled, cloudHas } from "./store.js?v=219";
+import "./info-modal.js?v=219";
+import { createNavigation } from "./navigation.js?v=219";
+import { icon } from "../data/icons.js?v=219";
+import { priceLabel } from "../data/packages.js?v=219";
+import { openWhatsApp, buildWhatsAppUrl } from "../utils/whatsapp.js?v=219";
+import { MICE_SERVICES } from "../data/mice.js?v=219";
+import { openItem, itemTitle } from "./item-dialog.js?v=219";
 // The same wheel glide the homepage has — the card lists are the longest
 // scrolls on the site, so they benefit most.
-import "./smooth-scroll.js?v=218";
-import { enableTilt } from "./tilt.js?v=218";
-import { buildPrimaryNav } from "./nav-model.js?v=218";
-import { track } from "./analytics.js?v=218";
-import { contactStripMarkup, openInfo } from "./info-modal.js?v=218";
-import { cardSrc } from "../utils/images.js?v=218";
-import { enableCategoryRail } from "./category-rail.js?v=218";
+import "./smooth-scroll.js?v=219";
+import { enableTilt } from "./tilt.js?v=219";
+import { buildPrimaryNav } from "./nav-model.js?v=219";
+import { track } from "./analytics.js?v=219";
+import { contactStripMarkup, openInfo } from "./info-modal.js?v=219";
+import { cardSrc } from "../utils/images.js?v=219";
+import { enableCategoryRail } from "./category-rail.js?v=219";
 
 /**
  * Every category page runs this one module. The page declares which collection
@@ -144,6 +144,27 @@ const SHAPES = {
   },
 };
 
+/**
+ * Does the grid on screen say the same thing as the markup we would render?
+ *
+ * Both sides are parsed into a detached element and reduced to their visible
+ * text plus their image sources, so the comparison ignores what legitimately
+ * differs between the build's cards and the runtime's — loading, fetchpriority
+ * and decoding attributes on the first image — while catching every content
+ * change: a price, a description, a duration, a swapped photograph.
+ */
+function sameAsRendered(gridEl, markup) {
+  const shape = (root) => {
+    const text = root.textContent.replace(/\s+/g, " ").trim();
+    const images = [...root.querySelectorAll("img")]
+      .map((img) => img.getAttribute("src")).join("|");
+    return `${text}||${images}`;
+  };
+  const rendered = document.createElement("div");
+  rendered.innerHTML = markup;
+  return shape(gridEl) === shape(rendered);
+}
+
 function cardMarkup({ image, alt, iconName, kicker, title, body, meta = [], list = [], itemHref = "" }) {
   // Package photography is stored as { src, alt } while destination and visa
   // images are plain strings, so accept either rather than forcing one shape.
@@ -221,13 +242,18 @@ function render() {
   if (markup !== lastMarkup) {
     if (serverGrid && !query) {
       const existing = [...grid.querySelectorAll(".item-card")];
-      /* Adopt the pre-rendered grid instead of rebuilding it when it matches
-         the store, card for card. Replacing it with lazy runtime cards re-hid
-         painted content and pushed the largest paint from ~2.5s to ~7.5s on a
-         slow connection. data-title per card is the fingerprint — titles
-         aligning by index is what makes dataset.idx safe. */
-      if (existing.length === visible.length &&
-          existing.every((el, i) => el.dataset.title === itemTitle(visible[i], page))) {
+      /* Adopt the pre-rendered grid instead of rebuilding it when it says
+         exactly what the store says. Replacing it with lazy runtime cards
+         re-hid painted content and pushed the largest paint from ~2.5s to
+         ~7.5s on a slow connection.
+     
+         The fingerprint is everything the card SHOWS — its text and its
+         photographs — not just the titles. Matching on titles alone was a
+         bug: an admin who edited a price left the title untouched, so the
+         stale card was adopted and the new price never appeared until the
+         next deploy. Comparing both sides as parsed DOM rather than as
+         strings keeps entities and attribute order out of it. */
+      if (existing.length === visible.length && sameAsRendered(grid, markup)) {
         serverGrid = false;
         lastMarkup = markup;
         grid.querySelectorAll(".item-card").forEach((el, i) => { el.dataset.idx = i; });
