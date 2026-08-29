@@ -833,6 +833,14 @@ body.item-page .site-logo-place { color: rgba(13, 27, 42, 0.6); }
     z-index: 59;            /* below the header's 60, above the page body */
     display: flex;
     gap: 8px;
+    /* Centred when the categories fit, which is the usual case on a phone in
+       landscape and on a tablet. The fallback matters: plain `center` in a
+       scroll container pushes the overflow off BOTH edges and the first chip
+       can never be scrolled back to, so start-alignment is declared first and
+       `safe center` only takes over where the browser supports it — and `safe`
+       itself reverts to start the moment the row overflows. */
+    justify-content: flex-start;
+    justify-content: safe center;
     margin: 10px auto 0;
     width: min(1280px, calc(100% - clamp(16px, 3vw, 40px)));
     padding-bottom: 4px;
