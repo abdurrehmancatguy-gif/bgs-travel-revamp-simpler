@@ -940,8 +940,8 @@ body.item-page .site-logo-place { color: rgba(13, 27, 42, 0.6); }
 /* The homepage already carries a row of moving badges; the category strip
    under it made two rows of pills stacked on a phone, which reads as chrome
    rather than navigation. The categories live in the menu instead — every one
-   of them, as expandable groups. Category pages keep their strip: there is no
-   second row there for it to compete with. */
+   of them, as expandable groups, now that the menu button is visible.
+   Category pages keep their strip: no second row there to compete with. */
 @media (max-width: 760px) {
   body.home .page-cat-rail,
   body.home .page-categories { display: none; }

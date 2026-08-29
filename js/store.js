@@ -1,11 +1,11 @@
-import { ACTIVITIES, PACKAGES } from "../data/packages.js?v=222";
-import { DESTINATIONS, VISA_TYPES, PAGE_COPY } from "../data/content.js?v=222";
-import { MICE_SECTIONS } from "../data/mice.js?v=222";
-import { SERVICES } from "../data/navigation.js?v=222";
-import { HOME_PILLS, HOME_CARDS, HOME_COPY } from "../data/home.js?v=222";
-import { SERVICE_PAGES } from "../data/service-pages.js?v=222";
-import { dedashDeep } from "../utils/text.js?v=222";
-import { cloudEnabled, watchContent, pushCollection, removeCollection } from "./cloud.js?v=222";
+import { ACTIVITIES, PACKAGES } from "../data/packages.js?v=224";
+import { DESTINATIONS, VISA_TYPES, PAGE_COPY } from "../data/content.js?v=224";
+import { MICE_SECTIONS } from "../data/mice.js?v=224";
+import { SERVICES } from "../data/navigation.js?v=224";
+import { HOME_PILLS, HOME_CARDS, HOME_COPY } from "../data/home.js?v=224";
+import { SERVICE_PAGES } from "../data/service-pages.js?v=224";
+import { dedashDeep } from "../utils/text.js?v=224";
+import { cloudEnabled, watchContent, pushCollection, removeCollection } from "./cloud.js?v=224";
 
 /**
  * The single door between the site's content and where that content lives.
