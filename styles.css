@@ -789,7 +789,17 @@ a.info-contact-value:hover { color: var(--gold-ink); }
   filter: drop-shadow(0 2px 8px rgba(4, 10, 18, 0.45));
 }
 
-.site-logo-text { display: grid; gap: 4px; min-width: 0; }
+/* One line since the place moved out of the lockup, so it centres against the
+   motif rather than sitting as the top half of a two-line block. The nudge is
+   optical: the serif's cap height sits above the glyph box's centre, which
+   reads as the name floating high next to a circular mark. */
+.site-logo-text {
+  display: grid;
+  align-content: center;
+  gap: 4px;
+  min-width: 0;
+  padding-top: 2px;
+}
 
 .site-logo-name {
   font-family: var(--font-display);

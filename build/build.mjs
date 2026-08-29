@@ -196,16 +196,16 @@ function itemPage(item, collection) {
   <link rel="preload" as="font" type="font/woff2" href="https://dcym8fthxf5uu.cloudfront.net/fonts/247a073c-29f5-4a89-aa3a-741020f346fc/OggText-Medium.woff2" crossorigin />${imageOrigin(image)}
   <title>${esc(title)} | BGS Travel &amp; Tourism</title>
   <meta name="description" content="${esc(description)}" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=224" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=225" />
   <!-- Versioned like everywhere else. These used to be bare, which was
        survivable under the old four-hour revalidate, but the stylesheets are
        now cached immutable for a year, so an unversioned link would wear this
        redesign's CSS forever, through every future one. -->
-  <link rel="stylesheet" href="/styles.css?v=224" />
-  <link rel="stylesheet" href="/pages.css?v=224" />
+  <link rel="stylesheet" href="/styles.css?v=225" />
+  <link rel="stylesheet" href="/pages.css?v=225" />
   <!-- The one script these pages carry: the same wheel glide as the rest of
        the site. Everything else stays static on purpose. -->
-  <script type="module" src="/js/smooth-scroll.js?v=224"></script>${headExtras({
+  <script type="module" src="/js/smooth-scroll.js?v=225"></script>${headExtras({
     url, title: `${title} | BGS Travel & Tourism`, description, image,
     jsonLd: [orgJsonLd(), ...itemJsonLd(item, collection, url, `${SITE}/`), {
       "@type": "BreadcrumbList",
@@ -221,10 +221,9 @@ function itemPage(item, collection) {
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="item-page-bar">
     <a class="site-logo" href="/">
-      <img class="site-logo-mark" src="/assets/monogram-96.webp?v=224" alt="" width="40" height="40" />
+      <img class="site-logo-mark" src="/assets/monogram-96.webp?v=225" alt="" width="40" height="40" />
       <span class="site-logo-text">
         <span class="site-logo-name">BGS Travel &amp; Tourism</span>
-        <span class="site-logo-place">Dubai, UAE</span>
       </span>
     </a>
   </header>
@@ -428,10 +427,10 @@ function servicePage(service, page, content) {
   <link rel="preload" as="font" type="font/woff2" href="https://dcym8fthxf5uu.cloudfront.net/fonts/247a073c-29f5-4a89-aa3a-741020f346fc/OggText-Medium.woff2" crossorigin />${imageOrigin(image)}
   <title>${esc(label)} | BGS Travel &amp; Tourism</title>
   <meta name="description" content="${esc(description)}" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=224" />
-  <link rel="stylesheet" href="/styles.css?v=224" />
-  <link rel="stylesheet" href="/pages.css?v=224" />
-  <script type="module" src="/js/smooth-scroll.js?v=224"></script>${headExtras({
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=225" />
+  <link rel="stylesheet" href="/styles.css?v=225" />
+  <link rel="stylesheet" href="/pages.css?v=225" />
+  <script type="module" src="/js/smooth-scroll.js?v=225"></script>${headExtras({
     url, title: `${label} | BGS Travel & Tourism`, description, image,
     jsonLd: [orgJsonLd(), {
       "@type": "Service",
@@ -463,10 +462,9 @@ function servicePage(service, page, content) {
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="item-page-bar">
     <a class="site-logo" href="/">
-      <img class="site-logo-mark" src="/assets/monogram-96.webp?v=224" alt="" width="40" height="40" />
+      <img class="site-logo-mark" src="/assets/monogram-96.webp?v=225" alt="" width="40" height="40" />
       <span class="site-logo-text">
         <span class="site-logo-name">BGS Travel &amp; Tourism</span>
-        <span class="site-logo-place">Dubai, UAE</span>
       </span>
     </a>
   </header>
