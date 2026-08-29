@@ -486,6 +486,24 @@ a.info-contact-value:hover { color: var(--gold-ink); }
   .item-dialog-panel { background: rgba(255, 255, 255, 0.97); }
 }
 
+/* On a phone the panel is a sheet of one size, whatever the record holds.
+   Sized by content, a sparse product opened as a short box floating mid
+   screen while a full one filled the display — the same control behaving
+   like two different things. The body scrolls inside instead. */
+@media (max-width: 760px) {
+  .item-dialog {
+    width: 100vw;
+    max-width: 100vw;
+    max-height: 92vh;
+    margin: auto auto 0;          /* sit on the bottom edge, like a sheet */
+  }
+  .item-dialog-panel {
+    height: 92vh;
+    max-height: 92vh;
+    border-radius: 26px 26px 0 0;
+  }
+}
+
 /* Over the photograph, so it needs its own ground rather than the ink tint the
    other close buttons use. */
 .item-dialog-close {
@@ -514,6 +532,9 @@ a.info-contact-value:hover { color: var(--gold-ink); }
 .item-dialog-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 .item-dialog-body {
+  /* Takes the slack, so the Buy footer sits on the bottom edge of the sheet
+     rather than halfway up it when a record has little to say. */
+  flex: 1 1 auto;
   padding: 22px 28px 26px;
   overflow-y: auto;
   overscroll-behavior: contain;

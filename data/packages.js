@@ -1,4 +1,4 @@
-import { PACKAGE_IMAGES } from "./images.js?v=219";
+import { PACKAGE_IMAGES } from "./images.js?v=222";
 
 /**
  * The single source of truth for package content. Frontend-only: nothing here
@@ -521,7 +521,7 @@ export const withSlugs = (list) =>
     Empty when there is no price: some visas are quoted per nationality, and a
     record without one must render as silence rather than "AED undefined". */
 export const formatPrice = (pkg) =>
-  pkg?.price
+  Number(pkg?.price) > 0
     ? `${pkg.currency ?? "AED"} ${Number(pkg.price).toLocaleString("en-US")}${
         pkg.priceUnit ? ` ${pkg.priceUnit}` : ""}`
     : "";

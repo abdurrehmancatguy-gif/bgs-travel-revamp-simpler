@@ -24,6 +24,9 @@ export function enableTilt(container, selector) {
 
   container.addEventListener("pointermove", (event) => {
     if (!finePointer.matches || reduceMotion.matches) return;
+    // Weak hardware opts out too: a transform per pointer move, on a card
+    // carrying a shadow, is exactly the work such a machine can least spare.
+    if (document.documentElement.classList.contains("low-power")) return;
     const card = event.target.closest(selector);
     if (!card || !container.contains(card)) return;
     if (raf) return;

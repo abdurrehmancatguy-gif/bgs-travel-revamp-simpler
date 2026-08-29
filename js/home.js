@@ -1,17 +1,18 @@
-import { getCollection, subscribe } from "./store.js?v=219";
-import "./info-modal.js?v=219";
-import { contactStripMarkup, openInfo } from "./info-modal.js?v=219";
-import { createNavigation } from "./navigation.js?v=219";
-import { buildPrimaryNav } from "./nav-model.js?v=219";
-import { resolvePill, HOME_COPY } from "../data/home.js?v=219";
-import { resolveHomeCards, withSlugs, CARD_TITLE_KEY, priceFacts } from "../data/packages.js?v=219";
-import { icon } from "../data/icons.js?v=219";
-import { openItem } from "./item-dialog.js?v=219";
-import { openWhatsApp, buildCustomTripUrl, buildWhatsAppUrl, WHATSAPP_DISPLAY } from "../utils/whatsapp.js?v=219";
-import "./smooth-scroll.js?v=219";
-import { enableTilt } from "./tilt.js?v=219";
-import { cardSrc } from "../utils/images.js?v=219";
-import { enableCategoryRail } from "./category-rail.js?v=219";
+import { getCollection, subscribe } from "./store.js?v=222";
+import "./info-modal.js?v=222";
+import { contactStripMarkup, openInfo } from "./info-modal.js?v=222";
+import { createNavigation } from "./navigation.js?v=222";
+import { buildPrimaryNav } from "./nav-model.js?v=222";
+import { resolvePill, HOME_COPY } from "../data/home.js?v=222";
+import { resolveHomeCards, withSlugs, CARD_TITLE_KEY, priceFacts } from "../data/packages.js?v=222";
+import { icon } from "../data/icons.js?v=222";
+import { openItem } from "./item-dialog.js?v=222";
+import { openWhatsApp, buildCustomTripUrl, buildWhatsAppUrl, WHATSAPP_DISPLAY } from "../utils/whatsapp.js?v=222";
+import "./smooth-scroll.js?v=222";
+import { enableTilt } from "./tilt.js?v=222";
+import { cardSrc } from "../utils/images.js?v=222";
+import { stripIndex } from "../utils/text.js?v=222";
+import { enableCategoryRail } from "./category-rail.js?v=222";
 
 /**
  * The homepage. Everything on it renders from the store, so an edit made in
@@ -60,6 +61,23 @@ createNavigation({
   toggle: document.querySelector("#nav-toggle"),
   onAction: routeAction,
 });
+
+/* ------------------------------------------------------------ low power */
+
+/**
+ * A phone with four cores or 4GB is not a laptop, and the browser will tell
+ * us. Decoration that costs a frame — the glass blurs, the deep shadows, the
+ * scroll parallax, the hover tilt — comes off on that hardware rather than
+ * being paid for on the devices least able to afford it.
+ *
+ * deviceMemory is Chromium-only and hardwareConcurrency is not a benchmark,
+ * so this is a hint, not a verdict: everything it disables is decorative and
+ * the page is complete without any of it.
+ */
+const lowPower =
+  (navigator.hardwareConcurrency ?? 8) <= 4 ||
+  (navigator.deviceMemory ?? 8) <= 4;
+if (lowPower) document.documentElement.classList.add("low-power");
 
 /* ------------------------------------------------- mobile category strip */
 
@@ -388,7 +406,16 @@ startRevealSweep();
  * feature — which is exactly how the stats band vanished the day it became
  * editable.
  */
-const homeCopy = () => ({ ...HOME_COPY, ...getCollection("homeCopy") });
+const homeCopy = () => {
+  const copy = { ...HOME_COPY, ...getCollection("homeCopy") };
+  /* Section labels are not numbered. The saved copy still carries the old
+     "01 …" prefixes, and saved copy wins over defaults, so the rule is
+     applied on read rather than left waiting for six fields to be re-typed. */
+  for (const key of Object.keys(copy)) {
+    if (key.endsWith("Eyebrow")) copy[key] = stripIndex(copy[key]);
+  }
+  return copy;
+};
 
 /* ----------------------------------------------------------------- tokens */
 
@@ -557,7 +584,11 @@ function parallax() {
   archCity.style.transform = `translateY(${y}px) scale(1.04)`;
 }
 
-if (archCity && !reduceMotion.matches) {
+/* Desktop only. On a phone this writes a transform on the largest image on
+   the page during the very gesture the visitor is judging the site by, and
+   the effect — an 8% drift — is not what they are looking at. */
+const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
+if (archCity && !reduceMotion.matches && finePointer.matches && !lowPower) {
   window.addEventListener("scroll", () => {
     if (!parallaxQueued) { parallaxQueued = true; requestAnimationFrame(parallax); }
   }, { passive: true });

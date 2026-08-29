@@ -1,7 +1,7 @@
-import { fullSrc } from "../utils/images.js?v=219";
-import { icon } from "../data/icons.js?v=219";
-import { priceLabel, priceFacts } from "../data/packages.js?v=219";
-import { openWhatsApp, buildWhatsAppItemUrl } from "../utils/whatsapp.js?v=219";
+import { fullSrc } from "../utils/images.js?v=222";
+import { icon } from "../data/icons.js?v=222";
+import { priceLabel, priceFacts } from "../data/packages.js?v=222";
+import { openWhatsApp, buildWhatsAppItemUrl } from "../utils/whatsapp.js?v=222";
 
 /**
  * The detail panel a card opens. One dialog, reused for every card on every
@@ -32,18 +32,22 @@ const SHAPE = {
     title: (i) => i.title,
     kicker: (i) => i.category,
     facts: (i) => [
-      ["Duration", i.duration], ["From", priceLabel(i)],
+      ["Duration", i.duration], ["From", priceLabel(i) || "Price on request"],
       ["Rating", i.rating ? `${Number(i.rating).toFixed(1)} ★` : ""],
-      ["Where", i.destination],
+      ["Where", i.destination || i.region],
     ],
   },
   packages: {
     title: (i) => i.title,
     kicker: (i) => i.category,
+    /* "Price on request" rather than an empty space: a trip quoted case by
+       case is a fact about the trip, and a panel that simply omits the row
+       reads as an oversight. Same for Where, which falls back to the region
+       when no specific place is named. */
     facts: (i) => [
-      ["Duration", i.duration], ["From", priceLabel(i)],
+      ["Duration", i.duration], ["From", priceLabel(i) || "Price on request"],
       ["Rating", i.rating ? `${Number(i.rating).toFixed(1)} ★` : ""],
-      ["Where", i.destination],
+      ["Where", i.destination || i.region],
     ],
   },
   destinations: {

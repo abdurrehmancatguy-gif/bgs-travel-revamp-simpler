@@ -26,6 +26,20 @@ export function dedash(value) {
     .trim();
 }
 
+/**
+ * Section labels are not numbered.
+ *
+ * "01 - Begin somewhere" becomes "Begin somewhere". Same reasoning as the
+ * dash: the numbers live in saved copy, so removing them from the shipped
+ * defaults alone would not clear them from the live page. Only a leading
+ * two-digit index followed by a separator is taken — "24 hours in Dubai"
+ * keeps its number, because nothing separates it from the words.
+ */
+export function stripIndex(value) {
+  if (typeof value !== "string") return value;
+  return value.replace(/^\s*\d{1,2}\s*[.,:·•|/-]\s+/, "").trim();
+}
+
 /** The same rule, applied through a whole content record. */
 export function dedashDeep(value) {
   if (typeof value === "string") return dedash(value);
