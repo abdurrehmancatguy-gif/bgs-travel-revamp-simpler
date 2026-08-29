@@ -1,18 +1,18 @@
-import { getCollection, subscribe } from "./store.js?v=225";
-import "./info-modal.js?v=225";
-import { contactStripMarkup, openInfo } from "./info-modal.js?v=225";
-import { createNavigation } from "./navigation.js?v=225";
-import { buildPrimaryNav } from "./nav-model.js?v=225";
-import { resolvePill, HOME_COPY } from "../data/home.js?v=225";
-import { resolveHomeCards, withSlugs, CARD_TITLE_KEY, priceFacts } from "../data/packages.js?v=225";
-import { icon } from "../data/icons.js?v=225";
-import { openItem } from "./item-dialog.js?v=225";
-import { openWhatsApp, buildCustomTripUrl, buildWhatsAppUrl, WHATSAPP_DISPLAY } from "../utils/whatsapp.js?v=225";
-import "./smooth-scroll.js?v=225";
-import { enableTilt } from "./tilt.js?v=225";
-import { cardSrc } from "../utils/images.js?v=225";
-import { stripIndex } from "../utils/text.js?v=225";
-import { enableCategoryRail } from "./category-rail.js?v=225";
+import { getCollection, subscribe } from "./store.js?v=226";
+import "./info-modal.js?v=226";
+import { contactStripMarkup, legalLinksMarkup, openInfo } from "./info-modal.js?v=226";
+import { createNavigation } from "./navigation.js?v=226";
+import { buildPrimaryNav } from "./nav-model.js?v=226";
+import { resolvePill, HOME_COPY } from "../data/home.js?v=226";
+import { resolveHomeCards, withSlugs, CARD_TITLE_KEY, priceFacts } from "../data/packages.js?v=226";
+import { icon } from "../data/icons.js?v=226";
+import { openItem } from "./item-dialog.js?v=226";
+import { openWhatsApp, buildCustomTripUrl, buildWhatsAppUrl, WHATSAPP_DISPLAY } from "../utils/whatsapp.js?v=226";
+import "./smooth-scroll.js?v=226";
+import { enableTilt } from "./tilt.js?v=226";
+import { cardSrc } from "../utils/images.js?v=226";
+import { stripIndex } from "../utils/text.js?v=226";
+import { enableCategoryRail } from "./category-rail.js?v=226";
 
 /**
  * The homepage. Everything on it renders from the store, so an edit made in
@@ -635,7 +635,9 @@ document.querySelector("#hm-chat")?.addEventListener("click", () => {
 /* ---------------------------------------------------------------- footer */
 
 const footerContact = document.querySelector("#footer-contact");
-if (footerContact) footerContact.innerHTML = contactStripMarkup();
+if (footerContact) footerContact.innerHTML = contactStripMarkup({ legal: false });
+const footerLegal = document.querySelector("#footer-legal");
+if (footerLegal) footerLegal.innerHTML = legalLinksMarkup();
 
 /* ------------------------------------------------------------------ init */
 

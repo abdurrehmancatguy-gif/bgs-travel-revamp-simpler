@@ -542,22 +542,111 @@ body.page .page-hero {
 
 /* One step lighter than the page so the footer still reads as its own band. */
 .page-footer {
-  padding: 50px 24px 60px;
+  /* A working footer, not a sign-off: four columns of somewhere to go, then a
+     quiet base row for the legal small print. It is the last thing on every
+     page and the only place the six service pages are all listed together. */
+  padding: clamp(44px, 6vw, 72px) clamp(20px, 4vw, 48px) 28px;
   background: var(--navy);
   border-top: 1px solid rgba(255, 246, 232, 0.1);
-  text-align: center;
-  color: rgba(255, 246, 232, 0.7);
-  font-size: 14px;
+  color: rgba(255, 246, 232, 0.72);
+  font-size: 14.5px;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr 1.2fr;
+  gap: clamp(28px, 4vw, 56px);
+  width: min(1180px, 100%);
+  margin: 0 auto;
+}
+
+.footer-brand { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; }
+
+.footer-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  font-family: var(--font-display);
+  font-size: 19px;
+  line-height: 1.1;
+  color: var(--cream);
+  text-decoration: none;
+}
+.footer-logo img { width: 44px; height: 44px; }
+
+.footer-line { margin: 0; max-width: 30ch; line-height: 1.6; }
+
+/* The site's only conversion, given one last plain door. */
+.footer-cta {
+  display: inline-flex;
+  align-items: center;
+  padding: 11px 22px;
+  border: 1px solid rgba(245, 168, 50, 0.55);
+  border-radius: 999px;
+  color: var(--gold-light);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 180ms ease, color 180ms ease, border-color 180ms ease;
+}
+.footer-cta:hover,
+.footer-cta:focus-visible {
+  background: var(--gold-light);
+  border-color: var(--gold-light);
+  color: var(--navy);
+  text-decoration: none;
+}
+
+.footer-col { display: flex; flex-direction: column; align-items: flex-start; gap: 11px; }
+
+.footer-head {
+  margin: 0 0 2px;
+  font-family: var(--font-ui);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 246, 232, 0.5);
+}
+
+.footer-col a {
+  color: rgba(255, 246, 232, 0.86);
+  text-decoration: none;
+  line-height: 1.35;
+}
+.footer-col a:hover { color: var(--gold-light); text-decoration: underline; }
+.footer-col abbr { text-decoration: none; }
+
+/* The contact block renders from data/legal.js and stacks in its column. */
+.footer-col .contact-strip { align-items: flex-start; gap: 11px; }
+.footer-col .contact-strip-links { flex-direction: column; align-items: flex-start; gap: 11px; }
+
+.footer-base {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 24px;
+  width: min(1180px, 100%);
+  margin: clamp(32px, 4vw, 48px) auto 0;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 246, 232, 0.14);
+  font-size: 13px;
+  color: rgba(255, 246, 232, 0.55);
+}
+.footer-base p { margin: 0; }
+.footer-base #footer-legal { display: flex; flex-wrap: wrap; gap: 8px 18px; }
+
+@media (max-width: 900px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .footer-brand { grid-column: 1 / -1; }
+}
+
+@media (max-width: 560px) {
+  .footer-grid { grid-template-columns: 1fr; gap: 30px; }
+  .footer-base { justify-content: flex-start; }
 }
 .page-footer a { color: var(--gold-light); text-decoration: none; }
 .page-footer a:hover { text-decoration: underline; }
-.page-footer-links {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px;
-  margin-bottom: 18px;
-}
 
 /* For labels that must exist for screen readers but never take space. Not the
    same as .skip-link, which is meant to become visible on focus. */
@@ -637,7 +726,6 @@ body.page .page-hero {
   .item-card h3 { font-size: 18px; }
   /* Tap targets: the whole card is the control, so it just needs room. */
   .item-card-meta { flex-wrap: wrap; row-gap: 6px; }
-  .page-footer-links { gap: 14px; font-size: 13px; }
 }
 
 /* -------------------------------------------------- MICE section cards --- */
