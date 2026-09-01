@@ -1568,3 +1568,80 @@ a.info-contact-value:hover { color: var(--gold-ink); }
 
 
 
+
+/* =========================================================================
+   Social marks
+   -------------------------------------------------------------------------
+   Icons rather than words: at this size the marks are more recognisable than
+   the names, and four marks read as a set where four words read as a list.
+   Each link carries its own accessible name, which is what makes an
+   unlabelled row usable rather than a guessing game.
+   ========================================================================= */
+
+.social-row {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.social-handle {
+  margin: 0;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  /* Cream explicitly, not --page-muted. That token is dark on this site — the
+     pages are light — and this row lives in the navy footer, so inheriting it
+     put navy text on navy: measured at 1.00:1, which is not low contrast but
+     none. The footer sets its own ink for exactly this reason. */
+  color: rgba(255, 246, 232, 0.6);
+}
+
+.social-links {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.social-link {
+  /* 48px: the smallest thing a thumb hits reliably, and big enough that the
+     mark is read rather than squinted at. */
+  width: 48px;
+  height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 246, 232, 0.16);
+  background: rgba(255, 246, 232, 0.06);
+  transition: transform 160ms ease, background 160ms ease,
+              border-color 160ms ease, color 160ms ease;
+}
+
+/* .page-footer a paints every footer link gold, and it out-specifies a bare
+   .social-link — so without this the marks were gold by accident rather than
+   by choice. Cream at rest is the deliberate one: it keeps the four marks
+   neutral, so the brand colour arriving on hover reads as a change rather than
+   as one colour sliding into another. */
+.page-footer .social-link { color: rgba(255, 246, 232, 0.92); }
+
+.social-link svg { width: 24px; height: 24px; }
+
+/* Each mark takes its own brand colour on hover, and only on hover: four brand
+   colours sitting in a footer at rest would pull harder than the content. */
+.social-link:hover,
+.social-link:focus-visible {
+  transform: translateY(-2px);
+  border-color: currentColor;
+}
+.social-link[data-social="instagram"]:hover,
+.social-link[data-social="instagram"]:focus-visible { color: #e1306c; }
+.social-link[data-social="tiktok"]:hover,
+.social-link[data-social="tiktok"]:focus-visible { color: #25f4ee; }
+.social-link[data-social="facebook"]:hover,
+.social-link[data-social="facebook"]:focus-visible { color: #1877f2; }
+.social-link[data-social="linkedin"]:hover,
+.social-link[data-social="linkedin"]:focus-visible { color: #0a66c2; }
+
+@media (prefers-reduced-motion: reduce) {
+  .social-link { transition: none; }
+  .social-link:hover, .social-link:focus-visible { transform: none; }
+}

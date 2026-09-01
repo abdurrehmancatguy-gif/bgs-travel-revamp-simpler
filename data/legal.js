@@ -14,6 +14,31 @@ import {
  * plain-text device and have no business in a rendered panel.
  */
 
+/**
+ * Where BGS is, off this site.
+ *
+ * One handle everywhere — @bgstravel.ae — so the label is the same on all four
+ * and only the mark changes. Icons rather than words because the marks are more
+ * recognisable than the names at this size, and because four words in a row
+ * reads as a list while four marks reads as a set.
+ *
+ * The Facebook entry is a share link rather than a vanity URL: that is the
+ * address the page actually publishes, and it redirects to the page itself.
+ */
+export const SOCIAL_LINKS = [
+  { key: "instagram", icon: "instagram", label: "Instagram",
+    href: "https://www.instagram.com/bgstravel.ae" },
+  { key: "tiktok", icon: "tiktok", label: "TikTok",
+    href: "https://www.tiktok.com/@bgstravel.ae" },
+  { key: "facebook", icon: "facebook", label: "Facebook",
+    href: "https://www.facebook.com/share/1BrpeGNVtk/" },
+  { key: "linkedin", icon: "linkedin", label: "LinkedIn",
+    href: "https://www.linkedin.com/company/bgs-travel-and-tourism/" },
+];
+
+/** The handle itself, shown once beside the row. */
+export const SOCIAL_HANDLE = "@bgstravel.ae";
+
 export const CONTACT_CHANNELS = [
   {
     key: "whatsapp",
