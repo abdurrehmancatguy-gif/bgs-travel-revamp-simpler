@@ -3,6 +3,33 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <!--
+    Decides whether this device gets the decorative work, before the first
+    paint rather than after it.
+
+    It used to live in js/home.js, which meant two things: it ran only on the
+    homepage, so the six category pages carried every blur and shadow on the
+    hardware least able to afford them; and it ran from a deferred module, so
+    the class landed after the browser had already painted the expensive
+    version once and had to redo it.
+
+    hardwareConcurrency is not a benchmark and deviceMemory is Chromium-only,
+    so this is a hint rather than a verdict. Everything it turns off is
+    decorative — the page is complete without any of it.
+  -->
+  <script>
+    (function () {
+      try {
+        var cores = navigator.hardwareConcurrency || 8;
+        var mem = navigator.deviceMemory || 8;
+        var save = navigator.connection && navigator.connection.saveData;
+        var slow = navigator.connection && /^(slow-)?2g$/.test(navigator.connection.effectiveType || "");
+        if (cores <= 4 || mem <= 4 || save || slow) {
+          document.documentElement.classList.add("low-power");
+        }
+      } catch (e) { /* a missing API is not a reason to fail */ }
+    })();
+  </script>
   <!-- The serif face is on every page's largest text; fetch it first, not
        after the CSS names it. gstatic resolves early for the Firestore sync
        that follows at idle. -->

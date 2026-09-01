@@ -111,6 +111,59 @@ body.page {
 .low-power .hm-card,
 .low-power .hm-service { box-shadow: 0 6px 16px rgba(13, 27, 42, 0.08); }
 
+/*
+ * The rest of the glass, which the rules above had missed.
+ *
+ * Lighthouse on a throttled mobile profile put 6.5s into Rendering and 3.1s
+ * into Style & Layout against 0.3s of script: the cost of this site on weak
+ * hardware is painting, not JavaScript. backdrop-filter is the reason. Each
+ * one makes the browser copy what is behind the element, blur that copy, and
+ * redo it whenever anything beneath it moves — and the header is sticky, so
+ * something beneath it is moving on every frame of every scroll.
+ *
+ * These become flat translucent panels. On a phone that cannot afford the
+ * blur, a solid panel is not a worse design; it is the same design without the
+ * part that drops frames.
+ */
+.low-power body.page .site-header,
+.low-power .site-header,
+.low-power body.page .nav-panel,
+.low-power .nav-panel {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.low-power .item-dialog-panel,
+.low-power .info-dialog-panel {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  background: rgba(255, 255, 255, 0.98);
+}
+
+/* A blurred backdrop blurs the whole page behind the dialog — the most
+   expensive readback on the site, for something sitting behind a panel that
+   covers it. A plain wash reads the same and costs nothing. */
+.low-power .item-dialog::backdrop,
+.low-power .info-dialog::backdrop,
+.low-power .nav-drawer-backdrop {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  background: rgba(4, 10, 18, 0.62);
+}
+
+.low-power .item-dialog-close {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* will-change on a full-bleed element keeps a compositor layer alive for the
+   life of the page. On a device with 4GB that memory is better spent on the
+   page than on a parallax nobody asked for. */
+.low-power .hm-hero-media,
+.low-power [style*="--parallax"],
+.low-power .hm-arch-city { will-change: auto; }
+
 /* Liquid glass header — category pages only.
    -------------------------------------------------------------------------
    The homepage header floats over a dark cinematic stage and is styled for it;

@@ -74,10 +74,10 @@ createNavigation({
  * so this is a hint, not a verdict: everything it disables is decorative and
  * the page is complete without any of it.
  */
-const lowPower =
-  (navigator.hardwareConcurrency ?? 8) <= 4 ||
-  (navigator.deviceMemory ?? 8) <= 4;
-if (lowPower) document.documentElement.classList.add("low-power");
+/* Set by the inline script in every page's <head>, before the first paint and
+   on every page rather than only this one. Read here so the parallax and the
+   tilt can check it without duplicating the test. */
+const lowPower = document.documentElement.classList.contains("low-power");
 
 /* ------------------------------------------------- mobile category strip */
 
