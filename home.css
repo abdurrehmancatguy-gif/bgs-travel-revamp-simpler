@@ -51,12 +51,15 @@ body.home {
 }
 
 .hm-ticker {
-  margin-top: clamp(8px, 2vh, 20px);
-  padding: 14px 0 4px;
+  /* Tight to the header: the badges are the first thing under it, and the gap
+     they used to carry pushed the headline and the banner down far enough
+     that the artwork needed a scroll to reach on a phone. */
+  margin-top: clamp(2px, 0.6vh, 8px);
+  padding: 8px 0 2px;
   /* Chip row height (36px) + this padding, reserved before JS fills the
      track: the strip growing in after first paint pushed the whole hero
      down and measured up to 0.06 CLS on a slow connection. */
-  min-height: 54px;
+  min-height: 42px;
   overflow: hidden;
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
           mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
@@ -70,8 +73,11 @@ body.home {
   animation: hm-ticker 36s linear infinite;
 }
 
-.hm-ticker-track span {
-  padding: 9px 18px;
+.hm-ticker-track > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
   border-radius: 999px;
   background: #fff;
   border: 1px solid rgba(13, 27, 42, 0.08);
@@ -80,6 +86,17 @@ body.home {
   font-weight: 600;
   color: var(--page-ink);
 }
+
+/* The icon reads as a mark beside the words, not a second word: gold, small,
+   and never the thing the eye lands on first. */
+.hm-ticker-icon {
+  display: inline-flex;
+  flex: none;
+  width: 15px;
+  height: 15px;
+  color: var(--gold-ink);
+}
+.hm-ticker-icon svg { width: 100%; height: 100%; }
 
 @keyframes hm-ticker {
   to { transform: translateX(-50%); }
@@ -90,7 +107,7 @@ body.home {
 .hm-hero {
   max-width: 1100px;
   margin: 0 auto;
-  padding: clamp(24px, 4.5vh, 56px) clamp(18px, 4vw, 40px) 0;
+  padding: clamp(8px, 1.8vh, 26px) clamp(18px, 4vw, 40px) 0;
   text-align: center;
 }
 
@@ -180,7 +197,9 @@ body.home .hero-pill:focus-visible {
 .hm-banner {
   position: relative;
   max-width: 1280px;
-  margin: clamp(36px, 6vh, 64px) auto 0;
+  /* Half the gap it had: the window is the point of the page and it should
+     be in view without a scroll. */
+  margin: clamp(16px, 2.8vh, 34px) auto 0;
   padding: 0 clamp(12px, 2vw, 24px);
 }
 

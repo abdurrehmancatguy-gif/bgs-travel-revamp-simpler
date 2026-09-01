@@ -1,20 +1,20 @@
-import { getCollection, subscribe, isCloudEnabled, cloudHas } from "./store.js?v=224";
-import "./info-modal.js?v=224";
-import { createNavigation } from "./navigation.js?v=224";
-import { icon } from "../data/icons.js?v=224";
-import { priceLabel } from "../data/packages.js?v=224";
-import { openWhatsApp, buildWhatsAppUrl } from "../utils/whatsapp.js?v=224";
-import { MICE_SERVICES } from "../data/mice.js?v=224";
-import { openItem, itemTitle } from "./item-dialog.js?v=224";
+import { getCollection, subscribe, isCloudEnabled, cloudHas } from "./store.js?v=226";
+import "./info-modal.js?v=226";
+import { createNavigation } from "./navigation.js?v=226";
+import { icon } from "../data/icons.js?v=226";
+import { priceLabel } from "../data/packages.js?v=226";
+import { openWhatsApp, buildWhatsAppUrl } from "../utils/whatsapp.js?v=226";
+import { MICE_SERVICES } from "../data/mice.js?v=226";
+import { openItem, itemTitle } from "./item-dialog.js?v=226";
 // The same wheel glide the homepage has — the card lists are the longest
 // scrolls on the site, so they benefit most.
-import "./smooth-scroll.js?v=224";
-import { enableTilt } from "./tilt.js?v=224";
-import { buildPrimaryNav } from "./nav-model.js?v=224";
-import { track } from "./analytics.js?v=224";
-import { contactStripMarkup, openInfo } from "./info-modal.js?v=224";
-import { cardSrc } from "../utils/images.js?v=224";
-import { enableCategoryRail } from "./category-rail.js?v=224";
+import "./smooth-scroll.js?v=226";
+import { enableTilt } from "./tilt.js?v=226";
+import { buildPrimaryNav } from "./nav-model.js?v=226";
+import { track } from "./analytics.js?v=226";
+import { contactStripMarkup, legalLinksMarkup, openInfo } from "./info-modal.js?v=226";
+import { cardSrc } from "../utils/images.js?v=226";
+import { enableCategoryRail } from "./category-rail.js?v=226";
 
 /**
  * Every category page runs this one module. The page declares which collection
@@ -445,7 +445,9 @@ const NOT_FOUND_NOUN = {
 })();
 
 const footerContact = document.querySelector("#footer-contact");
-if (footerContact) footerContact.innerHTML = contactStripMarkup();
+if (footerContact) footerContact.innerHTML = contactStripMarkup({ legal: false });
+const footerLegal = document.querySelector("#footer-legal");
+if (footerLegal) footerLegal.innerHTML = legalLinksMarkup();
 
 setupReveal();
 // Observe the cards that are already on the page. Without this, the initial

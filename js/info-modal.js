@@ -1,5 +1,5 @@
-import { LEGAL_DOCS, LEGAL_LINKS, CONTACT_CHANNELS } from "../data/legal.js?v=224";
-import { icon } from "../data/icons.js?v=224";
+import { LEGAL_DOCS, LEGAL_LINKS, CONTACT_CHANNELS } from "../data/legal.js?v=226";
+import { icon } from "../data/icons.js?v=226";
 
 /**
  * The Contacts and legal panels. One <dialog> is built lazily and reused for
@@ -91,7 +91,7 @@ function blockMarkup(block) {
  * the drawer. Built from the same CONTACT_CHANNELS the Contacts panel reads,
  * so a phone number is never written down twice and cannot drift.
  */
-export function contactStripMarkup() {
+export function contactStripMarkup({ legal: legalOn = true } = {}) {
   const links = CONTACT_CHANNELS.filter((c) => c.href).map((c) =>
     '<a class="contact-strip-item" href="' + esc(c.href) + '"' +
     (c.href.startsWith("http") ? ' target="_blank" rel="noopener"' : "") + '>' +
@@ -100,14 +100,21 @@ export function contactStripMarkup() {
       "<span>" + esc(c.value) + "</span>" +
     "</a>").join("");
 
-  const legal = LEGAL_LINKS.map((l) =>
+  const legalHtml = LEGAL_LINKS.map((l) =>
     '<button class="info-legal-link" type="button" data-info="' + l.key + '">' +
     esc(l.label) + "</button>").join("");
 
   return '<div class="contact-strip">' +
     '<div class="contact-strip-links">' + links + "</div>" +
-    '<div class="contact-strip-legal">' + legal + "</div>" +
+    (legalOn ? '<div class="contact-strip-legal">' + legalHtml + "</div>" : "") +
   "</div>";
+}
+
+/** Privacy and Terms on their own, for the footer's base row. */
+export function legalLinksMarkup() {
+  return LEGAL_LINKS.map((l) =>
+    '<button class="info-legal-link" type="button" data-info="' + l.key + '">' +
+    esc(l.label) + "</button>").join("");
 }
 
 export function openInfo(key) {

@@ -1,18 +1,18 @@
-import { getCollection, subscribe } from "./store.js?v=224";
-import "./info-modal.js?v=224";
-import { contactStripMarkup, openInfo } from "./info-modal.js?v=224";
-import { createNavigation } from "./navigation.js?v=224";
-import { buildPrimaryNav } from "./nav-model.js?v=224";
-import { resolvePill, HOME_COPY } from "../data/home.js?v=224";
-import { resolveHomeCards, withSlugs, CARD_TITLE_KEY, priceFacts } from "../data/packages.js?v=224";
-import { icon } from "../data/icons.js?v=224";
-import { openItem } from "./item-dialog.js?v=224";
-import { openWhatsApp, buildCustomTripUrl, buildWhatsAppUrl, WHATSAPP_DISPLAY } from "../utils/whatsapp.js?v=224";
-import "./smooth-scroll.js?v=224";
-import { enableTilt } from "./tilt.js?v=224";
-import { cardSrc } from "../utils/images.js?v=224";
-import { stripIndex } from "../utils/text.js?v=224";
-import { enableCategoryRail } from "./category-rail.js?v=224";
+import { getCollection, subscribe } from "./store.js?v=226";
+import "./info-modal.js?v=226";
+import { contactStripMarkup, legalLinksMarkup, openInfo } from "./info-modal.js?v=226";
+import { createNavigation } from "./navigation.js?v=226";
+import { buildPrimaryNav } from "./nav-model.js?v=226";
+import { resolvePill, HOME_COPY } from "../data/home.js?v=226";
+import { resolveHomeCards, withSlugs, CARD_TITLE_KEY, priceFacts } from "../data/packages.js?v=226";
+import { icon } from "../data/icons.js?v=226";
+import { openItem } from "./item-dialog.js?v=226";
+import { openWhatsApp, buildCustomTripUrl, buildWhatsAppUrl, WHATSAPP_DISPLAY } from "../utils/whatsapp.js?v=226";
+import "./smooth-scroll.js?v=226";
+import { enableTilt } from "./tilt.js?v=226";
+import { cardSrc } from "../utils/images.js?v=226";
+import { stripIndex } from "../utils/text.js?v=226";
+import { enableCategoryRail } from "./category-rail.js?v=226";
 
 /**
  * The homepage. Everything on it renders from the store, so an edit made in
@@ -74,10 +74,10 @@ createNavigation({
  * so this is a hint, not a verdict: everything it disables is decorative and
  * the page is complete without any of it.
  */
-const lowPower =
-  (navigator.hardwareConcurrency ?? 8) <= 4 ||
-  (navigator.deviceMemory ?? 8) <= 4;
-if (lowPower) document.documentElement.classList.add("low-power");
+/* Set by the inline script in every page's <head>, before the first paint and
+   on every page rather than only this one. Read here so the parallax and the
+   tilt can check it without duplicating the test. */
+const lowPower = document.documentElement.classList.contains("low-power");
 
 /* ------------------------------------------------- mobile category strip */
 
@@ -497,6 +497,32 @@ function renderHomeCopy() {
  * nobody measured. Decorative (aria-hidden): the same facts appear as real
  * text in the stats band and footer.
  */
+/**
+ * An icon for a badge, chosen from what the badge says.
+ *
+ * The pills are free text an admin types, so nothing can be keyed off an id —
+ * the words themselves are all there is. First match wins, and the order
+ * matters where a phrase could belong to two families: "Private Excursions"
+ * is an excursion before it is anything private.
+ */
+const TICKER_ICONS = [
+  [/visa/i, "visa"],
+  [/flight|airline|fly|global travel/i, "flights"],
+  [/hotel|stay|resort|lodge/i, "hotels"],
+  [/transport|transfer|driver|fleet|coach/i, "transport"],
+  [/team|concierge|end to end|on call/i, "concierge"],
+  [/mice|meeting|conference|corporate|exhibition|incentive/i, "conference"],
+  [/desert|dune|safari/i, "desert"],
+  [/beach|island|coast|cruise|dhow|water/i, "water"],
+  [/family|kids/i, "family"],
+  [/culture|cultural|heritage|historic/i, "cultural"],
+  [/excursion|activit|experience|tour/i, "activities"],
+  [/vip|v\.i\.p|luxury|exclusive|premium|private/i, "luxury"],
+];
+
+const tickerIcon = (text) =>
+  (TICKER_ICONS.find(([pattern]) => pattern.test(text)) ?? [null, "pin"])[1];
+
 function renderTicker() {
   const track = document.querySelector("#hm-ticker-track");
   if (!track) return;
@@ -514,7 +540,9 @@ function renderTicker() {
       return dead ? "" : text.trim();
     })
     .filter(Boolean);
-  loopTrack(track, badges.map((b) => `<span>${esc(b)}</span>`).join(""), 42);
+  loopTrack(track, badges.map((b) =>
+    `<span><span class="hm-ticker-icon" aria-hidden="true">${icon(tickerIcon(b))}</span>${esc(b)}</span>`
+  ).join(""), 42);
 }
 
 /* ------------------------------------------------------------- lead form */
@@ -607,7 +635,9 @@ document.querySelector("#hm-chat")?.addEventListener("click", () => {
 /* ---------------------------------------------------------------- footer */
 
 const footerContact = document.querySelector("#footer-contact");
-if (footerContact) footerContact.innerHTML = contactStripMarkup();
+if (footerContact) footerContact.innerHTML = contactStripMarkup({ legal: false });
+const footerLegal = document.querySelector("#footer-legal");
+if (footerLegal) footerLegal.innerHTML = legalLinksMarkup();
 
 /* ------------------------------------------------------------------ init */
 

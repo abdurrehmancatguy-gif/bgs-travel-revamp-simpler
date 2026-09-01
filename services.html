@@ -3,6 +3,33 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <!--
+    Decides whether this device gets the decorative work, before the first
+    paint rather than after it.
+
+    It used to live in js/home.js, which meant two things: it ran only on the
+    homepage, so the six category pages carried every blur and shadow on the
+    hardware least able to afford them; and it ran from a deferred module, so
+    the class landed after the browser had already painted the expensive
+    version once and had to redo it.
+
+    hardwareConcurrency is not a benchmark and deviceMemory is Chromium-only,
+    so this is a hint rather than a verdict. Everything it turns off is
+    decorative — the page is complete without any of it.
+  -->
+  <script>
+    (function () {
+      try {
+        var cores = navigator.hardwareConcurrency || 8;
+        var mem = navigator.deviceMemory || 8;
+        var save = navigator.connection && navigator.connection.saveData;
+        var slow = navigator.connection && /^(slow-)?2g$/.test(navigator.connection.effectiveType || "");
+        if (cores <= 4 || mem <= 4 || save || slow) {
+          document.documentElement.classList.add("low-power");
+        }
+      } catch (e) { /* a missing API is not a reason to fail */ }
+    })();
+  </script>
   <!-- The serif face is on every page's largest text; fetch it first, not
        after the CSS names it. gstatic resolves early for the Firestore sync
        that follows at idle. -->
@@ -15,9 +42,9 @@
   <link rel="preconnect" href="https://upload.wikimedia.org" />
   <title>Services | BGS Travel &amp; Tourism</title>
   <meta name="description" content="Flights, stays, transfers and a team on call: the parts of a journey that hold everything else together." />
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png?v=224" />
-  <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png?v=224" />
-  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=224" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png?v=226" />
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png?v=226" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=226" />
   <!-- The typeface, which blocks nothing but is wanted early: font-display is
        swap, so a late arrival means the headline visibly re-renders in a
        different face. crossorigin because fonts are fetched in CORS mode, and
@@ -28,20 +55,19 @@
        homepage contacts neither, so they were two speculative handshakes that
        never carried a byte. -->
   <link rel="preconnect" href="https://dcym8fthxf5uu.cloudfront.net" crossorigin />
-  <link rel="stylesheet" href="styles.css?v=224" />
-  <link rel="stylesheet" href="pages.css?v=224" />
-  <script type="module" src="js/analytics.js?v=224"></script>
-  <script type="module" src="js/category-page.js?v=224"></script>
+  <link rel="stylesheet" href="styles.css?v=226" />
+  <link rel="stylesheet" href="pages.css?v=226" />
+  <script type="module" src="js/analytics.js?v=226"></script>
+  <script type="module" src="js/category-page.js?v=226"></script>
 </head>
 <body class="page" data-collection="services">
   <a class="skip-link" href="#main">Skip to content</a>
 
   <header class="site-header">
     <a class="site-logo" href="index.html">
-      <img class="site-logo-mark" src="assets/monogram-96.webp?v=224" alt="" width="40" height="40" />
+      <img class="site-logo-mark" src="assets/monogram-96.webp?v=226" alt="" width="40" height="40" />
       <span class="site-logo-text">
         <span class="site-logo-name">BGS Travel &amp; Tourism</span>
-        <span class="site-logo-place">Dubai, UAE</span>
       </span>
     </a>
     <nav class="site-nav" id="site-nav" aria-label="Primary"></nav>
@@ -93,20 +119,53 @@
   </main>
 
   <footer class="page-footer">
-    <div class="page-footer-links">
-      <a href="index.html">Home</a>
-      <a href="destinations.html">Destinations</a>
-      <a href="packages.html">Packages</a>
-      <a href="activities.html">Activities</a>
-      <a href="services.html">Services</a>
-      <a href="visa.html">Visa</a>
-      <a href="mice.html"><abbr title="Meetings, Incentives, Conferences and Exhibitions">MICE</abbr></a>
+    <div class="footer-grid">
+
+      <div class="footer-brand">
+        <a class="footer-logo" href="index.html">
+          <img src="assets/monogram-96.webp?v=226" alt="" width="44" height="44" />
+          <span>BGS Travel &amp; Tourism</span>
+        </a>
+        <p class="footer-line">Visas, flights, stays and journeys, handled by one team in Dubai.</p>
+        <a class="footer-cta" href="https://wa.me/971555809388" target="_blank" rel="noopener">
+          Talk to us on WhatsApp
+        </a>
+        <!-- BGS One rewards badge: renders from the live programme, or not at all. -->
+        <div data-bgs-loyalty data-locale="en" data-mode="live"></div>
+      </div>
+
+      <nav class="footer-col" aria-labelledby="footer-browse">
+        <h2 class="footer-head" id="footer-browse">Browse</h2>
+        <a href="visa.html">Visa services</a>
+        <a href="destinations.html">Destinations</a>
+        <a href="packages.html">Packages</a>
+        <a href="activities.html">Activities</a>
+        <a href="mice.html"><abbr title="Meetings, Incentives, Conferences and Exhibitions">MICE</abbr></a>
+      </nav>
+
+      <nav class="footer-col" aria-labelledby="footer-services">
+        <h2 class="footer-head" id="footer-services">What we do</h2>
+        <a href="/services/visa/">Visa services</a>
+        <a href="/services/flights/">Flights</a>
+        <a href="/services/hotels/">Hotels &amp; stays</a>
+        <a href="/services/transport/">Transport &amp; fleet</a>
+        <a href="/services/activities/">Activities</a>
+        <a href="/services/concierge/">Concierge</a>
+      </nav>
+
+      <div class="footer-col">
+        <h2 class="footer-head">Reach us</h2>
+        <!-- Contact channels render from data/legal.js -->
+        <div id="footer-contact"></div>
+      </div>
+
     </div>
-    <!-- Contact details and legal links render from data/legal.js -->
-    <div id="footer-contact"></div>
-    <!-- BGS One rewards badge: renders from the live programme, or not at all. -->
-    <div data-bgs-loyalty data-locale="en" data-mode="live"></div>
-    <p>BGS Travel &amp; Tourism · Dubai, UAE</p>
+
+    <div class="footer-base">
+      <p>&copy; 2026 BGS Travel &amp; Tourism &middot; Dubai, United Arab Emirates</p>
+      <!-- Privacy and Terms render from data/legal.js -->
+      <div id="footer-legal"></div>
+    </div>
   </footer>
 
   <div class="nav-drawer" id="nav-drawer" hidden>

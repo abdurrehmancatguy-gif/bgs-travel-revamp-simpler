@@ -196,16 +196,16 @@ function itemPage(item, collection) {
   <link rel="preload" as="font" type="font/woff2" href="https://dcym8fthxf5uu.cloudfront.net/fonts/247a073c-29f5-4a89-aa3a-741020f346fc/OggText-Medium.woff2" crossorigin />${imageOrigin(image)}
   <title>${esc(title)} | BGS Travel &amp; Tourism</title>
   <meta name="description" content="${esc(description)}" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=224" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=226" />
   <!-- Versioned like everywhere else. These used to be bare, which was
        survivable under the old four-hour revalidate, but the stylesheets are
        now cached immutable for a year, so an unversioned link would wear this
        redesign's CSS forever, through every future one. -->
-  <link rel="stylesheet" href="/styles.css?v=224" />
-  <link rel="stylesheet" href="/pages.css?v=224" />
+  <link rel="stylesheet" href="/styles.css?v=226" />
+  <link rel="stylesheet" href="/pages.css?v=226" />
   <!-- The one script these pages carry: the same wheel glide as the rest of
        the site. Everything else stays static on purpose. -->
-  <script type="module" src="/js/smooth-scroll.js?v=224"></script>${headExtras({
+  <script type="module" src="/js/smooth-scroll.js?v=226"></script>${headExtras({
     url, title: `${title} | BGS Travel & Tourism`, description, image,
     jsonLd: [orgJsonLd(), ...itemJsonLd(item, collection, url, `${SITE}/`), {
       "@type": "BreadcrumbList",
@@ -221,10 +221,9 @@ function itemPage(item, collection) {
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="item-page-bar">
     <a class="site-logo" href="/">
-      <img class="site-logo-mark" src="/assets/monogram-96.webp?v=224" alt="" width="40" height="40" />
+      <img class="site-logo-mark" src="/assets/monogram-96.webp?v=226" alt="" width="40" height="40" />
       <span class="site-logo-text">
         <span class="site-logo-name">BGS Travel &amp; Tourism</span>
-        <span class="site-logo-place">Dubai, UAE</span>
       </span>
     </a>
   </header>
@@ -255,9 +254,44 @@ function itemPage(item, collection) {
        target="_blank" rel="noopener">Contact us on WhatsApp, we\u2019ll check for you</a>
   </section>
   <footer class="page-footer">
-    <p><a href="tel:+971555809388">055 580 9388</a> ·
-       <a href="mailto:info@bgstravelandtourism.com">info@bgstravelandtourism.com</a></p>
-    <p>BGS Travel &amp; Tourism · Dubai, UAE</p>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="footer-logo" href="/">
+          <img src="/assets/monogram-96.webp?v=226" alt="" width="44" height="44" />
+          <span>BGS Travel &amp; Tourism</span>
+        </a>
+        <p class="footer-line">Visas, flights, stays and journeys, handled by one team in Dubai.</p>
+        <a class="footer-cta" href="https://wa.me/971555809388" target="_blank" rel="noopener">
+          Talk to us on WhatsApp
+        </a>
+      </div>
+      <nav class="footer-col" aria-labelledby="ft-browse">
+        <h2 class="footer-head" id="ft-browse">Browse</h2>
+        <a href="/visa.html">Visa services</a>
+        <a href="/destinations.html">Destinations</a>
+        <a href="/packages.html">Packages</a>
+        <a href="/activities.html">Activities</a>
+        <a href="/mice.html">MICE</a>
+      </nav>
+      <nav class="footer-col" aria-labelledby="ft-services">
+        <h2 class="footer-head" id="ft-services">What we do</h2>
+        <a href="/services/visa/">Visa services</a>
+        <a href="/services/flights/">Flights</a>
+        <a href="/services/hotels/">Hotels &amp; stays</a>
+        <a href="/services/transport/">Transport &amp; fleet</a>
+        <a href="/services/activities/">Activities</a>
+        <a href="/services/concierge/">Concierge</a>
+      </nav>
+      <div class="footer-col">
+        <h2 class="footer-head">Reach us</h2>
+        <a href="tel:+971555809388">055 580 9388</a>
+        <a href="mailto:info@bgstravelandtourism.com">info@bgstravelandtourism.com</a>
+        <span>Dubai, United Arab Emirates</span>
+      </div>
+    </div>
+    <div class="footer-base">
+      <p>&copy; 2026 BGS Travel &amp; Tourism &middot; Dubai, United Arab Emirates</p>
+    </div>
   </footer>
 </body>
 </html>`;
@@ -428,10 +462,10 @@ function servicePage(service, page, content) {
   <link rel="preload" as="font" type="font/woff2" href="https://dcym8fthxf5uu.cloudfront.net/fonts/247a073c-29f5-4a89-aa3a-741020f346fc/OggText-Medium.woff2" crossorigin />${imageOrigin(image)}
   <title>${esc(label)} | BGS Travel &amp; Tourism</title>
   <meta name="description" content="${esc(description)}" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=224" />
-  <link rel="stylesheet" href="/styles.css?v=224" />
-  <link rel="stylesheet" href="/pages.css?v=224" />
-  <script type="module" src="/js/smooth-scroll.js?v=224"></script>${headExtras({
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=226" />
+  <link rel="stylesheet" href="/styles.css?v=226" />
+  <link rel="stylesheet" href="/pages.css?v=226" />
+  <script type="module" src="/js/smooth-scroll.js?v=226"></script>${headExtras({
     url, title: `${label} | BGS Travel & Tourism`, description, image,
     jsonLd: [orgJsonLd(), {
       "@type": "Service",
@@ -463,10 +497,9 @@ function servicePage(service, page, content) {
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="item-page-bar">
     <a class="site-logo" href="/">
-      <img class="site-logo-mark" src="/assets/monogram-96.webp?v=224" alt="" width="40" height="40" />
+      <img class="site-logo-mark" src="/assets/monogram-96.webp?v=226" alt="" width="40" height="40" />
       <span class="site-logo-text">
         <span class="site-logo-name">BGS Travel &amp; Tourism</span>
-        <span class="site-logo-place">Dubai, UAE</span>
       </span>
     </a>
   </header>
@@ -517,7 +550,44 @@ function servicePage(service, page, content) {
   </section>
 
   <footer class="page-footer">
-    <p>BGS Travel &amp; Tourism · Dubai, UAE</p>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="footer-logo" href="/">
+          <img src="/assets/monogram-96.webp?v=226" alt="" width="44" height="44" />
+          <span>BGS Travel &amp; Tourism</span>
+        </a>
+        <p class="footer-line">Visas, flights, stays and journeys, handled by one team in Dubai.</p>
+        <a class="footer-cta" href="https://wa.me/971555809388" target="_blank" rel="noopener">
+          Talk to us on WhatsApp
+        </a>
+      </div>
+      <nav class="footer-col" aria-labelledby="ft-browse">
+        <h2 class="footer-head" id="ft-browse">Browse</h2>
+        <a href="/visa.html">Visa services</a>
+        <a href="/destinations.html">Destinations</a>
+        <a href="/packages.html">Packages</a>
+        <a href="/activities.html">Activities</a>
+        <a href="/mice.html">MICE</a>
+      </nav>
+      <nav class="footer-col" aria-labelledby="ft-services">
+        <h2 class="footer-head" id="ft-services">What we do</h2>
+        <a href="/services/visa/">Visa services</a>
+        <a href="/services/flights/">Flights</a>
+        <a href="/services/hotels/">Hotels &amp; stays</a>
+        <a href="/services/transport/">Transport &amp; fleet</a>
+        <a href="/services/activities/">Activities</a>
+        <a href="/services/concierge/">Concierge</a>
+      </nav>
+      <div class="footer-col">
+        <h2 class="footer-head">Reach us</h2>
+        <a href="tel:+971555809388">055 580 9388</a>
+        <a href="mailto:info@bgstravelandtourism.com">info@bgstravelandtourism.com</a>
+        <span>Dubai, United Arab Emirates</span>
+      </div>
+    </div>
+    <div class="footer-base">
+      <p>&copy; 2026 BGS Travel &amp; Tourism &middot; Dubai, United Arab Emirates</p>
+    </div>
   </footer>
 </body>
 </html>`;
