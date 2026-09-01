@@ -12,7 +12,7 @@ import "./smooth-scroll.js?v=226";
 import { enableTilt } from "./tilt.js?v=226";
 import { buildPrimaryNav } from "./nav-model.js?v=226";
 import { track } from "./analytics.js?v=226";
-import { contactStripMarkup, legalLinksMarkup, openInfo } from "./info-modal.js?v=226";
+import { contactStripMarkup, legalLinksMarkup, socialLinksMarkup, openInfo } from "./info-modal.js?v=226";
 import { cardSrc } from "../utils/images.js?v=226";
 import { enableCategoryRail } from "./category-rail.js?v=226";
 
@@ -446,6 +446,8 @@ const NOT_FOUND_NOUN = {
 
 const footerContact = document.querySelector("#footer-contact");
 if (footerContact) footerContact.innerHTML = contactStripMarkup({ legal: false });
+const footerSocial = document.querySelector("#footer-social");
+if (footerSocial) footerSocial.innerHTML = socialLinksMarkup();
 const footerLegal = document.querySelector("#footer-legal");
 if (footerLegal) footerLegal.innerHTML = legalLinksMarkup();
 

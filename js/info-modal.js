@@ -1,4 +1,4 @@
-import { LEGAL_DOCS, LEGAL_LINKS, CONTACT_CHANNELS } from "../data/legal.js?v=226";
+import { LEGAL_DOCS, LEGAL_LINKS, CONTACT_CHANNELS, SOCIAL_LINKS, SOCIAL_HANDLE } from "../data/legal.js?v=226";
 import { icon } from "../data/icons.js?v=226";
 
 /**
@@ -91,6 +91,28 @@ function blockMarkup(block) {
  * the drawer. Built from the same CONTACT_CHANNELS the Contacts panel reads,
  * so a phone number is never written down twice and cannot drift.
  */
+/**
+ * The social row: four marks, no words.
+ *
+ * Icon-only, so each link carries its own accessible name — aria-label plus a
+ * title for the hover tooltip. A row of unlabelled marks is only usable
+ * because of that, not in spite of it.
+ *
+ * rel="noopener" on every one: these open a new tab, and without it the opened
+ * page gets a handle on this one through window.opener.
+ */
+export function socialLinksMarkup({ handle = true } = {}) {
+  const links = SOCIAL_LINKS.map((s) =>
+    `<a class="social-link" href="${esc(s.href)}" target="_blank" rel="noopener"
+        aria-label="BGS Travel & Tourism on ${esc(s.label)}" title="${esc(s.label)}"
+        data-social="${esc(s.key)}">${icon(s.icon)}</a>`).join("");
+
+  return `<div class="social-row">
+    ${handle ? `<p class="social-handle">${esc(SOCIAL_HANDLE)}</p>` : ""}
+    <div class="social-links">${links}</div>
+  </div>`;
+}
+
 export function contactStripMarkup({ legal: legalOn = true } = {}) {
   const links = CONTACT_CHANNELS.filter((c) => c.href).map((c) =>
     '<a class="contact-strip-item" href="' + esc(c.href) + '"' +

@@ -1,6 +1,6 @@
 import { getCollection, subscribe } from "./store.js?v=226";
 import "./info-modal.js?v=226";
-import { contactStripMarkup, legalLinksMarkup, openInfo } from "./info-modal.js?v=226";
+import { contactStripMarkup, legalLinksMarkup, socialLinksMarkup, openInfo } from "./info-modal.js?v=226";
 import { createNavigation } from "./navigation.js?v=226";
 import { buildPrimaryNav } from "./nav-model.js?v=226";
 import { resolvePill, HOME_COPY } from "../data/home.js?v=226";
@@ -636,6 +636,8 @@ document.querySelector("#hm-chat")?.addEventListener("click", () => {
 
 const footerContact = document.querySelector("#footer-contact");
 if (footerContact) footerContact.innerHTML = contactStripMarkup({ legal: false });
+const footerSocial = document.querySelector("#footer-social");
+if (footerSocial) footerSocial.innerHTML = socialLinksMarkup();
 const footerLegal = document.querySelector("#footer-legal");
 if (footerLegal) footerLegal.innerHTML = legalLinksMarkup();
 
