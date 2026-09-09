@@ -836,6 +836,41 @@ ${Object.entries(PAGES).flatMap(([c]) => (content[c] ?? []).map((i) =>
 console.log(`  cards pre-rendered: ${cardCount}   item pages: ${pageCount}   service pages: ${servicePageCount}`);
 console.log(`  sitemap entries:    ${urls.length}`);
 console.log(`  hero pills in HTML:   ${pills.painted}`);
+/**
+ * Prefixes every root-relative link with a base path.
+ *
+ * Only for GitHub Pages, which serves a project repo from a subfolder. The
+ * site writes href="/visa/dubai-visa/" because on its own domain that is
+ * correct; under /bgs-travel-revamp-simpler it is a 404. Rather than teach
+ * forty call sites about a base path they will never need again, this rewrites
+ * the output once, and does nothing at all when BASE_PATH is unset — which is
+ * every deploy that matters.
+ *
+ * Protocol-relative URLs (//host/...) are left alone: those are not paths.
+ */
+function applyBasePath() {
+  const base = (process.env.BASE_PATH || "").replace(/\/$/, "");
+  if (!base) return 0;
+
+  let touched = 0;
+  const walk = (dir) => {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) { walk(full); continue; }
+      if (!/\.(html|css|js|mjs|xml|txt|json)$/.test(entry.name)) continue;
+      const before = fs.readFileSync(full, "utf8");
+      const after = before
+        .replace(/(href|src)="\/(?!\/)/g, `$1="${base}/`)
+        .replace(/(srcset|imagesrcset)="\/(?!\/)/g, `$1="${base}/`);
+      if (after !== before) { fs.writeFileSync(full, after); touched++; }
+    }
+  };
+  walk(DIST);
+  return touched;
+}
+
 const min = await minifyDist();
 console.log(`  minified:           ${min.files} files, ${Math.round(min.saved / 1024)} KB saved`);
+const based = applyBasePath();
+if (based) console.log(`  base path applied:  ${process.env.BASE_PATH} (${based} files)`);
 console.log(`  collections:        ${counts}`);
