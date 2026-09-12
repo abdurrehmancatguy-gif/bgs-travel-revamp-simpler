@@ -1,5 +1,5 @@
-import { LEGAL_DOCS, LEGAL_LINKS, CONTACT_CHANNELS, SOCIAL_LINKS, SOCIAL_HANDLE } from "../data/legal.js?v=226";
-import { icon } from "../data/icons.js?v=226";
+import { LEGAL_DOCS, LEGAL_LINKS, CONTACT_CHANNELS, SOCIAL_LINKS, SOCIAL_HANDLE } from "../data/legal.js?v=228";
+import { icon } from "../data/icons.js?v=228";
 
 /**
  * The Contacts and legal panels. One <dialog> is built lazily and reused for
@@ -132,7 +132,7 @@ export function contactStripMarkup({ legal: legalOn = true } = {}) {
   "</div>";
 }
 
-/** Privacy and Terms on their own, for the footer's base row. */
+/** Privacy and Terms on their own, for the footer's Legal column. */
 export function legalLinksMarkup() {
   return LEGAL_LINKS.map((l) =>
     '<button class="info-legal-link" type="button" data-info="' + l.key + '">' +
