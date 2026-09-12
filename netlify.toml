@@ -29,9 +29,11 @@
 #
 # The CSP is an allowlist of the exact origins this site loads from, and it is
 # strict where it counts: script-src carries no 'unsafe-inline' and no
-# 'unsafe-eval', because the site has neither an inline <script> nor an inline
-# event handler anywhere. That is the directive that turns a content-injection
-# bug into a non-event: injected markup can no longer bring its own code.
+# 'unsafe-eval'. The site's one inline <script> - the low-power check in every
+# page's <head> - is let through by its sha256 alone (see the policy below), and
+# there is no inline event handler anywhere. That is the directive that turns a
+# content-injection bug into a non-event: injected markup cannot bring its own
+# code.
 #
 # Origins, and why each is here:
 #   cdn.jsdelivr.net    PostHog analytics (js/analytics.js)
