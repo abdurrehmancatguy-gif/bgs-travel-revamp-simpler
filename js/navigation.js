@@ -1,7 +1,7 @@
-import { buildPrimaryNav, buildDrawerMenus } from "./nav-model.js?v=230";
-import { subscribe } from "./store.js?v=230";
-import { contactStripMarkup } from "./info-modal.js?v=230";
-import { icon } from "../data/icons.js?v=230";
+import { buildPrimaryNav, buildDrawerMenus } from "./nav-model.js?v=231";
+import { subscribe } from "./store.js?v=231";
+import { contactStripMarkup } from "./info-modal.js?v=231";
+import { icon } from "../data/icons.js?v=231";
 
 /**
  * Header dropdowns and the mobile drawer.

@@ -1,6 +1,6 @@
 import {
   WHATSAPP_DISPLAY, CONTACT_EMAIL, LOCATION, buildWhatsAppUrl,
-} from "../utils/whatsapp.js?v=230";
+} from "../utils/whatsapp.js?v=231";
 
 /**
  * Contact details and the legal notices, as data rather than markup, so the
@@ -8,11 +8,21 @@ import {
  * the store the way the rest of the catalogue is.
  *
  * The notices below are BGS's own supplied text, reproduced as given. A `body`
- * entry is either a paragraph string or { list: [...] } for a bulleted run —
- * the two shapes the source document uses. Nothing here renders a rule or a
- * divider: the source marked its parts with ASCII separators, which are a
- * plain-text device and have no business in a rendered panel.
+ * entry is a paragraph string, { list: [...] } for a bulleted run, or
+ * { table: { label, head, rows } } for a grid the source sets out in columns
+ * (Shipping, section 3). Nothing here renders a rule or a divider: the source
+ * marked its parts with ASCII separators, which are a plain-text device and
+ * have no business in a rendered panel.
  */
+
+/**
+ * The address the supplied Shipping policy gives in its section 10, used too
+ * for the "[Insert Email Address]" it left in section 8; the phone it left
+ * blank is the site's own number. Kept apart from CONTACT_EMAIL on purpose:
+ * every other surface uses that one, and whether this mailbox exists is the
+ * owner's to confirm — one line to change if it does not.
+ */
+const SHIPPING_EMAIL = "support@bgstravelandtourism.com";
 
 /**
  * Where BGS is, off this site.
@@ -336,6 +346,120 @@ export const LEGAL_DOCS = {
       },
     ],
   },
+
+  shipping: {
+    title: "Shipping & Delivery Policy",
+    updated: "September 12, 2026",
+    intro: [
+      "At BGS Travel and Tourism, we understand that when you are preparing for a journey, timing is everything. Whether you are waiting for physical travel documents, luggage tags, or branded merchandise, our goal is to get your items to you safely, swiftly, and with total transparency.",
+      "This Shipping Policy outlines how we handle the physical delivery of documents and goods purchased through bgstravelandtourism.com.",
+    ],
+    sections: [
+      {
+        heading: "1. Scope of This Policy",
+        body: [
+          "This policy applies to the shipping of physical goods, including but not limited to:",
+          { list: [
+            "Printed flight itineraries and hotel vouchers.",
+            "Physical travel documentation packages.",
+            "BGS Travel branded merchandise (luggage tags, apparel, etc.).",
+            "Gift cards (physical format).",
+          ] },
+          "Note: Digital documents (e-tickets, PDF itineraries) are delivered instantly via email and are not subject to this shipping policy.",
+        ],
+      },
+      {
+        heading: "2. Order Processing Time",
+        body: [
+          "We know you are eager to go. Here is our timeline:",
+          { list: [
+            "Standard Processing: All orders are processed within 1-2 business days (Monday–Friday, excluding holidays).",
+            "Custom Travel Kits: If your order includes customized travel documentation for a complex itinerary, please allow 3-5 business days for assembly and verification before shipping.",
+            "Order Cut-off: Orders placed after 2:00 PM (EST) will begin processing on the next business day.",
+          ] },
+          "You will receive a confirmation email with tracking information the moment your package leaves our facility.",
+        ],
+      },
+      {
+        heading: "3. Shipping Rates & Delivery Estimates",
+        body: [
+          "We offer flexible shipping options to suit your timeline. Shipping charges for your order will be calculated and displayed at checkout.",
+          { table: {
+            label: "Shipping methods, delivery times and cost",
+            head: ["Shipping Method", "Estimated Delivery Time", "Cost"],
+            rows: [
+              ["Standard Ground", "3-7 Business Days", "Calculated at Checkout"],
+              ["Expedited (Priority)", "2-3 Business Days", "Calculated at Checkout"],
+              ["Overnight (Express)", "1 Business Day", "Calculated at Checkout"],
+              ["International", "10-20 Business Days", "Calculated at Checkout"],
+            ],
+          } },
+          "Please note: Delivery delays can occasionally occur due to carrier issues or severe weather.",
+        ],
+      },
+      {
+        heading: "4. Shipment Confirmation & Order Tracking",
+        body: [
+          "Once your order has shipped, you will receive a Shipment Confirmation Email containing your tracking number(s). The tracking number will be active within 24 hours.",
+          "For high-value travel documents, a Signature Confirmation may be required upon delivery to ensure your documents do not fall into the wrong hands. Please ensure someone is available at the shipping address to sign for the package.",
+        ],
+      },
+      {
+        heading: "5. Shipping to P.O. Boxes & APO/FPO Addresses",
+        body: [
+          { list: [
+            "P.O. Boxes: We generally recommend shipping to a physical address to ensure expedited delivery. However, we can ship to P.O. Boxes via Standard Mail only.",
+            "APO/FPO/DPO: We proudly support our military personnel. We ship to APO/FPO addresses via USPS Priority Mail. Delivery times vary depending on the destination.",
+          ] },
+        ],
+      },
+      {
+        heading: "6. International Shipping",
+        body: [
+          "We currently ship to select international destinations.",
+          { list: [
+            "Customs & Duties: Your order may be subject to import duties and taxes (including VAT), which are incurred once a shipment reaches your destination country. BGS Travel and Tourism is not responsible for these charges if they are applied and are your responsibility as the customer.",
+            "Customs Delays: We have no control over customs processing times. Please plan accordingly for international travel documents.",
+          ] },
+        ],
+      },
+      {
+        heading: '7. Digital Delivery (The "Paperless" Option)',
+        body: [
+          "To save time and reduce environmental impact, we strongly encourage all clients to opt for Digital Delivery for their travel itineraries and tickets. These are sent directly to your email and are accessible 24/7 on your mobile device. If you selected digital delivery but require physical copies, please contact us immediately to arrange shipping (additional fees apply).",
+        ],
+      },
+      {
+        heading: "8. Damaged or Lost Packages",
+        body: [
+          "BGS Travel and Tourism is not liable for any products damaged or lost during shipping. If you received your order damaged, please contact the shipment carrier to file a claim immediately.",
+          "However, we are here to help:",
+          { list: [
+            `If your travel documents are lost in transit, please contact us immediately at ${SHIPPING_EMAIL}. We will work with you to re-issue digital copies instantly so your trip is not interrupted.`,
+            "Please save all packaging materials and damaged goods before filing a claim.",
+          ] },
+        ],
+      },
+      {
+        heading: "9. Address Errors",
+        body: [
+          "Please double-check your billing and shipping addresses. We are not responsible for packages delivered to an incorrect address provided by the customer. If a package is returned to us due to an incorrect address, you will be responsible for the cost of re-shipping.",
+        ],
+      },
+      {
+        heading: "10. Questions?",
+        body: [
+          "We are here to make your travel experience seamless. If you have any questions about your order or shipping, please contact our support team:",
+          "BGS Travel and Tourism",
+          { list: [
+            `Email: ${SHIPPING_EMAIL}`,
+            `Phone: ${WHATSAPP_DISPLAY}`,
+            "Hours: Monday – Friday, 9:00 AM – 5:00 PM (EST)",
+          ] },
+        ],
+      },
+    ],
+  },
 };
 
 /**
@@ -347,4 +471,5 @@ export const LEGAL_DOCS = {
 export const LEGAL_LINKS = [
   { key: "privacy", label: "Privacy" },
   { key: "terms", label: "Terms" },
+  { key: "shipping", label: "Shipping" },
 ];

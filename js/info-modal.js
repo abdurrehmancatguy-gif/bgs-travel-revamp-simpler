@@ -1,5 +1,5 @@
-import { LEGAL_DOCS, LEGAL_LINKS, CONTACT_CHANNELS, SOCIAL_LINKS, SOCIAL_HANDLE } from "../data/legal.js?v=230";
-import { icon } from "../data/icons.js?v=230";
+import { LEGAL_DOCS, LEGAL_LINKS, CONTACT_CHANNELS, SOCIAL_LINKS, SOCIAL_HANDLE } from "../data/legal.js?v=231";
+import { icon } from "../data/icons.js?v=231";
 
 /**
  * The Contacts and legal panels. One <dialog> is built lazily and reused for
@@ -67,7 +67,7 @@ function documentMarkup(doc) {
   }
   return `
     ${doc.updated ? `<p class="info-dialog-updated">Last updated ${esc(doc.updated)}</p>` : ""}
-    ${doc.intro ? `<p class="info-dialog-intro">${esc(doc.intro)}</p>` : ""}
+    ${[].concat(doc.intro ?? []).map((p) => `<p class="info-dialog-intro">${esc(p)}</p>`).join("")}
     ${sections.map((section) => `
       <section class="info-dialog-section">
         <h3>${esc(section.heading)}</h3>
@@ -75,13 +75,32 @@ function documentMarkup(doc) {
       </section>`).join("")}`;
 }
 
-/** A body entry is a paragraph, or { list } for one of the bulleted runs. */
+/**
+ * A body entry is a paragraph, { list } for one of the bulleted runs, or
+ * { table } for a grid the source sets out in columns.
+ *
+ * The first cell of each table row is its row header, so a screen reader
+ * announces "Overnight (Express), Cost" rather than a bare figure. The table
+ * sits in its own box that scrolls sideways where a phone is narrower than the
+ * columns, and a box that scrolls has to be reachable without a mouse — hence
+ * the tabindex and the label that says what the region is.
+ */
 function blockMarkup(block) {
   if (typeof block === "string") return `<p>${esc(block)}</p>`;
   if (block?.list) {
     return `<ul class="info-dialog-list">${
       block.list.map((item) => `<li>${esc(item)}</li>`).join("")
     }</ul>`;
+  }
+  if (block?.table) {
+    const { label = "", head = [], rows = [] } = block.table;
+    return `<div class="info-dialog-table" role="region" tabindex="0" aria-label="${esc(label)}">
+      <table>
+        <thead><tr>${head.map((cell) => `<th scope="col">${esc(cell)}</th>`).join("")}</tr></thead>
+        <tbody>${rows.map((row) => `<tr>${row.map((cell, i) =>
+          i === 0 ? `<th scope="row">${esc(cell)}</th>` : `<td>${esc(cell)}</td>`).join("")}</tr>`).join("")}</tbody>
+      </table>
+    </div>`;
   }
   return "";
 }
@@ -132,7 +151,7 @@ export function contactStripMarkup({ legal: legalOn = true } = {}) {
   "</div>";
 }
 
-/** Privacy and Terms on their own, for the footer's Legal column. */
+/** The legal notices' buttons on their own, for the footer's Legal column. */
 export function legalLinksMarkup() {
   return LEGAL_LINKS.map((l) =>
     '<button class="info-legal-link" type="button" data-info="' + l.key + '">' +
