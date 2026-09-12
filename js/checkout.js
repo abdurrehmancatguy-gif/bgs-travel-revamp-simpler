@@ -1,7 +1,7 @@
-import { getCollection, subscribe } from "./store.js?v=228";
-import { createNavigation } from "./navigation.js?v=228";
-import { contactStripMarkup, legalLinksMarkup, socialLinksMarkup } from "./info-modal.js?v=228";
-import { buildWhatsAppUrl, openWhatsApp } from "../utils/whatsapp.js?v=228";
+import { getCollection, subscribe } from "./store.js?v=230";
+import { createNavigation } from "./navigation.js?v=230";
+import { contactStripMarkup, legalLinksMarkup, socialLinksMarkup } from "./info-modal.js?v=230";
+import { buildWhatsAppUrl, openWhatsApp } from "../utils/whatsapp.js?v=230";
 
 /**
  * The visa application form, and the checkout it leads to.
@@ -219,15 +219,17 @@ function itemMarkup(i, j, item) {
   const label = `<label class="co-doc-label" for="${id}">${esc(item.label)}`
     + `${hint ? `<span class="co-doc-hint">${esc(hint)}</span>` : ""}</label>`;
 
+  // The state line is a polite live region the input points at, so a file
+  // turned away for size is announced, not just printed beside the control.
   if (item.kind === "file") {
     const file = chosen.get(k);
     return `
             <li class="co-doc"${file ? ' data-have="1"' : ""}>
               ${label}
               <input class="co-doc-input" id="${id}" type="file"
-                     data-key="${esc(k)}"
+                     data-key="${esc(k)}" aria-describedby="${id}-state"
                      accept="image/*,application/pdf" />
-              <span class="co-doc-state">${file ? esc(file.name) : "No file yet"}</span>
+              <span class="co-doc-state" id="${id}-state" role="status">${file ? esc(file.name) : "No file yet"}</span>
             </li>`;
   }
 
@@ -302,6 +304,7 @@ document.addEventListener("change", (event) => {
     const file = doc.files?.[0];
     const row = doc.closest(".co-doc");
     const state_ = row?.querySelector(".co-doc-state");
+    doc.removeAttribute("aria-invalid");
 
     if (!file) { chosen.delete(key); row?.removeAttribute("data-have"); if (state_) state_.textContent = "No file yet"; updateCounts(); return; }
 
@@ -309,9 +312,15 @@ document.addEventListener("change", (event) => {
     // has to survive one request.
     if (file.size > 10 * 1024 * 1024) {
       doc.value = "";
+      doc.setAttribute("aria-invalid", "true");
       chosen.delete(key);
       row?.removeAttribute("data-have");
-      if (state_) state_.textContent = "Too large — 10MB maximum";
+      // Emptied first and refilled a beat later, so choosing the same
+      // oversized photo twice is announced twice rather than once.
+      if (state_) {
+        state_.textContent = "";
+        setTimeout(() => { state_.textContent = "Too large — 10MB maximum"; }, 60);
+      }
       updateCounts();
       return;
     }
@@ -472,6 +481,10 @@ function renderReview() {
 
 let formScroll = 0;
 
+/* True while an order is uploading. The checkout it was placed from has to
+   stay put until the answer comes back, or the answer lands on another one. */
+let placing = false;
+
 function showReview() {
   renderReview();
   formScroll = scrollY;
@@ -504,12 +517,15 @@ addEventListener("popstate", () => {
   // Once the order is placed there is no form to go back to — showing it again
   // would only invite the same order twice.
   if (!visa || !el("#co-done").hidden) return;
+  // Back during the upload stays on the checkout the order was placed from.
+  if (placing) { history.pushState({ view: "review" }, ""); return; }
   if (history.state?.view !== "review") showForm();
   else if (checkForm()) showReview();
 });
 
 el("#co-place")?.addEventListener("click", async (event) => {
   const button = event.currentTarget;
+  const edit = el("#co-edit");
   const error = el("#co-review-error");
   error.hidden = true;
 
@@ -521,7 +537,8 @@ el("#co-place")?.addEventListener("click", async (event) => {
     payload.append("meta", JSON.stringify({ applicant, requirement }));
   }
 
-  button.disabled = true;
+  placing = true;
+  button.disabled = edit.disabled = true;
   button.textContent = "Placing order…";
   try {
     const res = await fetch("/api/visa-order", { method: "POST", body: payload });
@@ -531,14 +548,19 @@ el("#co-place")?.addEventListener("click", async (event) => {
   } catch (err) {
     // The status code is for us, not the customer — "the server answered 501"
     // told them nothing they could act on. What they can act on is the other
-    // way in, which stays open whatever the API is doing.
+    // way in, which stays open whatever the API is doing. Nothing was placed,
+    // so the link quotes the order on screen now: a catalogue redraw during
+    // the upload can have moved the price.
     console.warn("Visa order not sent:", err);
     error.innerHTML =
       "Your order could not be sent just now. "
-      + `<a href="${esc(buildWhatsAppUrl(waMessage(order)))}" target="_blank" rel="noopener">Send it on WhatsApp instead</a>.`;
+      + `<a href="${esc(buildWhatsAppUrl(waMessage(currentOrder())))}" target="_blank" rel="noopener">Send it on WhatsApp instead</a>.`;
     error.hidden = false;
     button.disabled = false;
     button.textContent = "Place order";
+  } finally {
+    placing = false;
+    edit.disabled = false;
   }
 });
 
@@ -555,15 +577,17 @@ function waMessage(order, reference) {
 function showDone(reference, order) {
   el("#co-form").hidden = true;
   el("#co-review").hidden = true;
-  const done = el("#co-done");
-  done.hidden = false;
+  el("#co-done").hidden = false;
   el("#co-ref").textContent = reference;
   el("#co-done-note").textContent =
     `We have ${order.applicants === 1 ? "your documents" : `documents for ${order.applicants} applicants`}`
     + ` for ${order.visa_name}. The team will confirm the price and the next steps.`;
   el("#co-done-wa").href = buildWhatsAppUrl(waMessage(order, reference));
   history.replaceState({ view: "done" }, "");
-  done.scrollIntoView({ block: "start", behavior: "smooth" });
+  // To the top of the page, not the section's top edge to the top of the
+  // screen: the header is sticky glass, and that parked the focused heading
+  // underneath it.
+  scrollTo({ top: 0, behavior: "instant" });
   el("#co-done-title").focus({ preventScroll: true });
 }
 
@@ -585,6 +609,14 @@ createNavigation({
     }
     if (action?.kind === "whatsapp") openWhatsApp(buildWhatsAppUrl(action.intent));
   },
+});
+
+// A #fragment link adds a history entry whose state is null, and popstate
+// reads null as "back to the form" — so Skip to content would close the
+// checkout. It only has to move focus, and that needs no history entry.
+document.querySelector(".skip-link")?.addEventListener("click", (event) => {
+  event.preventDefault();
+  el("#main").focus();
 });
 
 const footerContact = document.querySelector("#footer-contact");
