@@ -1,0 +1,386 @@
+/* =========================================================================
+   Visa application
+   -------------------------------------------------------------------------
+   A form on a light page, numbered so somebody can see how far in they are.
+   The running total is the one thing that must never scroll out of reach, so
+   below the breakpoint it sticks to the bottom of the viewport.
+   ========================================================================= */
+
+.co-shell {
+  width: min(760px, calc(100% - clamp(16px, 5vw, 48px)));
+  margin: clamp(88px, 12vh, 130px) auto clamp(60px, 10vh, 110px);
+}
+
+.co-head { margin-bottom: clamp(24px, 4vw, 38px); }
+
+.co-title {
+  margin: 0 0 10px;
+  font-family: var(--font-display, Georgia, serif);
+  font-size: clamp(2rem, 6vw, 3rem);
+  line-height: 1.06;
+  color: var(--navy);
+}
+
+.co-lede {
+  margin: 0;
+  max-width: 54ch;
+  line-height: 1.6;
+  color: rgba(13, 27, 42, 0.68);
+}
+
+/* --- steps --- */
+
+.co-step {
+  padding: clamp(20px, 3vw, 28px);
+  margin-bottom: 16px;
+  border: 1px solid rgba(13, 27, 42, 0.1);
+  border-radius: 18px;
+  background: #fff;
+}
+
+.co-step-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 6px;
+  font-size: 1.02rem;
+  color: var(--navy);
+}
+
+/* The number is the affordance: it tells you this is a sequence, and how long
+   it is, before you read a word of it. Counted rather than written in the
+   markup, because step 2 only exists for the few visas quoting two rates —
+   written numbers read 1, 3, 4 on all the others. A hidden step is
+   display:none, and display:none does not count. */
+.co-form { counter-reset: step; }
+.co-form > .co-step { counter-increment: step; }
+.co-form .co-step-head > span:first-child::before { content: counter(step); }
+
+.co-step-head span:first-child {
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: var(--cream);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.co-step-note {
+  margin: 0 0 16px;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: rgba(13, 27, 42, 0.6);
+}
+
+/* --- applicant count --- */
+
+.co-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px;
+  border: 1px solid rgba(13, 27, 42, 0.14);
+  border-radius: 999px;
+}
+
+.co-step-btn {
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(13, 27, 42, 0.05);
+  color: var(--navy);
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.co-step-btn:hover { background: rgba(13, 27, 42, 0.1); }
+
+.co-count {
+  min-width: 3ch;
+  text-align: center;
+  font-size: 1.15rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--navy);
+}
+
+/* --- processing tiers --- */
+
+.co-tiers { display: grid; gap: 10px; }
+
+.co-tier {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid rgba(13, 27, 42, 0.14);
+  border-radius: 14px;
+  cursor: pointer;
+}
+.co-tier:has(input:checked) {
+  border-color: var(--navy);
+  background: rgba(13, 27, 42, 0.03);
+}
+.co-tier input { accent-color: var(--navy); }
+.co-tier-body { display: grid; gap: 2px; }
+.co-tier-name { font-weight: 600; color: var(--navy); }
+.co-tier-note { font-size: 0.82rem; color: rgba(13, 27, 42, 0.58); }
+.co-tier-price { font-weight: 700; color: var(--navy); font-variant-numeric: tabular-nums; }
+
+/* --- documents --- */
+
+.co-applicants { display: grid; gap: 10px; }
+
+.co-applicant {
+  border: 1px solid rgba(13, 27, 42, 0.12);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+/* Collapsed by default past the first: nine documents times four applicants is
+   a wall, and a wall is where people stop. */
+.co-applicant-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--navy);
+  background: rgba(13, 27, 42, 0.03);
+  list-style: none;
+}
+.co-applicant-head::-webkit-details-marker { display: none; }
+
+.co-applicant-count {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(13, 27, 42, 0.08);
+  color: rgba(13, 27, 42, 0.62);
+  font-variant-numeric: tabular-nums;
+}
+.co-applicant-count[data-complete="true"] {
+  background: rgba(37, 211, 102, 0.16);
+  color: #12703c;
+}
+
+.co-docs { list-style: none; margin: 0; padding: 8px; display: grid; gap: 6px; }
+
+.co-doc {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(13, 27, 42, 0.02);
+}
+.co-doc[data-have] { background: rgba(37, 211, 102, 0.08); }
+
+.co-doc-label { font-size: 0.9rem; color: var(--navy); line-height: 1.4; }
+
+.co-doc-input {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  width: 108px;
+  font-size: 0.78rem;
+}
+
+.co-doc-state {
+  grid-column: 1;
+  font-size: 0.76rem;
+  color: rgba(13, 27, 42, 0.5);
+  overflow-wrap: anywhere;
+}
+.co-doc[data-have] .co-doc-state { color: #12703c; }
+
+/* A qualifier the list carried on a line of its own ("White photo
+   background"), shown under the item it belongs to. */
+.co-doc-hint {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.76rem;
+  color: rgba(13, 27, 42, 0.55);
+}
+
+/* A detail is typed, not uploaded: the label above, the field full width. */
+.co-doc-detail { grid-template-columns: 1fr; }
+.co-doc-note { grid-template-columns: 1fr; font-size: 0.86rem; color: rgba(13, 27, 42, 0.7); }
+
+/* --- your details --- */
+
+.co-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.co-field-wide { grid-column: 1 / -1; }
+
+.co-field {
+  display: grid;
+  gap: 5px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--navy);
+}
+
+.co-field input,
+.co-field textarea,
+.co-detail-input {
+  padding: 11px 13px;
+  border: 1px solid rgba(13, 27, 42, 0.16);
+  border-radius: 10px;
+  font: inherit;
+  font-weight: 400;
+  color: var(--navy);
+  background: #fff;
+}
+textarea.co-detail-input { resize: vertical; }
+.co-field input:focus-visible,
+.co-field textarea:focus-visible,
+.co-detail-input:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 1px;
+}
+
+.co-optional {
+  font-weight: 400;
+  font-size: 0.78rem;
+  color: rgba(13, 27, 42, 0.45);
+}
+
+/* --- the total --- */
+
+.co-summary {
+  /* Deliberately NOT sticky by default.
+     The summary is around 270px tall — three rows, a button and a line of small
+     print. Pinned to the bottom of a short viewport it stops being a summary
+     and becomes a lid: measured at 305x355, it covered 76% of the screen and
+     the form was unreachable behind it. It only earns the pin where there is
+     room for it, which the height query below decides. */
+  margin-top: 18px;
+  padding: clamp(18px, 3vw, 24px);
+  border: 1px solid rgba(13, 27, 42, 0.12);
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 -6px 26px rgba(13, 27, 42, 0.08);
+}
+
+.co-sums { margin: 0 0 14px; display: grid; gap: 6px; }
+.co-sums > div { display: flex; justify-content: space-between; gap: 12px; }
+.co-sums dt { color: rgba(13, 27, 42, 0.62); font-size: 0.9rem; }
+.co-sums dd { margin: 0; font-variant-numeric: tabular-nums; color: var(--navy); }
+
+.co-sums-total {
+  padding-top: 8px;
+  border-top: 1px solid rgba(13, 27, 42, 0.1);
+}
+.co-sums-total dt { font-weight: 700; color: var(--navy); font-size: 1rem; }
+.co-sums-total dd { font-weight: 700; font-size: 1.2rem; }
+
+.co-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50px;
+  padding: 0 24px;
+  border: 1px solid rgba(13, 27, 42, 0.16);
+  border-radius: 999px;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--navy);
+  background: #fff;
+  cursor: pointer;
+}
+.co-btn-primary {
+  border-color: var(--navy);
+  background: var(--navy);
+  color: var(--cream);
+}
+.co-submit { width: 100%; }
+.co-submit[disabled] { opacity: 0.6; cursor: progress; }
+
+.co-error {
+  margin: 0 0 12px;
+  padding: 11px 13px;
+  border-radius: 10px;
+  background: rgba(140, 47, 29, 0.1);
+  color: #8c2f1d;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+.co-error a { color: inherit; }
+
+.co-fineprint {
+  margin: 10px 0 0;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  text-align: center;
+  color: rgba(13, 27, 42, 0.5);
+}
+
+/* --- the checkout --- */
+
+.co-step > .co-sums { margin: 10px 0 0; }
+.co-sums dd { text-align: right; overflow-wrap: anywhere; }
+
+.co-review-docs { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 8px; }
+.co-review-docs li {
+  display: grid;
+  gap: 6px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(13, 27, 42, 0.03);
+  color: var(--navy);
+}
+.co-review-doc-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-weight: 600;
+}
+.co-review-missing { font-size: 0.84rem; line-height: 1.5; color: rgba(13, 27, 42, 0.62); }
+.co-review-answer { font-size: 0.86rem; line-height: 1.5; color: rgba(13, 27, 42, 0.78); overflow-wrap: anywhere; }
+
+.co-review-actions { display: grid; gap: 10px; }
+.co-review-actions > * { margin: 0; }
+
+/* --- the two end states --- */
+
+.co-missing, .co-done { text-align: center; padding: clamp(30px, 6vw, 60px) 0; }
+.co-missing h1, .co-done h1 {
+  margin: 0 0 12px;
+  font-family: var(--font-display, Georgia, serif);
+  font-size: clamp(1.8rem, 5vw, 2.6rem);
+  color: var(--navy);
+}
+.co-missing p, .co-done p { margin: 0 auto 18px; max-width: 46ch; line-height: 1.6; color: rgba(13, 27, 42, 0.68); }
+.co-ref strong {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 1.15rem;
+  letter-spacing: 0.06em;
+  color: var(--navy);
+}
+.co-done-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+
+/* Tall enough that a pinned summary still leaves a form worth scrolling.
+   640px is roughly a small phone in portrait; below it — landscape, split
+   screen, a short window — the summary simply ends the page instead. */
+@media (min-height: 640px) {
+  .co-summary { position: sticky; bottom: 0; }
+  /* The pinned box is opaque and up to ~310px tall with an error showing, so
+     a field tabbed to in the bottom band of the screen would be focused but
+     hidden behind it. Scrolling a focused field into view honours this. */
+  html { scroll-padding-bottom: 320px; }
+}
+
+@media (max-width: 560px) {
+  .co-fields { grid-template-columns: 1fr; }
+  .co-doc { grid-template-columns: 1fr; }
+  .co-doc-input { grid-column: 1; grid-row: auto; width: 100%; }
+}

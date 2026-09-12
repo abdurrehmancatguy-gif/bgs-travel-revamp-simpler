@@ -1,7 +1,7 @@
-import { fullSrc } from "../utils/images.js?v=226";
-import { icon } from "../data/icons.js?v=226";
-import { priceLabel, priceFacts } from "../data/packages.js?v=226";
-import { openWhatsApp, buildWhatsAppItemUrl } from "../utils/whatsapp.js?v=226";
+import { fullSrc } from "../utils/images.js?v=228";
+import { icon } from "../data/icons.js?v=228";
+import { priceLabel, priceFacts } from "../data/packages.js?v=228";
+import { openWhatsApp, buildWhatsAppItemUrl } from "../utils/whatsapp.js?v=228";
 
 /**
  * The detail panel a card opens. One dialog, reused for every card on every
@@ -165,10 +165,18 @@ export function openItem(item, collection) {
         </ul>` : ""}
       </div>
 
-      <footer class="item-dialog-foot">
-        <button class="item-dialog-cta" type="button" data-item-enquire>
+      <footer class="item-dialog-foot"${collection === "visa" ? ' data-two-up' : ""}>
+        ${collection === "visa" ? `
+        <a class="item-dialog-cta item-dialog-apply"
+           href="checkout.html?visa=${encodeURIComponent(title)}">Apply Now</a>` : ""}
+        <button class="item-dialog-cta${collection === "visa" ? " item-dialog-cta-quiet" : ""}"
+                type="button" data-item-enquire>
           <span class="item-dialog-cta-icon" aria-hidden="true">${icon("whatsapp")}</span>
-          <span>Buy Now on WhatsApp</span>
+          <!-- Visas get the short label because they share the row with Apply
+               Now, and two long buttons side by side wrap on a phone. Every
+               other collection keeps the full sentence, where the button is
+               alone and the channel is worth naming. -->
+          <span>${collection === "visa" ? "WhatsApp" : "Buy Now on WhatsApp"}</span>
         </button>
       </footer>
     </article>`;

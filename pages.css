@@ -595,9 +595,10 @@ body.page .page-hero {
 
 /* One step lighter than the page so the footer still reads as its own band. */
 .page-footer {
-  /* A working footer, not a sign-off: four columns of somewhere to go, then a
-     quiet base row for the legal small print. It is the last thing on every
-     page and the only place the six service pages are all listed together. */
+  /* A working footer, not a sign-off: columns of somewhere to go, then a base
+     row with how to reach us and the small print. It is the last thing on
+     every page and the only place the six service pages are all listed
+     together. */
   padding: clamp(44px, 6vw, 72px) clamp(20px, 4vw, 48px) 28px;
   background: var(--navy);
   border-top: 1px solid rgba(255, 246, 232, 0.1);
@@ -607,11 +608,15 @@ body.page .page-hero {
 
 .footer-grid {
   display: grid;
-  grid-template-columns: 1.6fr 1fr 1fr 1.2fr;
+  grid-template-columns: 1.6fr 1fr 1fr 1fr;
   gap: clamp(28px, 4vw, 56px);
   width: min(1180px, 100%);
   margin: 0 auto;
 }
+/* The pre-rendered pages carry no Legal column — nothing there loads the
+   panel Privacy and Terms open — and an empty fourth track would leave a
+   blank quarter of the footer. The narrower breakpoints below still win. */
+.footer-grid-3 { grid-template-columns: 1.6fr 1fr 1fr; }
 
 .footer-brand { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; }
 
@@ -669,25 +674,44 @@ body.page .page-hero {
 .footer-col a:hover { color: var(--gold-light); text-decoration: underline; }
 .footer-col abbr { text-decoration: none; }
 
-/* The contact block renders from data/legal.js and stacks in its column. */
-.footer-col .contact-strip { align-items: flex-start; gap: 11px; }
-.footer-col .contact-strip-links { flex-direction: column; align-items: flex-start; gap: 11px; }
+/* Privacy and Terms are buttons — they open a panel, not a page — so here they
+   are dressed as the column's links rather than the small underlined buttons
+   they are everywhere else. */
+.footer-col #footer-legal { display: flex; flex-direction: column; align-items: flex-start; gap: 11px; }
+.footer-col .info-legal-link {
+  padding: 0;
+  border: 0;
+  font: inherit;
+  line-height: 1.35;
+  color: var(--gold-light);
+}
+.footer-col .info-legal-link:hover { text-decoration: underline; }
 
 .footer-base {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px 24px;
+  flex-direction: column;
+  gap: 18px;
   width: min(1180px, 100%);
   margin: clamp(32px, 4vw, 48px) auto 0;
-  padding-top: 20px;
+  padding-top: 24px;
   border-top: 1px solid rgba(255, 246, 232, 0.14);
   font-size: 13px;
   color: rgba(255, 246, 232, 0.55);
 }
 .footer-base p { margin: 0; }
-.footer-base #footer-legal { display: flex; flex-wrap: wrap; gap: 8px 18px; }
+
+/* How to reach us, under the columns: the numbers on one side and the social
+   marks on the other where there is room, each on its own line where not. */
+.footer-reach {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px 32px;
+  font-style: normal;
+  font-size: 14.5px;
+}
+.footer-reach .contact-strip-links { justify-content: flex-start; }
 
 @media (max-width: 900px) {
   .footer-grid { grid-template-columns: 1fr 1fr; }
@@ -696,7 +720,6 @@ body.page .page-hero {
 
 @media (max-width: 560px) {
   .footer-grid { grid-template-columns: 1fr; gap: 30px; }
-  .footer-base { justify-content: flex-start; }
 }
 .page-footer a { color: var(--gold-light); text-decoration: none; }
 .page-footer a:hover { text-decoration: underline; }

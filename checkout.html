@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <!--
+    Decides whether this device gets the decorative work, before the first
+    paint rather than after it.
+
+    It used to live in js/home.js, which meant two things: it ran only on the
+    homepage, so the six category pages carried every blur and shadow on the
+    hardware least able to afford them; and it ran from a deferred module, so
+    the class landed after the browser had already painted the expensive
+    version once and had to redo it.
+
+    hardwareConcurrency is not a benchmark and deviceMemory is Chromium-only,
+    so this is a hint rather than a verdict. Everything it turns off is
+    decorative — the page is complete without any of it.
+  -->
+  <script>
+    (function () {
+      try {
+        var cores = navigator.hardwareConcurrency || 8;
+        var mem = navigator.deviceMemory || 8;
+        var save = navigator.connection && navigator.connection.saveData;
+        var slow = navigator.connection && /^(slow-)?2g$/.test(navigator.connection.effectiveType || "");
+        if (cores <= 4 || mem <= 4 || save || slow) {
+          document.documentElement.classList.add("low-power");
+        }
+      } catch (e) { /* a missing API is not a reason to fail */ }
+    })();
+  </script>
+  <!-- The serif face is on every page's largest text; fetch it first, not
+       after the CSS names it. gstatic resolves early for the Firestore sync
+       that follows at idle. -->
+  <link rel="preconnect" href="https://dcym8fthxf5uu.cloudfront.net" crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href="https://dcym8fthxf5uu.cloudfront.net/fonts/247a073c-29f5-4a89-aa3a-741020f346fc/OggText-Medium.woff2" crossorigin />
+  <link rel="dns-prefetch" href="https://www.gstatic.com" />
+  <!-- The first card photo is this page's largest paint and lives on one of
+       these hosts, so shake hands before the HTML asks for it. -->
+  <link rel="preconnect" href="https://images.pexels.com" />
+  <link rel="preconnect" href="https://upload.wikimedia.org" />
+  <title>Apply for a visa | BGS Travel &amp; Tourism</title>
+  <meta name="description" content="Start a visa application: choose how many applicants, upload the documents required, and send it to the BGS team." />
+  <!-- A form, not content. Nothing here should be indexed or followed. -->
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png?v=228" />
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png?v=228" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=228" />
+  <!-- The typeface, which blocks nothing but is wanted early: font-display is
+       swap, so a late arrival means the headline visibly re-renders in a
+       different face. crossorigin because fonts are fetched in CORS mode, and
+       a preconnect without it opens the wrong kind of connection and is simply
+       not reused.
+
+       The two Wikimedia preconnects that used to sit here were removed: the
+       homepage contacts neither, so they were two speculative handshakes that
+       never carried a byte. -->
+  <link rel="preconnect" href="https://dcym8fthxf5uu.cloudfront.net" crossorigin />
+  <link rel="stylesheet" href="styles.css?v=228" />
+  <link rel="stylesheet" href="pages.css?v=228" />
+  <link rel="stylesheet" href="checkout.css?v=228" />
+  <script type="module" src="js/analytics.js?v=228"></script>
+  <script type="module" src="js/checkout.js?v=228"></script>
+</head>
+<body class="page" data-collection="visa">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <a class="site-logo" href="index.html">
+      <img class="site-logo-mark" src="assets/monogram-96.webp?v=228" alt="" width="40" height="40" />
+      <span class="site-logo-text">
+        <span class="site-logo-name">BGS Travel &amp; Tourism</span>
+      </span>
+    </a>
+    <nav class="site-nav" id="site-nav" aria-label="Primary"></nav>
+
+    <div class="header-utility">
+      <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false"
+                aria-controls="nav-drawer" aria-label="Open menu">
+          <span class="nav-toggle-bar" aria-hidden="true"></span>
+          <span class="nav-toggle-bar" aria-hidden="true"></span>
+        </button>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <section class="co-shell">
+
+      <!-- Filled by js/checkout.js from the visa named in ?visa=. Everything
+           below stays hidden until a real visa is resolved, so a bad link
+           shows an explanation rather than an empty form. -->
+      <div class="co-missing" id="co-missing" hidden>
+        <h1>Which visa?</h1>
+        <p>This page needs to know which visa you are applying for. Pick one
+           from the visa services page and press <strong>Apply Now</strong>.</p>
+        <a class="co-btn co-btn-primary" href="visa.html">Browse visa services</a>
+      </div>
+
+      <form class="co-form" id="co-form" hidden novalidate>
+        <header class="co-head">
+          <p class="page-eyebrow" id="co-kicker"></p>
+          <h1 class="co-title" id="co-title"></h1>
+          <p class="co-lede" id="co-lede"></p>
+        </header>
+
+        <!-- 1. How many -->
+        <section class="co-step" aria-labelledby="co-step-people">
+          <!-- Step numbers are counted in checkout.css, not written here:
+               step 2 only exists for visas with two rates. -->
+          <h2 class="co-step-head" id="co-step-people"><span></span> Applicants</h2>
+          <p class="co-step-note">Each applicant needs their own set of documents.</p>
+          <div class="co-stepper">
+            <button class="co-step-btn" type="button" data-count="-1" aria-label="One fewer applicant">&minus;</button>
+            <output class="co-count" id="co-count">1</output>
+            <button class="co-step-btn" type="button" data-count="1" aria-label="One more applicant">+</button>
+          </div>
+        </section>
+
+        <!-- 2. Which service, when the visa offers both -->
+        <section class="co-step" id="co-tier-step" aria-labelledby="co-step-tier" hidden>
+          <h2 class="co-step-head" id="co-step-tier"><span></span> Processing</h2>
+          <div class="co-tiers" id="co-tiers" role="radiogroup" aria-labelledby="co-step-tier"></div>
+        </section>
+
+        <!-- 3. Documents, per applicant -->
+        <section class="co-step" aria-labelledby="co-step-docs">
+          <h2 class="co-step-head" id="co-step-docs"><span></span> <span id="co-docs-title">Documents</span></h2>
+          <p class="co-step-note" id="co-docs-note"></p>
+          <div class="co-applicants" id="co-applicants"></div>
+        </section>
+
+        <!-- 4. Who to reach -->
+        <section class="co-step" aria-labelledby="co-step-you">
+          <h2 class="co-step-head" id="co-step-you"><span></span> Your details</h2>
+          <div class="co-fields">
+            <label class="co-field">Full name
+              <input type="text" name="contact_name" required autocomplete="name" />
+            </label>
+            <label class="co-field">Phone
+              <input type="tel" name="contact_phone" required autocomplete="tel"
+                     placeholder="+971 …" />
+            </label>
+            <label class="co-field">Email <span class="co-optional">optional</span>
+              <input type="email" name="contact_email" autocomplete="email" />
+            </label>
+            <label class="co-field co-field-wide">Anything we should know <span class="co-optional">optional</span>
+              <textarea name="notes" rows="3"></textarea>
+            </label>
+          </div>
+        </section>
+
+        <!-- The running total, pinned so it is never scrolled away from -->
+        <div class="co-summary" id="co-summary">
+          <dl class="co-sums">
+            <div><dt>Per applicant</dt><dd id="co-unit">—</dd></div>
+            <div><dt>Applicants</dt><dd id="co-people">1</dd></div>
+            <div class="co-sums-total"><dt>Total</dt><dd id="co-total">—</dd></div>
+          </dl>
+          <p class="co-error" id="co-error" role="alert" hidden></p>
+          <button class="co-btn co-btn-primary co-submit" type="submit" id="co-submit">
+            Checkout
+          </button>
+          <p class="co-fineprint">Nothing is charged here. The team confirms the
+             price and the next steps before any payment.</p>
+        </div>
+      </form>
+
+      <!-- The checkout: the whole order shown back once before it is sent.
+           The same page as the form rather than a second URL, because the
+           documents are held in memory and a page load would drop them; the
+           back button still returns to the form (js/checkout.js). -->
+      <section class="co-review" id="co-review" hidden aria-labelledby="co-review-title">
+        <header class="co-head">
+          <p class="page-eyebrow" id="co-review-kicker"></p>
+          <h1 class="co-title" id="co-review-title" tabindex="-1">Checkout</h1>
+          <p class="co-lede">Check your order, then place it.</p>
+        </header>
+
+        <section class="co-step" aria-labelledby="co-review-order-head">
+          <h2 class="co-step-head" id="co-review-order-head">Your order</h2>
+          <dl class="co-sums" id="co-review-order"></dl>
+        </section>
+
+        <section class="co-step" aria-labelledby="co-review-docs-head">
+          <h2 class="co-step-head" id="co-review-docs-head">Documents</h2>
+          <p class="co-step-note" id="co-review-docs-note" hidden></p>
+          <ul class="co-review-docs" id="co-review-docs"></ul>
+        </section>
+
+        <section class="co-step" aria-labelledby="co-review-you-head">
+          <h2 class="co-step-head" id="co-review-you-head">Your details</h2>
+          <dl class="co-sums" id="co-review-you"></dl>
+        </section>
+
+        <div class="co-summary co-review-actions">
+          <p class="co-error" id="co-review-error" role="alert" hidden></p>
+          <button class="co-btn co-btn-primary co-submit" type="button" id="co-place">Place order</button>
+          <button class="co-btn co-submit" type="button" id="co-edit">Edit application</button>
+          <p class="co-fineprint">Nothing is charged here. The team confirms the
+             price and the next steps before any payment.</p>
+        </div>
+      </section>
+
+      <!-- Shown after a successful order -->
+      <div class="co-done" id="co-done" hidden>
+        <h1 id="co-done-title" tabindex="-1">Order received</h1>
+        <p class="co-ref">Your reference is <strong id="co-ref"></strong></p>
+        <p id="co-done-note"></p>
+        <div class="co-done-actions">
+          <a class="co-btn co-btn-primary" id="co-done-wa" href="#" target="_blank" rel="noopener">
+            Tell us on WhatsApp
+          </a>
+          <a class="co-btn" href="visa.html">Back to visa services</a>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <footer class="page-footer">
+    <div class="footer-grid">
+
+      <div class="footer-brand">
+        <a class="footer-logo" href="index.html">
+          <img src="assets/monogram-96.webp?v=228" alt="" width="44" height="44" />
+          <span>BGS Travel &amp; Tourism</span>
+        </a>
+        <p class="footer-line">Visas, flights, stays and journeys, handled by one team in Dubai.</p>
+        <a class="footer-cta" href="https://wa.me/971555809388" target="_blank" rel="noopener">
+          Talk to us on WhatsApp
+        </a>
+      </div>
+
+      <nav class="footer-col" aria-labelledby="footer-browse">
+        <h2 class="footer-head" id="footer-browse">Browse</h2>
+        <a href="visa.html">Visa services</a>
+        <a href="destinations.html">Destinations</a>
+        <a href="packages.html">Packages</a>
+        <a href="activities.html">Activities</a>
+        <a href="mice.html"><abbr title="Meetings, Incentives, Conferences and Exhibitions">MICE</abbr></a>
+      </nav>
+
+      <nav class="footer-col" aria-labelledby="footer-services">
+        <h2 class="footer-head" id="footer-services">What we do</h2>
+        <a href="/services/visa/">Visa services</a>
+        <a href="/services/flights/">Flights</a>
+        <a href="/services/hotels/">Hotels &amp; stays</a>
+        <a href="/services/transport/">Transport &amp; fleet</a>
+        <a href="/services/activities/">Activities</a>
+        <a href="/services/concierge/">Concierge</a>
+      </nav>
+
+      <div class="footer-col">
+        <h2 class="footer-head">Legal</h2>
+        <!-- Privacy and Terms render from data/legal.js -->
+        <div id="footer-legal"></div>
+      </div>
+
+    </div>
+
+    <div class="footer-base">
+      <!-- Contact channels and social marks render from data/legal.js -->
+      <address class="footer-reach">
+        <div id="footer-contact"></div>
+        <div id="footer-social"></div>
+      </address>
+      <p>&copy; 2026 BGS Travel &amp; Tourism &middot; Dubai, United Arab Emirates</p>
+    </div>
+  </footer>
+
+  <div class="nav-drawer" id="nav-drawer" hidden>
+    <div class="nav-drawer-backdrop" data-drawer-close></div>
+    <div class="nav-drawer-panel" role="dialog" aria-modal="true" aria-label="Menu">
+      <div class="nav-drawer-head">
+        <span class="nav-drawer-title">BGS Travel &amp; Tourism</span>
+        <button class="nav-drawer-close" type="button" data-drawer-close aria-label="Close menu"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg></button>
+      </div>
+      <div class="nav-drawer-body" id="nav-drawer-body"></div>
+    </div>
+  </div>
+</body>
+</html>

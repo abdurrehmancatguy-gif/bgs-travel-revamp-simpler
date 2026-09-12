@@ -196,16 +196,16 @@ function itemPage(item, collection) {
   <link rel="preload" as="font" type="font/woff2" href="https://dcym8fthxf5uu.cloudfront.net/fonts/247a073c-29f5-4a89-aa3a-741020f346fc/OggText-Medium.woff2" crossorigin />${imageOrigin(image)}
   <title>${esc(title)} | BGS Travel &amp; Tourism</title>
   <meta name="description" content="${esc(description)}" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=226" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=228" />
   <!-- Versioned like everywhere else. These used to be bare, which was
        survivable under the old four-hour revalidate, but the stylesheets are
        now cached immutable for a year, so an unversioned link would wear this
        redesign's CSS forever, through every future one. -->
-  <link rel="stylesheet" href="/styles.css?v=226" />
-  <link rel="stylesheet" href="/pages.css?v=226" />
+  <link rel="stylesheet" href="/styles.css?v=228" />
+  <link rel="stylesheet" href="/pages.css?v=228" />
   <!-- The one script these pages carry: the same wheel glide as the rest of
        the site. Everything else stays static on purpose. -->
-  <script type="module" src="/js/smooth-scroll.js?v=226"></script>${headExtras({
+  <script type="module" src="/js/smooth-scroll.js?v=228"></script>${headExtras({
     url, title: `${title} | BGS Travel & Tourism`, description, image,
     jsonLd: [orgJsonLd(), ...itemJsonLd(item, collection, url, `${SITE}/`), {
       "@type": "BreadcrumbList",
@@ -221,7 +221,7 @@ function itemPage(item, collection) {
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="item-page-bar">
     <a class="site-logo" href="/">
-      <img class="site-logo-mark" src="/assets/monogram-96.webp?v=226" alt="" width="40" height="40" />
+      <img class="site-logo-mark" src="/assets/monogram-96.webp?v=228" alt="" width="40" height="40" />
       <span class="site-logo-text">
         <span class="site-logo-name">BGS Travel &amp; Tourism</span>
       </span>
@@ -254,10 +254,10 @@ function itemPage(item, collection) {
        target="_blank" rel="noopener">Contact us on WhatsApp, we\u2019ll check for you</a>
   </section>
   <footer class="page-footer">
-    <div class="footer-grid">
+    <div class="footer-grid footer-grid-3">
       <div class="footer-brand">
         <a class="footer-logo" href="/">
-          <img src="/assets/monogram-96.webp?v=226" alt="" width="44" height="44" />
+          <img src="/assets/monogram-96.webp?v=228" alt="" width="44" height="44" />
           <span>BGS Travel &amp; Tourism</span>
         </a>
         <p class="footer-line">Visas, flights, stays and journeys, handled by one team in Dubai.</p>
@@ -282,14 +282,14 @@ function itemPage(item, collection) {
         <a href="/services/activities/">Activities</a>
         <a href="/services/concierge/">Concierge</a>
       </nav>
-      <div class="footer-col">
-        <h2 class="footer-head">Reach us</h2>
-        <a href="tel:+971555809388">055 580 9388</a>
-        <a href="mailto:info@bgstravelandtourism.com">info@bgstravelandtourism.com</a>
-        <span>Dubai, United Arab Emirates</span>
-      </div>
     </div>
     <div class="footer-base">
+      <address class="footer-reach">
+        <div class="contact-strip-links">
+          <a href="tel:+971555809388">055 580 9388</a>
+          <a href="mailto:info@bgstravelandtourism.com">info@bgstravelandtourism.com</a>
+        </div>
+      </address>
       <p>&copy; 2026 BGS Travel &amp; Tourism &middot; Dubai, United Arab Emirates</p>
     </div>
   </footer>
@@ -462,10 +462,10 @@ function servicePage(service, page, content) {
   <link rel="preload" as="font" type="font/woff2" href="https://dcym8fthxf5uu.cloudfront.net/fonts/247a073c-29f5-4a89-aa3a-741020f346fc/OggText-Medium.woff2" crossorigin />${imageOrigin(image)}
   <title>${esc(label)} | BGS Travel &amp; Tourism</title>
   <meta name="description" content="${esc(description)}" />
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=226" />
-  <link rel="stylesheet" href="/styles.css?v=226" />
-  <link rel="stylesheet" href="/pages.css?v=226" />
-  <script type="module" src="/js/smooth-scroll.js?v=226"></script>${headExtras({
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=228" />
+  <link rel="stylesheet" href="/styles.css?v=228" />
+  <link rel="stylesheet" href="/pages.css?v=228" />
+  <script type="module" src="/js/smooth-scroll.js?v=228"></script>${headExtras({
     url, title: `${label} | BGS Travel & Tourism`, description, image,
     jsonLd: [orgJsonLd(), {
       "@type": "Service",
@@ -497,7 +497,7 @@ function servicePage(service, page, content) {
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="item-page-bar">
     <a class="site-logo" href="/">
-      <img class="site-logo-mark" src="/assets/monogram-96.webp?v=226" alt="" width="40" height="40" />
+      <img class="site-logo-mark" src="/assets/monogram-96.webp?v=228" alt="" width="40" height="40" />
       <span class="site-logo-text">
         <span class="site-logo-name">BGS Travel &amp; Tourism</span>
       </span>
@@ -550,10 +550,10 @@ function servicePage(service, page, content) {
   </section>
 
   <footer class="page-footer">
-    <div class="footer-grid">
+    <div class="footer-grid footer-grid-3">
       <div class="footer-brand">
         <a class="footer-logo" href="/">
-          <img src="/assets/monogram-96.webp?v=226" alt="" width="44" height="44" />
+          <img src="/assets/monogram-96.webp?v=228" alt="" width="44" height="44" />
           <span>BGS Travel &amp; Tourism</span>
         </a>
         <p class="footer-line">Visas, flights, stays and journeys, handled by one team in Dubai.</p>
@@ -578,14 +578,14 @@ function servicePage(service, page, content) {
         <a href="/services/activities/">Activities</a>
         <a href="/services/concierge/">Concierge</a>
       </nav>
-      <div class="footer-col">
-        <h2 class="footer-head">Reach us</h2>
-        <a href="tel:+971555809388">055 580 9388</a>
-        <a href="mailto:info@bgstravelandtourism.com">info@bgstravelandtourism.com</a>
-        <span>Dubai, United Arab Emirates</span>
-      </div>
     </div>
     <div class="footer-base">
+      <address class="footer-reach">
+        <div class="contact-strip-links">
+          <a href="tel:+971555809388">055 580 9388</a>
+          <a href="mailto:info@bgstravelandtourism.com">info@bgstravelandtourism.com</a>
+        </div>
+      </address>
       <p>&copy; 2026 BGS Travel &amp; Tourism &middot; Dubai, United Arab Emirates</p>
     </div>
   </footer>
@@ -836,6 +836,41 @@ ${Object.entries(PAGES).flatMap(([c]) => (content[c] ?? []).map((i) =>
 console.log(`  cards pre-rendered: ${cardCount}   item pages: ${pageCount}   service pages: ${servicePageCount}`);
 console.log(`  sitemap entries:    ${urls.length}`);
 console.log(`  hero pills in HTML:   ${pills.painted}`);
+/**
+ * Prefixes every root-relative link with a base path.
+ *
+ * Only for GitHub Pages, which serves a project repo from a subfolder. The
+ * site writes href="/visa/dubai-visa/" because on its own domain that is
+ * correct; under /bgs-travel-revamp-simpler it is a 404. Rather than teach
+ * forty call sites about a base path they will never need again, this rewrites
+ * the output once, and does nothing at all when BASE_PATH is unset — which is
+ * every deploy that matters.
+ *
+ * Protocol-relative URLs (//host/...) are left alone: those are not paths.
+ */
+function applyBasePath() {
+  const base = (process.env.BASE_PATH || "").replace(/\/$/, "");
+  if (!base) return 0;
+
+  let touched = 0;
+  const walk = (dir) => {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) { walk(full); continue; }
+      if (!/\.(html|css|js|mjs|xml|txt|json)$/.test(entry.name)) continue;
+      const before = fs.readFileSync(full, "utf8");
+      const after = before
+        .replace(/(href|src)="\/(?!\/)/g, `$1="${base}/`)
+        .replace(/(srcset|imagesrcset)="\/(?!\/)/g, `$1="${base}/`);
+      if (after !== before) { fs.writeFileSync(full, after); touched++; }
+    }
+  };
+  walk(DIST);
+  return touched;
+}
+
 const min = await minifyDist();
 console.log(`  minified:           ${min.files} files, ${Math.round(min.saved / 1024)} KB saved`);
+const based = applyBasePath();
+if (based) console.log(`  base path applied:  ${process.env.BASE_PATH} (${based} files)`);
 console.log(`  collections:        ${counts}`);

@@ -1,0 +1,63 @@
+# Publishes the built site to GitHub Pages, for previewing a branch before it
+# goes anywhere near main.
+#
+# What this is NOT: the live site. bgstravelandtourism.com deploys from Netlify,
+# which runs functions and can reach a database. Pages serves files and nothing
+# else, so anything on the site that needs a server — the visa checkout's
+# submit step — will render here but not work here. Everything static does.
+name: Preview on GitHub Pages
+
+on:
+  push:
+    branches: [checkout-page]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# A queued run should replace the one behind it rather than stack up, but never
+# cancel a deploy already in flight.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm install
+
+      # The build reads the catalogue from Firestore over the public REST
+      # endpoint and falls back to the shipped data files if that is
+      # unreachable, so this needs no secrets.
+      - name: Build
+        env:
+          # Pages serves a project repo from a subfolder, so both the absolute
+          # URLs the build writes and every root-relative link in the output
+          # have to know about it.
+          SITE_URL: https://abdurrehmancatguy-gif.github.io/bgs-travel-revamp-simpler
+          BASE_PATH: /bgs-travel-revamp-simpler
+        run: node build/build.mjs
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

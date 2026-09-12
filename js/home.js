@@ -1,18 +1,18 @@
-import { getCollection, subscribe } from "./store.js?v=226";
-import "./info-modal.js?v=226";
-import { contactStripMarkup, legalLinksMarkup, socialLinksMarkup, openInfo } from "./info-modal.js?v=226";
-import { createNavigation } from "./navigation.js?v=226";
-import { buildPrimaryNav } from "./nav-model.js?v=226";
-import { resolvePill, HOME_COPY } from "../data/home.js?v=226";
-import { resolveHomeCards, withSlugs, CARD_TITLE_KEY, priceFacts } from "../data/packages.js?v=226";
-import { icon } from "../data/icons.js?v=226";
-import { openItem } from "./item-dialog.js?v=226";
-import { openWhatsApp, buildCustomTripUrl, buildWhatsAppUrl, WHATSAPP_DISPLAY } from "../utils/whatsapp.js?v=226";
-import "./smooth-scroll.js?v=226";
-import { enableTilt } from "./tilt.js?v=226";
-import { cardSrc } from "../utils/images.js?v=226";
-import { stripIndex } from "../utils/text.js?v=226";
-import { enableCategoryRail } from "./category-rail.js?v=226";
+import { getCollection, subscribe } from "./store.js?v=228";
+import "./info-modal.js?v=228";
+import { contactStripMarkup, legalLinksMarkup, socialLinksMarkup, openInfo } from "./info-modal.js?v=228";
+import { createNavigation } from "./navigation.js?v=228";
+import { buildPrimaryNav } from "./nav-model.js?v=228";
+import { resolvePill, HOME_COPY } from "../data/home.js?v=228";
+import { resolveHomeCards, withSlugs, CARD_TITLE_KEY, priceFacts } from "../data/packages.js?v=228";
+import { icon } from "../data/icons.js?v=228";
+import { openItem } from "./item-dialog.js?v=228";
+import { openWhatsApp, buildCustomTripUrl, buildWhatsAppUrl, WHATSAPP_DISPLAY } from "../utils/whatsapp.js?v=228";
+import "./smooth-scroll.js?v=228";
+import { enableTilt } from "./tilt.js?v=228";
+import { cardSrc } from "../utils/images.js?v=228";
+import { stripIndex } from "../utils/text.js?v=228";
+import { enableCategoryRail } from "./category-rail.js?v=228";
 
 /**
  * The homepage. Everything on it renders from the store, so an edit made in
