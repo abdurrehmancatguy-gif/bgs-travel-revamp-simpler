@@ -63,7 +63,11 @@
     Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
     # The site asks for none of these; say so, so injected code cannot either.
     Permissions-Policy = "geolocation=(), camera=(), microphone=(), payment=(), usb=(), interest-cohort=()"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://www.gstatic.com https://cdn.sheetjs.com https://*.i.posthog.com; style-src 'self' 'unsafe-inline'; font-src 'self' https://dcym8fthxf5uu.cloudfront.net; img-src 'self' data: https:; connect-src 'self' https://*.googleapis.com https://*.i.posthog.com https://cdn.jsdelivr.net https://cdn.sheetjs.com wss://*.firebaseio.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"
+    # The sha256 is the inline low-power check in every page's <head>. Without
+    # it this policy blocked that script on the live site from the day it
+    # shipped, so no device ever got the lighter page. Any edit to that script,
+    # even whitespace, changes the hash: recompute it, or the block comes back.
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'sha256-3KHk0oQvOKP2VbxPlYh5biqf1V2SgiKKmqkuAkP/SMA=' https://cdn.jsdelivr.net https://www.gstatic.com https://cdn.sheetjs.com https://*.i.posthog.com; style-src 'self' 'unsafe-inline'; font-src 'self' https://dcym8fthxf5uu.cloudfront.net; img-src 'self' data: https:; connect-src 'self' https://*.googleapis.com https://*.i.posthog.com https://cdn.jsdelivr.net https://cdn.sheetjs.com wss://*.firebaseio.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"
 
 # Hashed-by-version assets can be cached hard; HTML must not be, or an edit
 # takes a day to show up.

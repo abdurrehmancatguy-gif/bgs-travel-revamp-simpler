@@ -1,4 +1,4 @@
-import { PHOTOS } from "./photos.js?v=228";
+import { PHOTOS } from "./photos.js?v=230";
 /**
  * Image sources for the catalogue.
  *
