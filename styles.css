@@ -367,6 +367,41 @@ button,
   background: var(--gold-ink);
 }
 
+/* A notice's table (Shipping, section 3). Scrolls inside its own box on a
+   narrow phone rather than widening the panel; headers in the same gold
+   capitals as the section headings, rows in the body ink. */
+.info-dialog-table {
+  margin: 0 0 12px;
+  overflow-x: auto;
+  border: 1px solid rgba(13, 27, 42, 0.1);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.45);
+}
+.info-dialog-table:focus-visible { outline: 2px solid var(--gold-ink); outline-offset: 2px; }
+.info-dialog-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: rgba(13, 27, 42, 0.86);
+}
+.info-dialog-table th,
+.info-dialog-table td {
+  padding: 9px 12px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid rgba(13, 27, 42, 0.08);
+}
+.info-dialog-table tbody tr:last-child > * { border-bottom: 0; }
+.info-dialog-table thead th {
+  color: var(--gold-ink);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.info-dialog-table tbody th { font-weight: 600; color: var(--navy); }
+
 .info-dialog-foot {
   display: flex;
   flex-wrap: wrap;

@@ -1,20 +1,20 @@
-import { getCollection, subscribe, isCloudEnabled, cloudHas } from "./store.js?v=230";
-import "./info-modal.js?v=230";
-import { createNavigation } from "./navigation.js?v=230";
-import { icon } from "../data/icons.js?v=230";
-import { priceLabel } from "../data/packages.js?v=230";
-import { openWhatsApp, buildWhatsAppUrl } from "../utils/whatsapp.js?v=230";
-import { MICE_SERVICES } from "../data/mice.js?v=230";
-import { openItem, itemTitle } from "./item-dialog.js?v=230";
+import { getCollection, subscribe, isCloudEnabled, cloudHas } from "./store.js?v=232";
+import "./info-modal.js?v=232";
+import { createNavigation } from "./navigation.js?v=232";
+import { icon } from "../data/icons.js?v=232";
+import { priceLabel } from "../data/packages.js?v=232";
+import { openWhatsApp, buildWhatsAppUrl } from "../utils/whatsapp.js?v=232";
+import { MICE_SERVICES } from "../data/mice.js?v=232";
+import { openItem, itemTitle } from "./item-dialog.js?v=232";
 // The same wheel glide the homepage has — the card lists are the longest
 // scrolls on the site, so they benefit most.
-import "./smooth-scroll.js?v=230";
-import { enableTilt } from "./tilt.js?v=230";
-import { buildPrimaryNav } from "./nav-model.js?v=230";
-import { track } from "./analytics.js?v=230";
-import { contactStripMarkup, legalLinksMarkup, socialLinksMarkup, openInfo } from "./info-modal.js?v=230";
-import { cardSrc } from "../utils/images.js?v=230";
-import { enableCategoryRail } from "./category-rail.js?v=230";
+import "./smooth-scroll.js?v=232";
+import { enableTilt } from "./tilt.js?v=232";
+import { buildPrimaryNav } from "./nav-model.js?v=232";
+import { track } from "./analytics.js?v=232";
+import { contactStripMarkup, legalLinksMarkup, socialLinksMarkup, openInfo } from "./info-modal.js?v=232";
+import { cardSrc } from "../utils/images.js?v=232";
+import { enableCategoryRail } from "./category-rail.js?v=232";
 
 /**
  * Every category page runs this one module. The page declares which collection
