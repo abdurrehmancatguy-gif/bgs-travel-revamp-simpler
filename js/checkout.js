@@ -1,7 +1,7 @@
-import { getCollection, subscribe } from "./store.js?v=231";
-import { createNavigation } from "./navigation.js?v=231";
-import { contactStripMarkup, legalLinksMarkup, socialLinksMarkup } from "./info-modal.js?v=231";
-import { buildWhatsAppUrl, openWhatsApp } from "../utils/whatsapp.js?v=231";
+import { getCollection, subscribe } from "./store.js?v=232";
+import { createNavigation } from "./navigation.js?v=232";
+import { contactStripMarkup, legalLinksMarkup, socialLinksMarkup } from "./info-modal.js?v=232";
+import { buildWhatsAppUrl, openWhatsApp } from "../utils/whatsapp.js?v=232";
 
 /**
  * The visa application form, and the checkout it leads to.

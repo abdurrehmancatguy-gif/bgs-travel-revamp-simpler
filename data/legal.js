@@ -1,6 +1,6 @@
 import {
   WHATSAPP_DISPLAY, CONTACT_EMAIL, LOCATION, buildWhatsAppUrl,
-} from "../utils/whatsapp.js?v=231";
+} from "../utils/whatsapp.js?v=232";
 
 /**
  * Contact details and the legal notices, as data rather than markup, so the
@@ -14,15 +14,6 @@ import {
  * marked its parts with ASCII separators, which are a plain-text device and
  * have no business in a rendered panel.
  */
-
-/**
- * The address the supplied Shipping policy gives in its section 10, used too
- * for the "[Insert Email Address]" it left in section 8; the phone it left
- * blank is the site's own number. Kept apart from CONTACT_EMAIL on purpose:
- * every other surface uses that one, and whether this mailbox exists is the
- * owner's to confirm — one line to change if it does not.
- */
-const SHIPPING_EMAIL = "support@bgstravelandtourism.com";
 
 /**
  * Where BGS is, off this site.
@@ -347,25 +338,28 @@ export const LEGAL_DOCS = {
     ],
   },
 
+  /* Supplied by BGS as a US template, then corrected at the owner's request
+     ("remove the flaws"): UAE time rather than EST, no US military mail, the
+     site's own email, and nothing the site does not actually do — no
+     merchandise or gift cards, no charges shown at checkout, no automatic
+     emails, nothing delivered "instantly". */
   shipping: {
     title: "Shipping & Delivery Policy",
     updated: "September 12, 2026",
     intro: [
-      "At BGS Travel and Tourism, we understand that when you are preparing for a journey, timing is everything. Whether you are waiting for physical travel documents, luggage tags, or branded merchandise, our goal is to get your items to you safely, swiftly, and with total transparency.",
-      "This Shipping Policy outlines how we handle the physical delivery of documents and goods purchased through bgstravelandtourism.com.",
+      "At BGS Travel and Tourism, we understand that when you are preparing for a journey, timing is everything. Whether you are waiting for printed tickets, vouchers, or other physical travel documents, our goal is to get them to you safely, swiftly, and with total transparency.",
+      "This Shipping Policy outlines how we handle the physical delivery of documents ordered through bgstravelandtourism.com.",
     ],
     sections: [
       {
         heading: "1. Scope of This Policy",
         body: [
-          "This policy applies to the shipping of physical goods, including but not limited to:",
+          "This policy applies to the shipping of physical documents, including but not limited to:",
           { list: [
             "Printed flight itineraries and hotel vouchers.",
             "Physical travel documentation packages.",
-            "BGS Travel branded merchandise (luggage tags, apparel, etc.).",
-            "Gift cards (physical format).",
           ] },
-          "Note: Digital documents (e-tickets, PDF itineraries) are delivered instantly via email and are not subject to this shipping policy.",
+          "Note: Digital documents (e-tickets, PDF itineraries) are sent by email and are not subject to this shipping policy.",
         ],
       },
       {
@@ -375,23 +369,23 @@ export const LEGAL_DOCS = {
           { list: [
             "Standard Processing: All orders are processed within 1-2 business days (Monday–Friday, excluding holidays).",
             "Custom Travel Kits: If your order includes customized travel documentation for a complex itinerary, please allow 3-5 business days for assembly and verification before shipping.",
-            "Order Cut-off: Orders placed after 2:00 PM (EST) will begin processing on the next business day.",
+            "Order Cut-off: Orders placed after 2:00 PM (UAE time) will begin processing on the next business day.",
           ] },
-          "You will receive a confirmation email with tracking information the moment your package leaves our facility.",
+          "We will send you the tracking details once your package has been dispatched.",
         ],
       },
       {
         heading: "3. Shipping Rates & Delivery Estimates",
         body: [
-          "We offer flexible shipping options to suit your timeline. Shipping charges for your order will be calculated and displayed at checkout.",
+          "We offer flexible shipping options to suit your timeline. Shipping charges depend on the method and destination, and our team confirms them with you before your order is sent.",
           { table: {
             label: "Shipping methods, delivery times and cost",
             head: ["Shipping Method", "Estimated Delivery Time", "Cost"],
             rows: [
-              ["Standard Ground", "3-7 Business Days", "Calculated at Checkout"],
-              ["Expedited (Priority)", "2-3 Business Days", "Calculated at Checkout"],
-              ["Overnight (Express)", "1 Business Day", "Calculated at Checkout"],
-              ["International", "10-20 Business Days", "Calculated at Checkout"],
+              ["Standard Ground", "3-7 Business Days", "Confirmed before dispatch"],
+              ["Expedited (Priority)", "2-3 Business Days", "Confirmed before dispatch"],
+              ["Overnight (Express)", "1 Business Day", "Confirmed before dispatch"],
+              ["International", "10-20 Business Days", "Confirmed before dispatch"],
             ],
           } },
           "Please note: Delivery delays can occasionally occur due to carrier issues or severe weather.",
@@ -400,17 +394,14 @@ export const LEGAL_DOCS = {
       {
         heading: "4. Shipment Confirmation & Order Tracking",
         body: [
-          "Once your order has shipped, you will receive a Shipment Confirmation Email containing your tracking number(s). The tracking number will be active within 24 hours.",
+          "Once your order has shipped, we will send you your tracking number(s) by email or WhatsApp. The tracking number will be active within 24 hours.",
           "For high-value travel documents, a Signature Confirmation may be required upon delivery to ensure your documents do not fall into the wrong hands. Please ensure someone is available at the shipping address to sign for the package.",
         ],
       },
       {
-        heading: "5. Shipping to P.O. Boxes & APO/FPO Addresses",
+        heading: "5. Shipping to P.O. Boxes",
         body: [
-          { list: [
-            "P.O. Boxes: We generally recommend shipping to a physical address to ensure expedited delivery. However, we can ship to P.O. Boxes via Standard Mail only.",
-            "APO/FPO/DPO: We proudly support our military personnel. We ship to APO/FPO addresses via USPS Priority Mail. Delivery times vary depending on the destination.",
-          ] },
+          "We generally recommend shipping to a physical address to ensure expedited delivery. However, we can ship to P.O. Boxes via Standard Mail only.",
         ],
       },
       {
@@ -435,7 +426,7 @@ export const LEGAL_DOCS = {
           "BGS Travel and Tourism is not liable for any products damaged or lost during shipping. If you received your order damaged, please contact the shipment carrier to file a claim immediately.",
           "However, we are here to help:",
           { list: [
-            `If your travel documents are lost in transit, please contact us immediately at ${SHIPPING_EMAIL}. We will work with you to re-issue digital copies instantly so your trip is not interrupted.`,
+            `If your travel documents are lost in transit, please contact us immediately at ${CONTACT_EMAIL}. We will work with you to re-issue digital copies as quickly as possible so your trip is not interrupted.`,
             "Please save all packaging materials and damaged goods before filing a claim.",
           ] },
         ],
@@ -443,7 +434,7 @@ export const LEGAL_DOCS = {
       {
         heading: "9. Address Errors",
         body: [
-          "Please double-check your billing and shipping addresses. We are not responsible for packages delivered to an incorrect address provided by the customer. If a package is returned to us due to an incorrect address, you will be responsible for the cost of re-shipping.",
+          "Please double-check the delivery address you give us. We are not responsible for packages delivered to an incorrect address provided by the customer. If a package is returned to us due to an incorrect address, you will be responsible for the cost of re-shipping.",
         ],
       },
       {
@@ -452,9 +443,9 @@ export const LEGAL_DOCS = {
           "We are here to make your travel experience seamless. If you have any questions about your order or shipping, please contact our support team:",
           "BGS Travel and Tourism",
           { list: [
-            `Email: ${SHIPPING_EMAIL}`,
+            `Email: ${CONTACT_EMAIL}`,
             `Phone: ${WHATSAPP_DISPLAY}`,
-            "Hours: Monday – Friday, 9:00 AM – 5:00 PM (EST)",
+            "Hours: Monday – Friday, 9:00 AM – 5:00 PM (UAE time)",
           ] },
         ],
       },
